@@ -37,9 +37,8 @@ def get_ham_object_id_list(page=1, person=None, has_image=1, technique=None, obj
 	huam_url = config.HAM_API_ENDPOINT + "%s" % ('object')
 	query_string = {
 			"apikey": config.HAM_API_KEY,
-			# "exact_title": "American Professional Photographers Collection",
 			"fields": "id",
-			"size": 1,
+			"size": 100,
 			"page": page,
 			"hasimage": has_image
 		}
