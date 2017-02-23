@@ -5,7 +5,7 @@ class MCSVision(object):
 
 	def __init__(self):
 		self.api_key = config.MICROSOFT_CS_KEY
-		self.base_url = 'https://api.projectoxford.ai/vision/v1.0/'
+		self.base_url = 'https://westus.api.cognitive.microsoft.com/vision/v1.0/'
 
 	def fetch_analyze(self, photo_file):
 		url = self.base_url + 'analyze'
