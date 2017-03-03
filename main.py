@@ -9,7 +9,7 @@ def main(page_count, person_id, technique_id, object_id):
 	type = "object"
 
 	for page_num in range(1, int(page_count)+1):
-		print("Fetching page %s of person %s" % (page_num, person_id))
+		print("Fetching page %s of %s" % (page_num, page_count))
 		(success, ids) = ham.get_ham_object_id_list(page=page_num, person=person_id, technique=technique_id, object=object_id)
 		if success:
 			records = []
@@ -17,27 +17,20 @@ def main(page_count, person_id, technique_id, object_id):
 			for id in ids:	
 				print("Working on record %s" % id)
 
-				# HERE FOR TEST PURPOSES
-				(success, source) = ham.get_ham_object(id)
-				if success:
-					record = process_object(source)
-					models.add_or_update_manifest(id, record, type)
+				try:	
+					manifest_exists = models.manifest_exists(id, type)
+					if not manifest_exists:
+						(success, source) = ham.get_ham_object(id)
+						if success:
+							# Process the record
+							record = process_object(source)
 
-				# try:	
-				# 	manifest_exists = models.manifest_exists(id, type)
-				# 	if not manifest_exists:
-				# 		(success, source) = ham.get_ham_object(id)
-				# 		if success:
-				# 			# Process the record
-				# 			record = process_object(source)
-				# 			print(record)
-
-				# 			# Save it in Elasticsearch
-				# 			models.add_or_update_manifest(id, record, type)
-				# 	else:
-				# 		print("Already processed")
-				# except:
-				# 	print("Error processing record %s" % id)
+							# Save it in Elasticsearch
+							models.add_or_update_manifest(id, record, type)
+					else:
+						print("Already processed")
+				except:
+					print("Error processing record %s" % id)
 
 
 ## HELPER FUNCTIONS ##

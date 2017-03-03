@@ -43,17 +43,6 @@ def get_ham_object_id_list(page=1, person=None, has_image=1, technique=None, obj
 			"hasimage": has_image
 		}
 
-	# huam_url = HAM_API_ENDPOINT + "%s" % ('experimental/object')
-	# query_string = {
-	# 		"apikey": HAM_API_KEY,
-	# 		"fields": "id",
-	# 		"size": 100,
-	# 		"page": page,
-	# 		"q": "_exists_:googlevision.responses.faceAnnotations AND _missing_:googlevision.responses.faceAnnotations.iiifFaceImageURL"
-	# 	}
-	# 		# "q": "_missing_:googlevision.responses.faceAnnotations.iiifFaceImageURL"
-
-
 	if person is not None:
 		query_string["person"] = person
 	
