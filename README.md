@@ -13,10 +13,10 @@ Create a file named vision-credentials.json and paste in a sevice account key ge
 Implemented
 ===========
 
-Clarifai: tag features, extract colors
-Imagga: tag features, extract colors, categorize
-Google Vision: tag features, find faces
-Microsoft Vision: categories, tags, description, faces, color
+Clarifai: tag features, extract colors  
+Imagga: tag features, extract colors, categorize  
+Google Vision: tag features, find faces  
+Microsoft Vision: categories, tags, description, faces, color  
 
 
 Not Implemented
