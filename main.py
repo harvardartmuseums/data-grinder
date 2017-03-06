@@ -133,7 +133,7 @@ def process_object(source):
 				width = (max(seqX) - min(seqX))*imageScaleFactor+regionPadding
 				height = (max(seqY) - min(seqY))*imageScaleFactor+regionPadding
 
-				iiifTextImageURL = ham_json["images"][0]["iiifbaseuri"] + "/" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height)) + "/full/0/native.jpg"
+				iiifTextImageURL = image["iiifbaseuri"] + "/" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height)) + "/full/0/native.jpg"
 				text["iiifTextImageURL"] = iiifTextImageURL
 
 				result["responses"][0]["textAnnotations"][index] = text		
