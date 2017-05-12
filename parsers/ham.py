@@ -33,7 +33,7 @@ def get_ham_image(image_url, id):
 	return path
 
 
-def get_ham_object_id_list(page=1, person=None, has_image=1, technique=None, object=None):
+def get_ham_object_id_list(page=1, person=None, has_image=1, technique=None, object=None, keyword=None):
 	huam_url = config.HAM_API_ENDPOINT + "%s" % ('object')
 	query_string = {
 			"apikey": config.HAM_API_KEY,
@@ -43,6 +43,9 @@ def get_ham_object_id_list(page=1, person=None, has_image=1, technique=None, obj
 			"hasimage": has_image
 		}
 
+	if keyword is not None:
+		query_string["keyword"] = keyword
+	
 	if person is not None:
 		query_string["person"] = person
 	

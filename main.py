@@ -5,12 +5,12 @@ from PIL import Image
 from parsers import clarifai, vision, imagga, models, ham, iiif, mcsvision
 
 
-def main(page_count, person_id, technique_id, object_id):
+def main(page_count, person_id, technique_id, object_id, keyword):
 	type = "object"
 
 	for page_num in range(1, int(page_count)+1):
 		print("Fetching page %s of %s" % (page_num, page_count))
-		(success, ids) = ham.get_ham_object_id_list(page=page_num, person=person_id, technique=technique_id, object=object_id)
+		(success, ids) = ham.get_ham_object_id_list(page=page_num, person=person_id, technique=technique_id, object=object_id, keyword=keyword)
 		if success:
 			records = []
 
@@ -173,9 +173,10 @@ if __name__ == '__main__':
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-pages', nargs='?', default=1)
+	parser.add_argument('-keyword', nargs='?', default=1)
 	parser.add_argument('-person', nargs='?', default=None)
 	parser.add_argument('-technique', nargs='?', default=None)
 	parser.add_argument('-object', nargs='?', default=None)
 	args = parser.parse_args()
-	main(args.pages, args.person, args.technique, args.object)
+	main(args.pages, args.person, args.technique, args.object, args.keyword)
 # [END run_application]
