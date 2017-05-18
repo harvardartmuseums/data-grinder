@@ -40,7 +40,8 @@ def get_ham_object_id_list(page=1, person=None, has_image=1, technique=None, obj
 			"fields": "id",
 			"size": 100,
 			"page": page,
-			"hasimage": has_image
+			"hasimage": has_image,
+			"sort": "objectid"
 		}
 
 	if keyword is not None:
