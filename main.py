@@ -174,7 +174,7 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-pages', nargs='?', default=1)
 	parser.add_argument('-start_page', nargs='?', default=1)
-	parser.add_argument('-keyword', nargs='?', default=1)
+	parser.add_argument('-keyword', nargs='?', default=None)
 	parser.add_argument('-person', nargs='?', default=None)
 	parser.add_argument('-technique', nargs='?', default=None)
 	parser.add_argument('-object', nargs='?', default=None)
