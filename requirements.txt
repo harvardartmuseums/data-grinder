@@ -1,3 +1,4 @@
+certifi==2017.7.27.1
 clarifai==2.0.32
 configparser==3.5.0
 elasticsearch==1.6.0

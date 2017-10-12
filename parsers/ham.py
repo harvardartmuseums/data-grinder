@@ -1,11 +1,12 @@
 import config
 import urllib3
 import json
+import certifi
 
 def get_ham_object(id):
 	huam_url = config.HAM_API_ENDPOINT + "%s/%s?apikey=%s" % ('object', id, config.HAM_API_KEY)
 
-	http = urllib3.PoolManager()
+	http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 	response = http.request('GET', huam_url)
 	huam = response.data
 
@@ -16,7 +17,7 @@ def get_ham_object(id):
 
 
 def get_ham_image(image_url, id):
-	http = urllib3.PoolManager()
+	http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 	r = http.request('GET', image_url, preload_content=False)
 
 	path = "samples/%s.jpg" % (id)
@@ -56,7 +57,7 @@ def get_ham_object_id_list(page=1, person=None, has_image=1, technique=None, obj
 	if object is not None:
 		query_string["q"] = "objectid:" + object
 	
-	http = urllib3.PoolManager()
+	http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 	response = http.request('GET', huam_url, fields = query_string)
 	huam = response.data
 	records = json.loads(huam.decode('utf8'))["records"]
