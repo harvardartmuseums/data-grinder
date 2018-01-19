@@ -1,3 +1,4 @@
+import config
 import argparse
 import base64
 import httplib2
@@ -16,7 +17,7 @@ class Vision(object):
 
         # [START authenticate]
         # credentials = GoogleCredentials.get_application_default()
-        credentials = GoogleCredentials.from_stream('vision-credentials.json')
+        credentials = GoogleCredentials.from_stream(config.GOOGLE_VISION_CREDENTIALS_FILE)
         service = discovery.build('vision', 'v1', credentials=credentials,
                                   discoveryServiceUrl=DISCOVERY_URL)
         # [END authenticate]

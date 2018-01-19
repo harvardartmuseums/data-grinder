@@ -20,7 +20,7 @@ def get_ham_image(image_url, id):
 	http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 	r = http.request('GET', image_url, preload_content=False)
 
-	path = "samples/%s.jpg" % (id)
+	path = config.TEMPORARY_FILE_DIR + "/%s.jpg" % (id)
 
 	with open(path, 'wb') as out:
 		while True:
