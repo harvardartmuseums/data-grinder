@@ -1,52 +1,49 @@
 import json
 import argparse
 import datetime
+import config
+import requests
 from PIL import Image
-from parsers import clarifai, vision, imagga, models, ham, iiif, mcsvision
+from parsers import clarifai, vision, imagga, iiif, mcsvision, colors
 
 
-def main(page_count, start_page, person_id, technique_id, object_id, keyword):
-	type = "object"
-
-	for page_num in range(int(start_page), int(start_page)+int(page_count)+1):
-		print("Fetching page %s of %s" % (page_num, page_count))
-		(success, ids) = ham.get_ham_object_id_list(page=page_num, person=person_id, technique=technique_id, object=object_id, keyword=keyword)
-		if success:
-			records = []
-
-			for id in ids:	
-				print("Working on record %s" % id)
-
-				try:	
-					manifest_exists = models.manifest_exists(id, type)
-					if not manifest_exists:
-						(success, source) = ham.get_ham_object(id)
-						if success:
-							# Process the record
-							record = process_object(source)
-
-							# Save it in Elasticsearch
-							models.add_or_update_manifest(id, record, type)
-					else:
-						print("Already processed")
-				except:
-					print("Error processing record %s" % id)
+def main(url):
+	image_info = process_image(url)
+	print(json.dumps(image_info))
 
 
 ## HELPER FUNCTIONS ##
-def process_object(source):
-	ham_json = json.loads(source)
-	id = ham_json["id"]
+def get_image(URL):
+	r = requests.get(URL)
+	if r.status_code == 200:
+		status = "ok"
+		id = r.url[37:]
+		path = config.TEMPORARY_FILE_DIR + "/%s.jpg" % (id)
+		
+		with open(path, 'wb') as out:
+			for chunk in r.iter_content(chunk_size=128):
+				out.write(chunk)
+	else:
+		status = "bad"
+		id = ""
+		path = ""
 
-	record = {
-		"id": id,
+	return (status, path, id)
+
+def process_image(URL):
+	image = {
+		"url": URL,
 		"lastupdated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 	}
 
-	images = []
-	for image in ham_json["images"]:
-		image_url = image["baseimageurl"]
-		image_local_path = ham.get_ham_image(image_url, image["idsid"])
+	image_url = URL
+	(status, image_local_path, id) = get_image(image_url)
+
+	image["drsstatus"] = status
+
+	if status == "ok": 
+		image["idsid"] = id
+		image["iiifbaseuri"] = iiif.IIIFImage.get_base_uri(id)
 
 		# Gather and store image metadata
 		im=Image.open(image_local_path)
@@ -55,12 +52,19 @@ def process_object(source):
 		image["height"] = size[1]
 
 		iiif_image_info = iiif.IIIFImage().fetch(image["iiifbaseuri"])
+		image["widthFull"] = iiif_image_info["width"]
+		image["heightFull"] = iiif_image_info["height"]
+
 		imageScaleFactor = iiif_image_info["width"]/image["width"]
 
 		# scalefactor is useful when converting annotation coordinates between different image sizes
 		image["scalefactor"] = imageScaleFactor
 
-		# # Run through Clarifai
+		# Run through HAM color service
+		result = colors.Colors().fetch_colors(image_url)
+		image["colors"] = result["colors"]
+		
+		# Run through Clarifai
 		result = clarifai.Clarifai().fetch(image_url, id)
 		image["clarifai"] = result
 
@@ -84,6 +88,7 @@ def process_object(source):
 
 				iiifFaceImageURL = image["iiifbaseuri"] + "/" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height)) + "/full/0/native.jpg"
 				face["iiifFaceImageURL"] = iiifFaceImageURL
+				face["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
 
 				result["faces"][index] = face
 
@@ -114,6 +119,7 @@ def process_object(source):
 
 				iiifFaceImageURL = image["iiifbaseuri"] + "/" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height)) + "/full/0/native.jpg"
 				face["iiifFaceImageURL"] = iiifFaceImageURL
+				face["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
 
 				result["responses"][0]["faceAnnotations"][index] = face
 
@@ -135,6 +141,7 @@ def process_object(source):
 
 				iiifTextImageURL = image["iiifbaseuri"] + "/" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height)) + "/full/0/native.jpg"
 				text["iiifTextImageURL"] = iiifTextImageURL
+				text["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
 
 				result["responses"][0]["textAnnotations"][index] = text		
 
@@ -148,36 +155,17 @@ def process_object(source):
 		result = imagga.Imagga().fetch_categories(image_url)
 		image["imagga"]["categories"] = result
 
-		result = imagga.Imagga().fetch_colors(image_url)
-		image["imagga"]["colors"] = result
+		# result = imagga.Imagga().fetch_colors(image_url)
+		# image["imagga"]["colors"] = result
 
-		# Run through Betaface
-		# TODO
 
-		# Run txt through Open Calias
-		# TODO
-
-		images.append(image)
-
-	record["images"] = images
-
-	return json.dumps(record)
+	return image
 
 
 # [START run_application]
 if __name__ == '__main__':
-	# parser = argparse.ArgumentParser()
-	# parser.add_argument('image_file', help='The image you\'d like to label.')
-	# args = parser.parse_args()
-	# main(args.image_file)
-
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-pages', nargs='?', default=1)
-	parser.add_argument('-start_page', nargs='?', default=1)
-	parser.add_argument('-keyword', nargs='?', default=None)
-	parser.add_argument('-person', nargs='?', default=None)
-	parser.add_argument('-technique', nargs='?', default=None)
-	parser.add_argument('-object', nargs='?', default=None)
+	parser.add_argument('-url', nargs='?', default=None)
 	args = parser.parse_args()
-	main(args.pages, args.start_page, args.person, args.technique, args.object, args.keyword)
+	main(args.url)
 # [END run_application]
