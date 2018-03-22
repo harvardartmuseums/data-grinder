@@ -105,12 +105,26 @@ def process_image(URL):
 
 				# sometimes the boundingPoly is missing X or Y values if it's too close to the edge of the image
 				# fill in the missing coordinate using fdBoundingPoly
+				fdBounding = face["fdBoundingPoly"]["vertices"]
+
+				if "x" not in fdBounding[0]: fdBounding[0]["x"] = 0
+				if "y" not in fdBounding[0]: fdBounding[0]["y"] = 0
+
+				if "x" not in fdBounding[1]: fdBounding[1]["x"] = image["width"]
+				if "y" not in fdBounding[1]: fdBounding[1]["y"] = 0
+					
+				if "x" not in fdBounding[2]: fdBounding[2]["x"] = image["width"]
+				if "y" not in fdBounding[2]: fdBounding[2]["y"] = image["height"]
+
+				if "x" not in fdBounding[3]: fdBounding[3]["x"] = 0
+				if "y" not in fdBounding[3]: fdBounding[3]["y"] = image["height"]
+
 				for i in range(len(bounding)):
 					if "x" not in bounding[i]:
-						bounding[i]["x"] = face["fdBoundingPoly"]["vertices"][i]["x"]
+						bounding[i]["x"] = fdBounding[i]["x"]
 
 					if "y" not in bounding[i]:
-						bounding[i]["y"] = face["fdBoundingPoly"]["vertices"][i]["y"]
+						bounding[i]["y"] = fdBounding[i]["y"]
 
 				xOffset = bounding[0]["x"]*imageScaleFactor
 				yOffset = bounding[0]["y"]*imageScaleFactor
@@ -130,6 +144,20 @@ def process_image(URL):
 			for index in range(len(result["responses"][0]["textAnnotations"])):
 				text = result["responses"][0]["textAnnotations"][index]
 				bounding = text["boundingPoly"]["vertices"]
+
+				# sometimes the boundingPoly is missing X or Y values if it's too close to the edge of the image
+				# fill in the missing coordinate using the bounds of the actual image
+				if "x" not in bounding[0]: bounding[0]["x"] = 0
+				if "y" not in bounding[0]: bounding[0]["y"] = 0
+
+				if "x" not in bounding[1]: bounding[1]["x"] = image["width"]
+				if "y" not in bounding[1]: bounding[1]["y"] = 0
+					
+				if "x" not in bounding[2]: bounding[2]["x"] = image["width"]
+				if "y" not in bounding[2]: bounding[2]["y"] = image["height"]
+
+				if "x" not in bounding[3]: bounding[3]["x"] = 0
+				if "y" not in bounding[3]: bounding[3]["y"] = image["height"]
 
 				seqX = [x["x"] for x in bounding]
 				seqY = [x["y"] for x in bounding]
