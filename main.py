@@ -14,10 +14,10 @@ def main(url):
 
 ## HELPER FUNCTIONS ##
 def get_image(URL):
-	r = requests.get(URL)
+	r = requests.get(URL + "?width=2400&height=2400")
 	if r.status_code == 200:
 		status = "ok"
-		id = r.url[37:]
+		id = r.url[37:r.url.find("?")]
 		path = config.TEMPORARY_FILE_DIR + "/%s.jpg" % (id)
 		
 		with open(path, 'wb') as out:
