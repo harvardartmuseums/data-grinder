@@ -5,12 +5,6 @@ BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 TEMPORARY_FILE_DIR = BASE_DIR + '/samples'
 CONFIG_FILE_DIR = BASE_DIR
 
-ELASTICSEARCH_URL = ""
-ELASTICSEARCH_INDEX = ""
-
-HAM_API_ENDPOINT = ""
-HAM_API_KEY = ""
-
 MICROSOFT_CS_KEY = ""
 
 IMAGGA_SECRET = ""
