@@ -1,6 +1,6 @@
 # Data Grinder
 
-Data enrichment via a variety of third party services: 
+A simple script for running an image through third party computer vision services that extract faces, text, colors, and tags.  
 
 Setup
 =====
@@ -14,6 +14,7 @@ Create a file named vision-credentials.json and paste in a sevice account key ge
 Services Implemented
 ====================
 
+HAM Color Service: extract colors  
 Clarifai: tag features, extract colors  
 Imagga: tag features, extract colors, categorize  
 Google Vision: tag features, find faces, find text  
@@ -28,10 +29,15 @@ Run from the command line:
 $ python main.py -url https://some.image/url
 ```
 
+Parameters:
+```sh
+url: Any Harvard NRS URL that resolves to a IIIF compatible image
+```
+
 Example response:
 ```json
 {
-	"lastupdated": "2018-02-07 21:58:28",
+    "lastupdated": "2018-02-07 21:58:28",
     "drsstatus": "ok",
     "width": 581,
     "height": 768,
