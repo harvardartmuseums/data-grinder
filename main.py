@@ -198,7 +198,7 @@ def process_image(URL, services):
 # [START run_application]
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-url', nargs='?', default=None)
+	parser.add_argument('-url', nargs='?', default=None, required=True)
 	parser.add_argument('-services', nargs='+', choices=['imagga', 'gv', 'mcs', 'clarifai', 'color'], default=['imagga', 'gv', 'mcs', 'clarifai', 'color'])
 	args = parser.parse_args()
 	main(args.url, args.services)
