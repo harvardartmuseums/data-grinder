@@ -13,22 +13,32 @@ def main(url, services):
 
 
 ## HELPER FUNCTIONS ##
-def get_image(URL):
-	r = requests.get(URL + "?width=2400&height=2400")
+def get_image_id(URL):
+	r = requests.get(URL)
 	if r.status_code == 200:
 		status = "ok"
-		id = r.url[37:r.url.find("?")]
-		path = config.TEMPORARY_FILE_DIR + "/%s.jpg" % (id)
+		id = r.url[37:]
+		
+	else:
+		status = "bad"
+		id = ""
+
+	return (status, id)
+
+def download_image(URL):
+	r = requests.get(URL)
+	if r.status_code == 200:
+		status = "ok"
+		path = config.TEMPORARY_FILE_DIR + "/temp.jpg"
 		
 		with open(path, 'wb') as out:
 			for chunk in r.iter_content(chunk_size=128):
 				out.write(chunk)
 	else:
 		status = "bad"
-		id = ""
 		path = ""
 
-	return (status, path, id)
+	return (status, path)
 
 def process_image(URL, services):
 	image = {
@@ -36,14 +46,19 @@ def process_image(URL, services):
 		"lastupdated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 	}
 
-	image_url = URL
-	(status, image_local_path, id) = get_image(image_url)
+	# get IDS ID
+	(status, id) = get_image_id(URL)
 
 	image["drsstatus"] = status
 
 	if status == "ok": 
+		image_url = iiif.IIIFImage.get_full_image_url(id)
+
 		image["idsid"] = id
 		image["iiifbaseuri"] = iiif.IIIFImage.get_base_uri(id)
+
+		# Download the image
+		(status, image_local_path) = download_image(image_url)
 
 		# Gather and store image metadata
 		im=Image.open(image_local_path)
