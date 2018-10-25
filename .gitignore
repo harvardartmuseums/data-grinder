@@ -10,3 +10,5 @@ db.sqlite3
 config.py
 vision-credentials.json
 data-lists.txt
+
+.vscode
