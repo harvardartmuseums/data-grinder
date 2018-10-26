@@ -1,0 +1,1881 @@
+{
+    "width": 1840,
+    "lastupdated": "2018-10-26 10:59:19",
+    "drsstatus": "ok",
+    "idsid": "423290977",
+    "widthFull": 1955,
+    "iiifbaseuri": "https://ids.lib.harvard.edu/ids/iiif/423290977",
+    "scalefactor": 1.0625,
+    "heightFull": 2550,
+    "height": 2400,
+    "url": "https://ids.lib.harvard.edu/ids/view/423290977",
+    "clarifai": {
+        "status": {
+            "code": 10000,
+            "description": "Ok"
+        },
+        "outputs": [
+            {
+                "data": {
+                    "concepts": [
+                        {
+                            "value": 0.9943768,
+                            "name": "adult",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_VPmHr5bm"
+                        },
+                        {
+                            "value": 0.9937,
+                            "name": "people",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_l8TKp2h5"
+                        },
+                        {
+                            "value": 0.9885834,
+                            "name": "facial expression",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_GxSDhQ34"
+                        },
+                        {
+                            "value": 0.98508054,
+                            "name": "painting",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_QrcQWGwJ"
+                        },
+                        {
+                            "value": 0.98212993,
+                            "name": "illustration",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_Dm5GLXnB"
+                        },
+                        {
+                            "value": 0.9808142,
+                            "name": "woman",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_RQccV41p"
+                        },
+                        {
+                            "value": 0.9796201,
+                            "name": "portrait",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_TJ9wFfK5"
+                        },
+                        {
+                            "value": 0.9764746,
+                            "name": "two",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_94cQBGlt"
+                        },
+                        {
+                            "value": 0.97530526,
+                            "name": "man",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_dxSG2s86"
+                        },
+                        {
+                            "value": 0.9722676,
+                            "name": "art",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_JBPqff8z"
+                        },
+                        {
+                            "value": 0.97083914,
+                            "name": "veil",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_L83krFdq"
+                        },
+                        {
+                            "value": 0.95794785,
+                            "name": "hairdo",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_BlRVgWD9"
+                        },
+                        {
+                            "value": 0.9517739,
+                            "name": "one",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_SVshtN54"
+                        },
+                        {
+                            "value": 0.9494957,
+                            "name": "wear",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_86sS08Pw"
+                        },
+                        {
+                            "value": 0.9423709,
+                            "name": "print",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_MKSwLDhD"
+                        },
+                        {
+                            "value": 0.9297489,
+                            "name": "side view",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_XNzGRk0F"
+                        },
+                        {
+                            "value": 0.9153812,
+                            "name": "furniture",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_c9n7SB25"
+                        },
+                        {
+                            "value": 0.907338,
+                            "name": "profile",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_8RFGb5Lw"
+                        },
+                        {
+                            "value": 0.8814685,
+                            "name": "sculpture",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_3G3b1XP2"
+                        },
+                        {
+                            "value": 0.8499656,
+                            "name": "group",
+                            "app_id": "main",
+                            "annotationFragment": "xywh=0,0,1840,2400",
+                            "id": "ai_bmls4LpL"
+                        }
+                    ]
+                },
+                "created_at": "2018-10-26T14:59:32.746738105Z",
+                "status": {
+                    "code": 10000,
+                    "description": "Ok"
+                },
+                "id": "e8994c7492544783ad1594b2b900b18f",
+                "model": {
+                    "display_name": "General",
+                    "name": "general-v1.3",
+                    "app_id": "main",
+                    "output_info": {
+                        "message": "Show output_info with: GET /models/{model_id}/output_info",
+                        "type_ext": "concept",
+                        "type": "concept"
+                    },
+                    "created_at": "2016-03-09T17:11:39.608845Z",
+                    "model_version": {
+                        "created_at": "2016-07-13T01:19:12.147644Z",
+                        "status": {
+                            "code": 21100,
+                            "description": "Model trained successfully"
+                        },
+                        "id": "aa9ca48295b37401f8af92ad1af0d91d"
+                    },
+                    "id": "aaa03c23b3724a16a56b629203edc62c"
+                },
+                "input": {
+                    "data": {
+                        "image": {
+                            "url": "https://ids.lib.harvard.edu/ids/iiif/423290977/full/full/0/native.jpg"
+                        }
+                    },
+                    "id": "e7c41df368e541d6a6b2562a59328321"
+                }
+            }
+        ]
+    },
+    "microsoftvision": {
+        "analyze": {
+            "faces": [
+                {
+                    "faceRectangle": {
+                        "width": 384,
+                        "height": 384,
+                        "top": 826,
+                        "left": 378
+                    },
+                    "age": 21,
+                    "annotationFragment": "xywh=401,877,408,408",
+                    "gender": "Female",
+                    "iiifFaceImageURL": "https://ids.lib.harvard.edu/ids/iiif/423290977/401,877,408,408/full/0/native.jpg"
+                },
+                {
+                    "faceRectangle": {
+                        "width": 225,
+                        "height": 225,
+                        "top": 1788,
+                        "left": 916
+                    },
+                    "age": 27,
+                    "annotationFragment": "xywh=973,1899,239,239",
+                    "gender": "Male",
+                    "iiifFaceImageURL": "https://ids.lib.harvard.edu/ids/iiif/423290977/973,1899,239,239/full/0/native.jpg"
+                }
+            ],
+            "requestId": "ac744a33-017a-4c3b-b4ea-f922f525acbc",
+            "color": {
+                "dominantColors": [
+                    "White"
+                ],
+                "dominantColorBackground": "White",
+                "isBwImg": false,
+                "accentColor": "AC461F",
+                "dominantColorForeground": "White"
+            },
+            "description": {
+                "tags": [
+                    "text",
+                    "book",
+                    "photo",
+                    "different",
+                    "bear",
+                    "table",
+                    "chocolate",
+                    "cake",
+                    "bird",
+                    "dog",
+                    "covered",
+                    "white",
+                    "display",
+                    "stuffed",
+                    "group"
+                ],
+                "captions": [
+                    {
+                        "confidence": 0.3506916378953477,
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "text": "a group of stuffed animals"
+                    }
+                ]
+            },
+            "metadata": {
+                "width": 1840,
+                "height": 2400,
+                "format": "Jpeg"
+            },
+            "categories": [
+                {
+                    "score": 0.9765625,
+                    "name": "object_sculpture",
+                    "annotationFragment": "xywh=0,0,1840,2400"
+                }
+            ],
+            "tags": [
+                {
+                    "annotationFragment": "xywh=0,0,1840,2400",
+                    "confidence": 0.9852789640426636,
+                    "name": "text"
+                },
+                {
+                    "annotationFragment": "xywh=0,0,1840,2400",
+                    "confidence": 0.9810416102409363,
+                    "name": "book"
+                },
+                {
+                    "annotationFragment": "xywh=0,0,1840,2400",
+                    "confidence": 0.43301379680633545,
+                    "name": "different"
+                }
+            ]
+        },
+        "describe": {
+            "metadata": {
+                "width": 1840,
+                "height": 2400,
+                "format": "Jpeg"
+            },
+            "requestId": "c6c4ce5f-3942-47c5-b7de-235b9bb78748",
+            "description": {
+                "tags": [
+                    "text",
+                    "book",
+                    "photo",
+                    "different",
+                    "bear",
+                    "table",
+                    "chocolate",
+                    "cake",
+                    "bird",
+                    "dog",
+                    "covered",
+                    "white",
+                    "display",
+                    "stuffed",
+                    "group"
+                ],
+                "captions": [
+                    {
+                        "confidence": 0.3506916378953477,
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "text": "a group of stuffed animals"
+                    },
+                    {
+                        "confidence": 0.3496916378953477,
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "text": "a group of stuffed animals on display"
+                    }
+                ]
+            }
+        }
+    },
+    "googlevision": {
+        "responses": [
+            {
+                "faceAnnotations": [
+                    {
+                        "sorrowLikelihood": "VERY_UNLIKELY",
+                        "blurredLikelihood": "VERY_UNLIKELY",
+                        "joyLikelihood": "VERY_UNLIKELY",
+                        "surpriseLikelihood": "VERY_UNLIKELY",
+                        "angerLikelihood": "VERY_UNLIKELY",
+                        "iiifFaceImageURL": "https://ids.lib.harvard.edu/ids/iiif/423290977/136,674,681,791/full/0/native.jpg",
+                        "boundingPoly": {
+                            "vertices": [
+                                {
+                                    "x": 128,
+                                    "y": 635
+                                },
+                                {
+                                    "x": 769,
+                                    "y": 635
+                                },
+                                {
+                                    "x": 769,
+                                    "y": 1380
+                                },
+                                {
+                                    "x": 128,
+                                    "y": 1380
+                                }
+                            ]
+                        },
+                        "headwearLikelihood": "VERY_UNLIKELY",
+                        "detectionConfidence": 0.56399035,
+                        "landmarkingConfidence": 0.44909006,
+                        "underExposedLikelihood": "VERY_UNLIKELY",
+                        "landmarks": [
+                            {
+                                "type": "LEFT_EYE",
+                                "position": {
+                                    "z": 9.707023e-05,
+                                    "x": 471.3312,
+                                    "y": 920.6056
+                                }
+                            },
+                            {
+                                "type": "RIGHT_EYE",
+                                "position": {
+                                    "z": 143.61346,
+                                    "x": 604.7043,
+                                    "y": 908.1339
+                                }
+                            },
+                            {
+                                "type": "LEFT_OF_LEFT_EYEBROW",
+                                "position": {
+                                    "z": -28.132118,
+                                    "x": 405.42325,
+                                    "y": 895.5701
+                                }
+                            },
+                            {
+                                "type": "RIGHT_OF_LEFT_EYEBROW",
+                                "position": {
+                                    "z": 20.204514,
+                                    "x": 520.19995,
+                                    "y": 865.86194
+                                }
+                            },
+                            {
+                                "type": "LEFT_OF_RIGHT_EYEBROW",
+                                "position": {
+                                    "z": 89.83051,
+                                    "x": 583.47107,
+                                    "y": 857.2716
+                                }
+                            },
+                            {
+                                "type": "RIGHT_OF_RIGHT_EYEBROW",
+                                "position": {
+                                    "z": 211.20468,
+                                    "x": 623.1347,
+                                    "y": 866.2919
+                                }
+                            },
+                            {
+                                "type": "MIDPOINT_BETWEEN_EYES",
+                                "position": {
+                                    "z": 46.287285,
+                                    "x": 565.4351,
+                                    "y": 905.344
+                                }
+                            },
+                            {
+                                "type": "NOSE_TIP",
+                                "position": {
+                                    "z": -9.637836,
+                                    "x": 638.3275,
+                                    "y": 990.5924
+                                }
+                            },
+                            {
+                                "type": "UPPER_LIP",
+                                "position": {
+                                    "z": 8.892774,
+                                    "x": 629.46,
+                                    "y": 1066.345
+                                }
+                            },
+                            {
+                                "type": "LOWER_LIP",
+                                "position": {
+                                    "z": 7.5111732,
+                                    "x": 640.0208,
+                                    "y": 1128.8485
+                                }
+                            },
+                            {
+                                "type": "MOUTH_LEFT",
+                                "position": {
+                                    "z": -17.564737,
+                                    "x": 562.22076,
+                                    "y": 1125.0686
+                                }
+                            },
+                            {
+                                "type": "MOUTH_RIGHT",
+                                "position": {
+                                    "z": 94.58678,
+                                    "x": 653.885,
+                                    "y": 1104.1729
+                                }
+                            },
+                            {
+                                "type": "MOUTH_CENTER",
+                                "position": {
+                                    "z": 13.396396,
+                                    "x": 630.22363,
+                                    "y": 1095.5026
+                                }
+                            },
+                            {
+                                "type": "NOSE_BOTTOM_RIGHT",
+                                "position": {
+                                    "z": 76.499825,
+                                    "x": 628.74774,
+                                    "y": 1018.3493
+                                }
+                            },
+                            {
+                                "type": "NOSE_BOTTOM_LEFT",
+                                "position": {
+                                    "z": -2.1155972,
+                                    "x": 559.5205,
+                                    "y": 1032.4259
+                                }
+                            },
+                            {
+                                "type": "NOSE_BOTTOM_CENTER",
+                                "position": {
+                                    "z": 14.863442,
+                                    "x": 617.86053,
+                                    "y": 1032.0426
+                                }
+                            },
+                            {
+                                "type": "LEFT_EYE_TOP_BOUNDARY",
+                                "position": {
+                                    "z": -5.750659,
+                                    "x": 479.87402,
+                                    "y": 909.62915
+                                }
+                            },
+                            {
+                                "type": "LEFT_EYE_RIGHT_CORNER",
+                                "position": {
+                                    "z": 30.753038,
+                                    "x": 505.04636,
+                                    "y": 920.904
+                                }
+                            },
+                            {
+                                "type": "LEFT_EYE_BOTTOM_BOUNDARY",
+                                "position": {
+                                    "z": -2.6727316,
+                                    "x": 478.71823,
+                                    "y": 937.2872
+                                }
+                            },
+                            {
+                                "type": "LEFT_EYE_LEFT_CORNER",
+                                "position": {
+                                    "z": -16.29637,
+                                    "x": 436.38705,
+                                    "y": 935.95935
+                                }
+                            },
+                            {
+                                "type": "LEFT_EYE_PUPIL",
+                                "position": {
+                                    "z": -4.6845365,
+                                    "x": 476.42084,
+                                    "y": 925.3908
+                                }
+                            },
+                            {
+                                "type": "RIGHT_EYE_TOP_BOUNDARY",
+                                "position": {
+                                    "z": 137.6077,
+                                    "x": 610.31616,
+                                    "y": 892.28094
+                                }
+                            },
+                            {
+                                "type": "RIGHT_EYE_RIGHT_CORNER",
+                                "position": {
+                                    "z": 183.98427,
+                                    "x": 619.61475,
+                                    "y": 912.28467
+                                }
+                            },
+                            {
+                                "type": "RIGHT_EYE_BOTTOM_BOUNDARY",
+                                "position": {
+                                    "z": 140.58604,
+                                    "x": 610.5318,
+                                    "y": 921.34393
+                                }
+                            },
+                            {
+                                "type": "RIGHT_EYE_LEFT_CORNER",
+                                "position": {
+                                    "z": 115.4283,
+                                    "x": 579.6555,
+                                    "y": 914.80774
+                                }
+                            },
+                            {
+                                "type": "RIGHT_EYE_PUPIL",
+                                "position": {
+                                    "z": 142.2873,
+                                    "x": 610.37103,
+                                    "y": 907.58105
+                                }
+                            },
+                            {
+                                "type": "LEFT_EYEBROW_UPPER_MIDPOINT",
+                                "position": {
+                                    "z": -8.942085,
+                                    "x": 463.8625,
+                                    "y": 854.3015
+                                }
+                            },
+                            {
+                                "type": "RIGHT_EYEBROW_UPPER_MIDPOINT",
+                                "position": {
+                                    "z": 146.61855,
+                                    "x": 605.2045,
+                                    "y": 835.36536
+                                }
+                            },
+                            {
+                                "type": "LEFT_EAR_TRAGION",
+                                "position": {
+                                    "z": 51.223644,
+                                    "x": 259.47943,
+                                    "y": 1108.4512
+                                }
+                            },
+                            {
+                                "type": "RIGHT_EAR_TRAGION",
+                                "position": {
+                                    "z": 376.7213,
+                                    "x": 555.72125,
+                                    "y": 1068.5564
+                                }
+                            },
+                            {
+                                "type": "FOREHEAD_GLABELLA",
+                                "position": {
+                                    "z": 50.76433,
+                                    "x": 555.9502,
+                                    "y": 857.1494
+                                }
+                            },
+                            {
+                                "type": "CHIN_GNATHION",
+                                "position": {
+                                    "z": 11.116022,
+                                    "x": 648.5768,
+                                    "y": 1222.3009
+                                }
+                            },
+                            {
+                                "type": "CHIN_LEFT_GONION",
+                                "position": {
+                                    "z": -5.6257296,
+                                    "x": 365.83252,
+                                    "y": 1197.091
+                                }
+                            },
+                            {
+                                "type": "CHIN_RIGHT_GONION",
+                                "position": {
+                                    "z": 288.67432,
+                                    "x": 633.34827,
+                                    "y": 1161.1957
+                                }
+                            }
+                        ],
+                        "fdBoundingPoly": {
+                            "vertices": [
+                                {
+                                    "x": 241,
+                                    "y": 800
+                                },
+                                {
+                                    "x": 701,
+                                    "y": 800
+                                },
+                                {
+                                    "x": 701,
+                                    "y": 1260
+                                },
+                                {
+                                    "x": 241,
+                                    "y": 1260
+                                }
+                            ]
+                        },
+                        "tiltAngle": 9.479839,
+                        "panAngle": 48.34653,
+                        "rollAngle": -18.11833,
+                        "annotationFragment": "xywh=136,674,681,791"
+                    },
+                    {
+                        "sorrowLikelihood": "VERY_UNLIKELY",
+                        "blurredLikelihood": "VERY_UNLIKELY",
+                        "joyLikelihood": "VERY_UNLIKELY",
+                        "surpriseLikelihood": "VERY_UNLIKELY",
+                        "angerLikelihood": "VERY_UNLIKELY",
+                        "iiifFaceImageURL": "https://ids.lib.harvard.edu/ids/iiif/423290977/922,1816,318,370/full/0/native.jpg",
+                        "boundingPoly": {
+                            "vertices": [
+                                {
+                                    "x": 868,
+                                    "y": 1710
+                                },
+                                {
+                                    "x": 1168,
+                                    "y": 1710
+                                },
+                                {
+                                    "x": 1168,
+                                    "y": 2059
+                                },
+                                {
+                                    "x": 868,
+                                    "y": 2059
+                                }
+                            ]
+                        },
+                        "headwearLikelihood": "VERY_LIKELY",
+                        "detectionConfidence": 0.7386958,
+                        "landmarkingConfidence": 0.1646959,
+                        "underExposedLikelihood": "VERY_UNLIKELY",
+                        "landmarks": [
+                            {
+                                "type": "LEFT_EYE",
+                                "position": {
+                                    "z": 0.0012653366,
+                                    "x": 978.55475,
+                                    "y": 1870.9039
+                                }
+                            },
+                            {
+                                "type": "RIGHT_EYE",
+                                "position": {
+                                    "z": 13.1838455,
+                                    "x": 1069.9354,
+                                    "y": 1856.1941
+                                }
+                            },
+                            {
+                                "type": "LEFT_OF_LEFT_EYEBROW",
+                                "position": {
+                                    "z": 5.2113795,
+                                    "x": 943.7507,
+                                    "y": 1855.5999
+                                }
+                            },
+                            {
+                                "type": "RIGHT_OF_LEFT_EYEBROW",
+                                "position": {
+                                    "z": -12.961201,
+                                    "x": 999.37494,
+                                    "y": 1843.8046
+                                }
+                            },
+                            {
+                                "type": "LEFT_OF_RIGHT_EYEBROW",
+                                "position": {
+                                    "z": -6.719404,
+                                    "x": 1042.1652,
+                                    "y": 1836.1462
+                                }
+                            },
+                            {
+                                "type": "RIGHT_OF_RIGHT_EYEBROW",
+                                "position": {
+                                    "z": 26.90584,
+                                    "x": 1091.1592,
+                                    "y": 1827.7572
+                                }
+                            },
+                            {
+                                "type": "MIDPOINT_BETWEEN_EYES",
+                                "position": {
+                                    "z": -12.2878065,
+                                    "x": 1024.5543,
+                                    "y": 1857.0305
+                                }
+                            },
+                            {
+                                "type": "NOSE_TIP",
+                                "position": {
+                                    "z": -41.393776,
+                                    "x": 1037.59,
+                                    "y": 1907.3243
+                                }
+                            },
+                            {
+                                "type": "UPPER_LIP",
+                                "position": {
+                                    "z": -22.440817,
+                                    "x": 1040.6953,
+                                    "y": 1938.5339
+                                }
+                            },
+                            {
+                                "type": "LOWER_LIP",
+                                "position": {
+                                    "z": -17.617538,
+                                    "x": 1045.6493,
+                                    "y": 1972.3977
+                                }
+                            },
+                            {
+                                "type": "MOUTH_LEFT",
+                                "position": {
+                                    "z": -4.0205064,
+                                    "x": 1005.2314,
+                                    "y": 1962.3387
+                                }
+                            },
+                            {
+                                "type": "MOUTH_RIGHT",
+                                "position": {
+                                    "z": 6.087093,
+                                    "x": 1074.7297,
+                                    "y": 1949.9834
+                                }
+                            },
+                            {
+                                "type": "MOUTH_CENTER",
+                                "position": {
+                                    "z": -16.516571,
+                                    "x": 1042.5619,
+                                    "y": 1956.039
+                                }
+                            },
+                            {
+                                "type": "NOSE_BOTTOM_RIGHT",
+                                "position": {
+                                    "z": -2.219483,
+                                    "x": 1064.6797,
+                                    "y": 1914.5748
+                                }
+                            },
+                            {
+                                "type": "NOSE_BOTTOM_LEFT",
+                                "position": {
+                                    "z": -10.260074,
+                                    "x": 1006.0533,
+                                    "y": 1923.5074
+                                }
+                            },
+                            {
+                                "type": "NOSE_BOTTOM_CENTER",
+                                "position": {
+                                    "z": -21.662642,
+                                    "x": 1037.656,
+                                    "y": 1922.2382
+                                }
+                            },
+                            {
+                                "type": "LEFT_EYE_TOP_BOUNDARY",
+                                "position": {
+                                    "z": -5.756406,
+                                    "x": 978.01324,
+                                    "y": 1864.1519
+                                }
+                            },
+                            {
+                                "type": "LEFT_EYE_RIGHT_CORNER",
+                                "position": {
+                                    "z": 2.8581612,
+                                    "x": 995.4162,
+                                    "y": 1868.3861
+                                }
+                            },
+                            {
+                                "type": "LEFT_EYE_BOTTOM_BOUNDARY",
+                                "position": {
+                                    "z": -1.1631311,
+                                    "x": 977.4713,
+                                    "y": 1877.8156
+                                }
+                            },
+                            {
+                                "type": "LEFT_EYE_LEFT_CORNER",
+                                "position": {
+                                    "z": 5.617141,
+                                    "x": 959.71924,
+                                    "y": 1874.9244
+                                }
+                            },
+                            {
+                                "type": "LEFT_EYE_PUPIL",
+                                "position": {
+                                    "z": -2.5693882,
+                                    "x": 977.2411,
+                                    "y": 1870.7201
+                                }
+                            },
+                            {
+                                "type": "RIGHT_EYE_TOP_BOUNDARY",
+                                "position": {
+                                    "z": 7.1445546,
+                                    "x": 1066.2388,
+                                    "y": 1848.3431
+                                }
+                            },
+                            {
+                                "type": "RIGHT_EYE_RIGHT_CORNER",
+                                "position": {
+                                    "z": 23.686096,
+                                    "x": 1083.1614,
+                                    "y": 1852.7814
+                                }
+                            },
+                            {
+                                "type": "RIGHT_EYE_BOTTOM_BOUNDARY",
+                                "position": {
+                                    "z": 11.742496,
+                                    "x": 1068.2598,
+                                    "y": 1861.1432
+                                }
+                            },
+                            {
+                                "type": "RIGHT_EYE_LEFT_CORNER",
+                                "position": {
+                                    "z": 10.611075,
+                                    "x": 1049.4932,
+                                    "y": 1858.8729
+                                }
+                            },
+                            {
+                                "type": "RIGHT_EYE_PUPIL",
+                                "position": {
+                                    "z": 10.539835,
+                                    "x": 1067.7396,
+                                    "y": 1854.5078
+                                }
+                            },
+                            {
+                                "type": "LEFT_EYEBROW_UPPER_MIDPOINT",
+                                "position": {
+                                    "z": -9.268276,
+                                    "x": 969.9998,
+                                    "y": 1838.3962
+                                }
+                            },
+                            {
+                                "type": "RIGHT_EYEBROW_UPPER_MIDPOINT",
+                                "position": {
+                                    "z": 4.709942,
+                                    "x": 1065.6241,
+                                    "y": 1821.2407
+                                }
+                            },
+                            {
+                                "type": "LEFT_EAR_TRAGION",
+                                "position": {
+                                    "z": 101.51462,
+                                    "x": 912.9776,
+                                    "y": 1933.3268
+                                }
+                            },
+                            {
+                                "type": "RIGHT_EAR_TRAGION",
+                                "position": {
+                                    "z": 129.3858,
+                                    "x": 1116.3358,
+                                    "y": 1897.1401
+                                }
+                            },
+                            {
+                                "type": "FOREHEAD_GLABELLA",
+                                "position": {
+                                    "z": -13.135491,
+                                    "x": 1020.98224,
+                                    "y": 1838.5583
+                                }
+                            },
+                            {
+                                "type": "CHIN_GNATHION",
+                                "position": {
+                                    "z": -7.401315,
+                                    "x": 1051.4563,
+                                    "y": 2013.2433
+                                }
+                            },
+                            {
+                                "type": "CHIN_LEFT_GONION",
+                                "position": {
+                                    "z": 61.72638,
+                                    "x": 940.7965,
+                                    "y": 1985.322
+                                }
+                            },
+                            {
+                                "type": "CHIN_RIGHT_GONION",
+                                "position": {
+                                    "z": 88.32497,
+                                    "x": 1121.9573,
+                                    "y": 1952.3256
+                                }
+                            }
+                        ],
+                        "fdBoundingPoly": {
+                            "vertices": [
+                                {
+                                    "x": 891,
+                                    "y": 1765
+                                },
+                                {
+                                    "x": 1154,
+                                    "y": 1765
+                                },
+                                {
+                                    "x": 1154,
+                                    "y": 2028
+                                },
+                                {
+                                    "x": 891,
+                                    "y": 2028
+                                }
+                            ]
+                        },
+                        "tiltAngle": 3.2987971,
+                        "panAngle": 8.207642,
+                        "rollAngle": -10.648701,
+                        "annotationFragment": "xywh=922,1816,318,370"
+                    }
+                ],
+                "labelAnnotations": [
+                    {
+                        "topicality": 0.9069184,
+                        "score": 0.9069184,
+                        "mid": "/m/0jjw",
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "description": "art"
+                    },
+                    {
+                        "topicality": 0.72164196,
+                        "score": 0.72164196,
+                        "mid": "/m/01kr8f",
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "description": "illustration"
+                    },
+                    {
+                        "topicality": 0.65101135,
+                        "score": 0.65101135,
+                        "mid": "/m/02cwm",
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "description": "design"
+                    },
+                    {
+                        "topicality": 0.54409677,
+                        "score": 0.54409677,
+                        "mid": "/m/02qd0r",
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "description": "human behavior"
+                    },
+                    {
+                        "topicality": 0.5253258,
+                        "score": 0.5253258,
+                        "mid": "/m/0p9xx",
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "description": "visual arts"
+                    },
+                    {
+                        "topicality": 0.5064255,
+                        "score": 0.5064255,
+                        "mid": "/m/02csf",
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "description": "drawing"
+                    }
+                ]
+            }
+        ]
+    },
+    "colors": [
+        {
+            "css3": "#f5deb3",
+            "percent": 0.5588405797101449,
+            "spectrum": "#e9715f",
+            "color": "#e1c8af",
+            "hue": "Orange"
+        },
+        {
+            "css3": "#696969",
+            "percent": 0.10411594202898551,
+            "spectrum": "#b25593",
+            "color": "#7d644b",
+            "hue": "Yellow"
+        },
+        {
+            "css3": "#d2b48c",
+            "percent": 0.09460869565217392,
+            "spectrum": "#e9715f",
+            "color": "#c8af7d",
+            "hue": "Brown"
+        },
+        {
+            "css3": "#556b2f",
+            "percent": 0.08927536231884058,
+            "spectrum": "#59ba4a",
+            "color": "#644b32",
+            "hue": "Brown"
+        },
+        {
+            "css3": "#a0522d",
+            "percent": 0.06556521739130435,
+            "spectrum": "#7fc241",
+            "color": "#967d4b",
+            "hue": "Brown"
+        },
+        {
+            "css3": "#bdb76b",
+            "percent": 0.050550724637681156,
+            "spectrum": "#e9715f",
+            "color": "#af9664",
+            "hue": "Yellow"
+        },
+        {
+            "css3": "#2f4f4f",
+            "percent": 0.034434782608695653,
+            "spectrum": "#2eb45d",
+            "color": "#323232",
+            "hue": "Grey"
+        },
+        {
+            "css3": "#a0522d",
+            "percent": 0.0020869565217391303,
+            "spectrum": "#e86e61",
+            "color": "#af4b19",
+            "hue": "Red"
+        },
+        {
+            "css3": "#a0522d",
+            "percent": 0.0005217391304347826,
+            "spectrum": "#e9715f",
+            "color": "#af6432",
+            "hue": "Orange"
+        }
+    ],
+    "imagga": {
+        "categories": {
+            "result": {
+                "categories": [
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 99.6958770751953,
+                        "name": {
+                            "en": "paintings art"
+                        }
+                    }
+                ]
+            },
+            "status": {
+                "type": "success",
+                "text": ""
+            }
+        },
+        "tags": {
+            "result": {
+                "tags": [
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 34.4620552062988,
+                        "tag": {
+                            "en": "sketch"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 33.2538185119629,
+                        "tag": {
+                            "en": "comic book"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 28.2487258911133,
+                        "tag": {
+                            "en": "book jacket"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 25.2142868041992,
+                        "tag": {
+                            "en": "drawing"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 22.8522300720215,
+                        "tag": {
+                            "en": "art"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 22.0032482147217,
+                        "tag": {
+                            "en": "portrait"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 21.9837074279785,
+                        "tag": {
+                            "en": "jacket"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 21.7377662658691,
+                        "tag": {
+                            "en": "representation"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 21.3515148162842,
+                        "tag": {
+                            "en": "covering"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 19.8853664398193,
+                        "tag": {
+                            "en": "face"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 19.7495403289795,
+                        "tag": {
+                            "en": "currency"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 19.5718002319336,
+                        "tag": {
+                            "en": "money"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 18.9541549682617,
+                        "tag": {
+                            "en": "mask"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 18.1928577423096,
+                        "tag": {
+                            "en": "vintage"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 17.3370304107666,
+                        "tag": {
+                            "en": "fashion"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 16.7006969451904,
+                        "tag": {
+                            "en": "wrapping"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 16.2658748626709,
+                        "tag": {
+                            "en": "person"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 14.8400421142578,
+                        "tag": {
+                            "en": "close"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 14.8338003158569,
+                        "tag": {
+                            "en": "style"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 14.6446466445923,
+                        "tag": {
+                            "en": "cash"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 14.6058807373047,
+                        "tag": {
+                            "en": "decoration"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 14.1726760864258,
+                        "tag": {
+                            "en": "man"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 13.8724088668823,
+                        "tag": {
+                            "en": "church"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 13.8231363296509,
+                        "tag": {
+                            "en": "black"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 13.3189945220947,
+                        "tag": {
+                            "en": "bill"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 13.3023405075073,
+                        "tag": {
+                            "en": "print media"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 13.2200326919556,
+                        "tag": {
+                            "en": "model"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 13.1066465377808,
+                        "tag": {
+                            "en": "retro"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 12.9586057662964,
+                        "tag": {
+                            "en": "design"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 12.8496475219727,
+                        "tag": {
+                            "en": "sexy"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 12.8163652420044,
+                        "tag": {
+                            "en": "culture"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 12.351749420166,
+                        "tag": {
+                            "en": "tattoo"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 12.0696420669556,
+                        "tag": {
+                            "en": "dollar"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 11.9447107315063,
+                        "tag": {
+                            "en": "one"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 11.8728351593018,
+                        "tag": {
+                            "en": "icon"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 11.7982635498047,
+                        "tag": {
+                            "en": "make"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 11.7135019302368,
+                        "tag": {
+                            "en": "people"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 11.6506595611572,
+                        "tag": {
+                            "en": "religion"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 11.6499862670898,
+                        "tag": {
+                            "en": "banknote"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 11.361083984375,
+                        "tag": {
+                            "en": "lady"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 11.3271713256836,
+                        "tag": {
+                            "en": "sculpture"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 11.0358619689941,
+                        "tag": {
+                            "en": "banking"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 10.9121913909912,
+                        "tag": {
+                            "en": "sensual"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 10.7521829605103,
+                        "tag": {
+                            "en": "bank"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 10.6942262649536,
+                        "tag": {
+                            "en": "financial"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 10.4501485824585,
+                        "tag": {
+                            "en": "old"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 10.3850774765015,
+                        "tag": {
+                            "en": "antique"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 10.1398077011108,
+                        "tag": {
+                            "en": "finance"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 9.79280662536621,
+                        "tag": {
+                            "en": "attractive"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 9.61723232269287,
+                        "tag": {
+                            "en": "saint"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 9.60532569885254,
+                        "tag": {
+                            "en": "mystery"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 9.53175449371338,
+                        "tag": {
+                            "en": "hairstyle"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 9.50950527191162,
+                        "tag": {
+                            "en": "hair"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 9.45616817474365,
+                        "tag": {
+                            "en": "golden"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 9.43435955047607,
+                        "tag": {
+                            "en": "closeup"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 9.23523712158203,
+                        "tag": {
+                            "en": "elegance"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 9.22219848632812,
+                        "tag": {
+                            "en": "male"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 9.19407558441162,
+                        "tag": {
+                            "en": "stamp"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 9.11231899261475,
+                        "tag": {
+                            "en": "business"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 9.04189300537109,
+                        "tag": {
+                            "en": "gold"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 8.98011112213135,
+                        "tag": {
+                            "en": "wealth"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 8.78094482421875,
+                        "tag": {
+                            "en": "disguise"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 8.75758647918701,
+                        "tag": {
+                            "en": "look"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 8.75089740753174,
+                        "tag": {
+                            "en": "symbol"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 8.66895198822021,
+                        "tag": {
+                            "en": "holy"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 8.61170768737793,
+                        "tag": {
+                            "en": "faith"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 8.60926151275635,
+                        "tag": {
+                            "en": "god"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 8.6059045791626,
+                        "tag": {
+                            "en": "eyes"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 8.58067035675049,
+                        "tag": {
+                            "en": "painter"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 8.57712173461914,
+                        "tag": {
+                            "en": "luxury"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 8.34905052185059,
+                        "tag": {
+                            "en": "economy"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 8.27324295043945,
+                        "tag": {
+                            "en": "note"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 8.2327299118042,
+                        "tag": {
+                            "en": "ornate"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 8.04507827758789,
+                        "tag": {
+                            "en": "detail"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 8.03347587585449,
+                        "tag": {
+                            "en": "office"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 7.99547910690308,
+                        "tag": {
+                            "en": "posing"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 7.90224266052246,
+                        "tag": {
+                            "en": "masterpiece"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 7.84081506729126,
+                        "tag": {
+                            "en": "paper"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 7.84013986587524,
+                        "tag": {
+                            "en": "bust"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 7.82819318771362,
+                        "tag": {
+                            "en": "banknotes"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 7.75956010818481,
+                        "tag": {
+                            "en": "adult"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 7.75636720657349,
+                        "tag": {
+                            "en": "ornament"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 7.72813510894775,
+                        "tag": {
+                            "en": "dollars"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 7.70920991897583,
+                        "tag": {
+                            "en": "elegant"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 7.69615173339844,
+                        "tag": {
+                            "en": "pretty"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 7.67808866500854,
+                        "tag": {
+                            "en": "expression"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 7.66564846038818,
+                        "tag": {
+                            "en": "figure"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 7.62814855575562,
+                        "tag": {
+                            "en": "painted"
+                        }
+                    },
+                    {
+                        "annotationFragment": "xywh=0,0,1840,2400",
+                        "confidence": 7.62723112106323,
+                        "tag": {
+                            "en": "post"
+                        }
+                    }
+                ]
+            },
+            "status": {
+                "type": "success",
+                "text": ""
+            }
+        },
+        "colors": {
+            "result": {
+                "colors": {
+                    "foreground_colors": [
+                        {
+                            "closest_palette_color_parent": "light brown",
+                            "g": 157,
+                            "percent": 43.9273567199707,
+                            "b": 117,
+                            "closest_palette_color_html_code": "#baaa91",
+                            "closest_palette_color": "champagne",
+                            "closest_palette_distance": 6.0595452278184,
+                            "r": 177,
+                            "html_code": "#b19d75"
+                        },
+                        {
+                            "closest_palette_color_parent": "skin",
+                            "g": 95,
+                            "percent": 40.9761619567871,
+                            "b": 70,
+                            "closest_palette_color_html_code": "#7c5a2c",
+                            "closest_palette_color": "medium brown",
+                            "closest_palette_distance": 8.0656110433238,
+                            "r": 111,
+                            "html_code": "#6f5f46"
+                        },
+                        {
+                            "closest_palette_color_parent": "black",
+                            "g": 61,
+                            "percent": 15.0964813232422,
+                            "b": 52,
+                            "closest_palette_color_html_code": "#3a3536",
+                            "closest_palette_color": "graphite",
+                            "closest_palette_distance": 6.85576663822219,
+                            "r": 66,
+                            "html_code": "#423d34"
+                        }
+                    ],
+                    "color_variance": 14,
+                    "object_percentage": 40.707218170166,
+                    "image_colors": [
+                        {
+                            "closest_palette_color_parent": "beige",
+                            "g": 212,
+                            "percent": 57.1183967590332,
+                            "b": 185,
+                            "closest_palette_color_html_code": "#f4e1c1",
+                            "closest_palette_color": "corn silk",
+                            "closest_palette_distance": 4.56730190213477,
+                            "r": 223,
+                            "html_code": "#dfd4b9"
+                        },
+                        {
+                            "closest_palette_color_parent": "light brown",
+                            "g": 156,
+                            "percent": 19.0122852325439,
+                            "b": 116,
+                            "closest_palette_color_html_code": "#baaa91",
+                            "closest_palette_color": "champagne",
+                            "closest_palette_distance": 6.26496638826348,
+                            "r": 176,
+                            "html_code": "#b09c74"
+                        },
+                        {
+                            "closest_palette_color_parent": "skin",
+                            "g": 94,
+                            "percent": 16.9955425262451,
+                            "b": 70,
+                            "closest_palette_color_html_code": "#7c5a2c",
+                            "closest_palette_color": "medium brown",
+                            "closest_palette_distance": 7.9455275213143,
+                            "r": 111,
+                            "html_code": "#6f5e46"
+                        },
+                        {
+                            "closest_palette_color_parent": "black",
+                            "g": 62,
+                            "percent": 6.52859306335449,
+                            "b": 52,
+                            "closest_palette_color_html_code": "#3a3536",
+                            "closest_palette_color": "graphite",
+                            "closest_palette_distance": 7.48838153027743,
+                            "r": 67,
+                            "html_code": "#433e34"
+                        }
+                    ],
+                    "background_colors": [
+                        {
+                            "closest_palette_color_parent": "beige",
+                            "g": 212,
+                            "percent": 97.1212463378906,
+                            "b": 184,
+                            "closest_palette_color_html_code": "#f4e1c1",
+                            "closest_palette_color": "corn silk",
+                            "closest_palette_distance": 4.56833794402758,
+                            "r": 223,
+                            "html_code": "#dfd4b8"
+                        },
+                        {
+                            "closest_palette_color_parent": "skin",
+                            "g": 102,
+                            "percent": 2.26449680328369,
+                            "b": 73,
+                            "closest_palette_color_html_code": "#7c5a2c",
+                            "closest_palette_color": "medium brown",
+                            "closest_palette_distance": 6.79274775604727,
+                            "r": 124,
+                            "html_code": "#7c6649"
+                        }
+                    ],
+                    "color_percent_threshold": 1.75
+                }
+            },
+            "status": {
+                "type": "success",
+                "text": ""
+            }
+        }
+    }
+}
