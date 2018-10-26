@@ -72,6 +72,9 @@ def process_image(URL, services):
 
 		imageScaleFactor = iiif_image_info["width"]/image["width"]
 
+		annotationFragmentFullImage = "xywh=0,0," + str(int(image["width"])) + "," + str(int(image["height"]))
+
+
 		# scalefactor is useful when converting annotation coordinates between different image sizes
 		image["scalefactor"] = imageScaleFactor
 
@@ -83,6 +86,12 @@ def process_image(URL, services):
 		# Run through Clarifai
 		if "clarifai" in services:
 			result = clarifai.Clarifai().fetch(image_url, id)
+			
+			# Process concepts
+			if "data" in result["outputs"][0]:
+				for concept in result["outputs"][0]["data"]["concepts"]:
+					concept["annotationFragment"] = annotationFragmentFullImage
+
 			image["clarifai"] = result
 
 		# Run through Microsoft Cognitive Services
@@ -90,9 +99,27 @@ def process_image(URL, services):
 			image["microsoftvision"] = {}
 
 			result = mcsvision.MCSVision().fetch_description(image_local_path)
+			# Process description->captions
+			if "description" in result:
+				for caption in result["description"]["captions"]:
+					caption["annotationFragment"] = annotationFragmentFullImage
 			image["microsoftvision"]["describe"] = result
 
 			result = mcsvision.MCSVision().fetch_analyze(image_local_path)
+			# Process description->captions
+			if "description" in result:
+				for caption in result["description"]["captions"]:
+					caption["annotationFragment"] = annotationFragmentFullImage
+			
+			# Process categories
+			if "categories" in result:
+				for category in result["categories"]:
+					category["annotationFragment"] = annotationFragmentFullImage
+
+			# Process tags
+			if "tags" in result:
+				for tag in result["tags"]:
+					tag["annotationFragment"] = annotationFragmentFullImage
 
 			# convert faces to IIIF image API URLs
 			if "faces" in result:
@@ -115,6 +142,11 @@ def process_image(URL, services):
 		# Run through Google Vision
 		if "gv" in services: 
 			result = vision.Vision().fetch(image_local_path)
+
+			# Process labels/tags
+			if "labelAnnotations" in result["responses"][0]:
+				for label in result["responses"][0]["labelAnnotations"]:
+					label["annotationFragment"] = annotationFragmentFullImage
 
 			# convert bounding polys for face annotations to IIIF image API URL to fetch the specific region
 			if "faceAnnotations" in result["responses"][0]:
@@ -197,10 +229,21 @@ def process_image(URL, services):
 		# Run through Imagga
 		if "imagga" in services: 
 			image["imagga"] = {}
+
+			# Process tags
 			result = imagga.Imagga().fetch(image_url)
+			if "tags" in result["result"]:
+				for tag in result["result"]["tags"]:
+					tag["annotationFragment"] = annotationFragmentFullImage
+
 			image["imagga"]["tags"] = result
 
+			# Process categories
 			result = imagga.Imagga().fetch_categories(image_url)
+			if "categories" in result["result"]:
+				for category in result["result"]["categories"]:
+					category["annotationFragment"] = annotationFragmentFullImage
+
 			image["imagga"]["categories"] = result
 
 			result = imagga.Imagga().fetch_colors(image_url)
