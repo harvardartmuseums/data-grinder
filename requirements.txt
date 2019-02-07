@@ -1,6 +1,6 @@
 certifi==2018.10.15
 chardet==3.0.4
-clarifai==2.4.0
+clarifai==2.5.2
 configparser==3.5.0
 elasticsearch==1.6.0
 enum34==1.1.6
