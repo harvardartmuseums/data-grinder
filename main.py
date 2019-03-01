@@ -246,9 +246,6 @@ def process_image(URL, services):
 
 			image["imagga"]["categories"] = result
 
-			result = imagga.Imagga().fetch_colors(image_url)
-			image["imagga"]["colors"] = result
-
 
 	return image
 
