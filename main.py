@@ -4,7 +4,7 @@ import datetime
 import config
 import requests
 from PIL import Image
-from parsers import clarifai, vision, imagga, iiif, mcsvision, colors
+from parsers import clarifai, vision, imagga, iiif, mcsvision, colors, aws
 
 
 def main(url, services):
@@ -246,6 +246,66 @@ def process_image(URL, services):
 
 			image["imagga"]["categories"] = result
 
+		# Run through AWS Rekognition
+		if "aws" in services:
+			image["aws"] = {}
+
+			# Process labels
+			result = aws.AWS().fetch_labels(image_local_path)
+			if "Labels" in result:
+				for label in result["Labels"]:
+					label["annotationFragment"] = annotationFragmentFullImage
+
+					for instance in label["Instances"]:
+						if "BoundingBox" in instance:
+
+							xOffset = (image["width"]*instance["BoundingBox"]["Left"])*imageScaleFactor
+							yOffset = (image["height"]*instance["BoundingBox"]["Top"])*imageScaleFactor
+							width = (image["width"]*instance["BoundingBox"]["Width"])*imageScaleFactor
+							height = (image["height"]*instance["BoundingBox"]["Height"])*imageScaleFactor
+
+							iiifImageURL = image["iiifbaseuri"] + "/" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height)) + "/full/0/native.jpg"
+							instance["iiifLabelImageURL"] = iiifImageURL
+							instance["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
+			
+			image["aws"]["labels"] = result
+
+			# Process faces
+			result = aws.AWS().fetch_faces(image_local_path)
+			if "FaceDetails" in result:
+				for face in result["FaceDetails"]:
+					if "BoundingBox" in face:
+						xOffset = (image["width"]*face["BoundingBox"]["Left"])*imageScaleFactor
+						yOffset = (image["height"]*face["BoundingBox"]["Top"])*imageScaleFactor
+						width = (image["width"]*face["BoundingBox"]["Width"])*imageScaleFactor
+						height = (image["height"]*face["BoundingBox"]["Height"])*imageScaleFactor
+						
+						iiifImageURL = image["iiifbaseuri"] + "/" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height)) + "/full/0/native.jpg"
+						face["iiifFaceImageURL"] = iiifImageURL
+						face["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
+			
+			image["aws"]["faces"] = result
+
+			# Proces text
+			result = aws.AWS().fetch_text(image_local_path)
+			if "TextDetections" in result:
+				for text in result["TextDetections"]:
+					if "Geometry" in text:
+						boundingBox = text["Geometry"]["BoundingBox"]
+
+						xOffset = (image["width"]*boundingBox["Left"])*imageScaleFactor
+						yOffset = (image["height"]*boundingBox["Top"])*imageScaleFactor
+
+						# Sometimes width and height are reported as negative values. AWS documentation doesn't say why this happens.
+						# I'm using ABS as a hack to make values that work in IIIF fragments
+						width = (image["width"]*abs(boundingBox["Width"]))*imageScaleFactor
+						height = (image["height"]*abs(boundingBox["Height"]))*imageScaleFactor
+
+						iiifImageURL = image["iiifbaseuri"] + "/" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height)) + "/full/0/native.jpg"
+						text["iiifTextImageURL"] = iiifImageURL
+						text["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
+
+			image["aws"]["text"] = result
 
 	return image
 
@@ -254,7 +314,7 @@ def process_image(URL, services):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-url', nargs='?', default=None, required=True)
-	parser.add_argument('-services', nargs='+', choices=['imagga', 'gv', 'mcs', 'clarifai', 'color'], default=['imagga', 'gv', 'mcs', 'clarifai', 'color'])
+	parser.add_argument('-services', nargs='+', choices=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws'], default=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws'])
 	args = parser.parse_args()
 	main(args.url, args.services)
 # [END run_application]

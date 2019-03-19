@@ -19,6 +19,7 @@ Clarifai: tag features, extract colors
 Imagga: tag features, extract colors, categorize  
 Google Vision: tag features, find faces, find text  
 Microsoft Cognitive Services: categories, tags, description, faces, color  
+AWS Rekognition: labels, faces, text
 
 
 Usage
@@ -51,7 +52,8 @@ Example response:
     "clarifai": {},
     "microsoftvision": {},
     "googlevision": {},    
-    "imagga": {}
+    "imagga": {},
+    "aws": {}
 }
 ```
 
@@ -70,3 +72,4 @@ Data in the response:
 `microsoftvision`:  
 `googlevision`:  
 `imagga`:  
+`aws`:  
