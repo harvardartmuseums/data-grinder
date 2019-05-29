@@ -2,17 +2,46 @@
 
 A simple script for running an image through third party computer vision services that extract faces, text, colors, and tags.  
 
-Setup
-=====
+## Requirements
 
-Clone the repository.  
-Clone config-template.py to config.py.  
-Enter your API keys and credentials for the services you want to use.  
-Create a file named vision-credentials.json and paste in a sevice account key generated through your Google account API dashboard. Read more at https://cloud.google.com/vision/docs/common/auth.  
+* Python 3.*
+* Virtualenv
 
 
-Services Implemented
-====================
+## Setup
+
+### Clone the repository
+```
+> git clone https://github.com/harvardartmuseums/data-grinder.git
+```
+
+### Create a virtual environment
+We recommend creating a virtual environment with [Virtualenv](https://pypi.org/project/virtualenv/) and running everything within it.
+
+```
+> cd data-grinder
+> virtualenv venv
+```
+
+### Activate the virtual environment
+```
+> venv\Scripts\activate.bat
+```
+
+### Install dependencies
+```
+> pip install -r requirements.txt
+```
+
+### Set configuration values
+* Clone config-template.py to config.py.  
+* Open config.py in a text editor.
+* Enter API keys and credentials for the services you want to use.  
+* Google Vision requires a credentials file for authentication. Create a file named vision-credentials.json. Generate a sevice account key through your Google account API dashboard. Read more at https://cloud.google.com/vision/docs/common/auth. Paste the key into the vision-credentials.json file.
+* Set `TEMPORARY_FILE_DIR` to a valid folder that is set to allow read/write.
+
+
+## Services Implemented
 
 HAM Color Service: extract colors  
 Clarifai: tag features, extract colors  
@@ -22,18 +51,18 @@ Microsoft Cognitive Services: categories, tags, description, faces, color
 AWS Rekognition: labels, faces, text
 
 
-Usage
-=====
+## Usage
 
 Run from the command line:
 ```sh
 $ python main.py -url https://some.image/url
 ```
 
-Parameters:
-```sh
-url: Any Harvard NRS URL that resolves to a IIIF compatible image
-```
+Parameters |  | Values
+------------ | ------------- | -------------
+url | Any Harvard NRS URL that resolves to a IIIF compatible image
+services | (optional, default uses all services) One or more from the list of valid services separated by spaces | `imagga, gv, mcs, clarifai, color, aws `
+
 
 Example response:
 ```json
