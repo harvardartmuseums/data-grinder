@@ -50,6 +50,7 @@ Google Vision: tag features, find faces, find text
 Microsoft Cognitive Services: categories, tags, description, faces, color  
 AWS Rekognition: labels, faces, text
 
+![Drawing](https://user-images.githubusercontent.com/3187493/81009548-df068480-8e22-11ea-921d-b88c8ceaf600.png)
 
 ## Usage
 
