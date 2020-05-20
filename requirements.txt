@@ -11,7 +11,7 @@ future==0.17.0
 google-api-python-client==1.5.5
 googleapis-common-protos==1.5.3
 grpcio==1.16.0
-httplib2==0.9.2
+httplib2==0.18.0
 idna==2.7
 jmespath==0.9.4
 jsonschema==2.6.0
