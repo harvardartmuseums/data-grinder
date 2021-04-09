@@ -2,6 +2,7 @@ boto3==1.9.106
 certifi==2018.10.15
 chalice==1.17.0
 clarifai==2.6.2
+imagehash==4.2.0
 imagesize==1.2.0
 google-api-python-client==1.5.5
 Pillow==2.9.0

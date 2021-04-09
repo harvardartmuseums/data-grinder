@@ -62,7 +62,7 @@ $ python main.py -url https://some.image/url
 Parameters |  | Values
 ------------ | ------------- | -------------
 url | Any Harvard NRS URL that resolves to a IIIF compatible image
-services | (optional, default uses all services) One or more from the list of valid services separated by spaces | `imagga, gv, mcs, clarifai, color, aws `
+services | (optional, default uses all services) One or more from the list of valid services separated by spaces | `imagga, gv, mcs, clarifai, color, aws, hash `
 
 
 Example response:

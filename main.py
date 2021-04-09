@@ -3,6 +3,7 @@ import argparse
 import datetime
 import config
 import requests
+import imagehash
 from PIL import Image
 from parsers import clarifai, vision, imagga, iiif, mcsvision, colors, aws
 
@@ -77,6 +78,28 @@ def process_image(URL, services):
 
 		# scalefactor is useful when converting annotation coordinates between different image sizes
 		image["scalefactor"] = imageScaleFactor
+
+		# Run through image hashing algorithms
+		if "hash" in services: 
+			hashes = {}
+			i = Image.open(image_local_path)
+			
+			hash = imagehash.average_hash(i)
+			hashes["average"] = str(hash)
+
+			hash = imagehash.colorhash(i)
+			hashes["color"] = str(hash)
+			
+			hash = imagehash.phash(i)
+			hashes["perceptual"] = str(hash)
+			
+			hash = imagehash.dhash(i)
+			hashes["difference"] = str(hash)
+
+			hash = imagehash.whash(i)
+			hashes["wavelet"] = str(hash)
+
+			image["hashes"] = hashes
 
 		# Run through HAM color service
 		if "color" in services: 
@@ -314,7 +337,7 @@ def process_image(URL, services):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-url', nargs='?', default=None, required=True)
-	parser.add_argument('-services', nargs='+', choices=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws'], default=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws'])
+	parser.add_argument('-services', nargs='+', choices=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash'], default=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash'])
 	args = parser.parse_args()
 	main(args.url, args.services)
 # [END run_application]
