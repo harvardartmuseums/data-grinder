@@ -1,5 +1,5 @@
 import requests
-import config
+import os
 
 class Colors(object):
 
