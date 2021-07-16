@@ -36,4 +36,4 @@ s3transfer==0.2.1
 scipy==1.6.2
 six==1.15.0
 uritemplate==3.0.1
-urllib3==1.24.2
+urllib3==1.26.5
