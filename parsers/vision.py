@@ -1,4 +1,4 @@
-import config
+import os
 import argparse
 import base64
 import httplib2
@@ -16,8 +16,13 @@ class Vision(object):
         """Run a label request on a single image"""
 
         # [START authenticate]
-        # credentials = GoogleCredentials.get_application_default()
-        credentials = GoogleCredentials.from_stream(config.GOOGLE_VISION_CREDENTIALS_FILE)
+        creds = os.getenv("GOOGLE_VISION_CREDENTIALS")
+        path = os.path.dirname(os.path.realpath(__file__))
+        creds_file = path.replace("parsers", "samples/vision-credentials.json")
+        with open(creds_file, "w") as outfile:
+            outfile.write(creds)
+
+        credentials = GoogleCredentials.from_stream(creds_file)
         service = discovery.build('vision', 'v1', cache_discovery=False, credentials=credentials,
                                   discoveryServiceUrl=DISCOVERY_URL)
         # [END authenticate]

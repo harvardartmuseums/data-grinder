@@ -1,17 +1,29 @@
+import os
 import json
 import argparse
 import datetime
 import config
 import requests
 import imagehash
+from flask import Flask, request
+from dotenv import  load_dotenv
 from PIL import Image
 from parsers import clarifai, vision, imagga, iiif, mcsvision, colors, aws
 
+load_dotenv()
+
+app = Flask(__name__)
+
+@app.route("/")
+def default():
+	url = request.args.get('url')
+	services = request.args.get('services')
+	image_info = process_image(url, services)
+	return image_info
 
 def main(url, services):
 	image_info = process_image(url, services)
 	print(json.dumps(image_info))
-
 
 ## HELPER FUNCTIONS ##
 def get_image_id(URL):
@@ -30,7 +42,8 @@ def download_image(URL):
 	r = requests.get(URL, timeout=5)
 	if r.status_code == 200:
 		status = "ok"
-		path = config.TEMPORARY_FILE_DIR + "/temp.jpg"
+		# path = config.TEMPORARY_FILE_DIR + "/temp.jpg"
+		path = os.path.dirname(os.path.realpath(__file__)) + "/samples/temp.jpg"
 		
 		with open(path, 'wb') as out:
 			for chunk in r.iter_content(chunk_size=128):

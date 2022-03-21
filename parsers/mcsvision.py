@@ -1,10 +1,10 @@
 import requests
-import config
+import os
 
 class MCSVision(object):
 
 	def __init__(self):
-		self.api_key = config.MICROSOFT_CS_KEY
+		self.api_key = os.getenv("MICROSOFT_CS_KEY")
 		self.base_url = 'https://westus.api.cognitive.microsoft.com/vision/v1.0/'
 
 	def fetch_analyze(self, photo_file):
