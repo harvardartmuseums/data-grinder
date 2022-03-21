@@ -40,11 +40,12 @@ python-editor==1.0.4
 PyWavelets==1.1.1
 PyYAML==5.3.1
 readchar==3.0.5
-requests==2.26.0
+requests==2.27.1
 rsa==4.6
 s3transfer==0.2.1
 scipy==1.6.2
 six==1.15.0
 uritemplate==3.0.1
+urllib3==1.26.9
 wcwidth==0.2.5
 Werkzeug==2.0.3
