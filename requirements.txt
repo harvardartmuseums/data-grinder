@@ -1,8 +1,7 @@
 ansicon==1.89.0
 attrs==19.3.0
 blessed==1.19.0
-boto3
-botocore==1.23.30
+boto3==1.9.106
 certifi==2020.6.20
 chardet==3.0.4
 charset-normalizer==2.0.2
