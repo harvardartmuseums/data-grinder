@@ -2,7 +2,6 @@ import os
 import json
 import argparse
 import datetime
-import config
 import requests
 import imagehash
 from flask import Flask, request
