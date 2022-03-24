@@ -13,12 +13,21 @@ load_dotenv()
 
 app = Flask(__name__)
 
-@app.route("/")
-def default():
+@app.route("/", methods=['GET'])
+def home():
+	return {"status": "ok"}
+
+@app.route("/extract", methods=['GET'])
+def extract():
+	response = {"status": "missing parameters url, services"}
+
 	url = request.args.get('url')
 	services = request.args.get('services')
-	image_info = process_image(url, services)
-	return image_info
+
+	if url and services: 
+		response = process_image(url, services)
+	
+	return response
 
 def main(url, services):
 	image_info = process_image(url, services)
