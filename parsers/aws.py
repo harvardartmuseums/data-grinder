@@ -6,7 +6,7 @@ class AWS(object):
     def __init__(self):
         self.aws_key = os.getenv("AWS_ACCESS_KEY")
         self.aws_secret = os.getenv("AWS_SECRET_ACCESS_KEY")
-        self.aws_region = os.getenv("us-east-1")
+        self.aws_region = os.getenv("AWS_REGION")
     
     def get_client(self):
         return boto3.client('rekognition', region_name=self.aws_region, aws_access_key_id=self.aws_key, aws_secret_access_key=self.aws_secret)
