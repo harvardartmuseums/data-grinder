@@ -1,5 +1,4 @@
 import requests
-import config
 
 class Colors(object):
 
