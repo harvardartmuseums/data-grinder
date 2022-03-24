@@ -11,6 +11,10 @@ from parsers import clarifai, vision, imagga, iiif, mcsvision, colors, aws
 
 load_dotenv()
 
+temp_folder = os.path.dirname(os.path.realpath(__file__)) + "/temp"
+if not os.path.exists(temp_folder): 
+	os.mkdir(temp_folder)
+
 app = Flask(__name__)
 
 @app.route("/", methods=['GET'])
@@ -51,7 +55,7 @@ def download_image(URL):
 	if r.status_code == 200:
 		status = "ok"
 		# path = config.TEMPORARY_FILE_DIR + "/temp.jpg"
-		path = os.path.dirname(os.path.realpath(__file__)) + "/samples/temp.jpg"
+		path = os.path.dirname(os.path.realpath(__file__)) + "/temp/temp.jpg"
 		
 		with open(path, 'wb') as out:
 			for chunk in r.iter_content(chunk_size=128):

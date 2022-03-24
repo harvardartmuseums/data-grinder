@@ -18,7 +18,7 @@ class Vision(object):
         # [START authenticate]
         creds = os.getenv("GOOGLE_VISION_CREDENTIALS")
         path = os.path.dirname(os.path.realpath(__file__))
-        creds_file = path.replace("parsers", "samples/vision-credentials.json")
+        creds_file = path.replace("parsers", "temp/vision-credentials.json")
         with open(creds_file, "w") as outfile:
             outfile.write(creds)
 
