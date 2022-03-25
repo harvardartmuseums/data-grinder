@@ -2,6 +2,7 @@ import os
 import json
 import argparse
 import datetime
+import time
 import requests
 import imagehash
 from flask import Flask, request
@@ -30,7 +31,7 @@ def extract():
 
 	if url and services: 
 		response = process_image(url, services)
-	
+
 	return response
 
 def main(url, services):
@@ -69,8 +70,11 @@ def download_image(URL):
 def process_image(URL, services):
 	image = {
 		"url": URL,
-		"lastupdated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+		"lastupdated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+		"runtime": 0
 	}
+
+	start = time.time()
 
 	# get IDS ID
 	(status, id) = get_image_id(URL)
@@ -354,6 +358,9 @@ def process_image(URL, services):
 						text["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
 
 			image["aws"]["text"] = result
+
+	end = time.time()
+	image["runtime"] = end - start
 
 	return image
 
