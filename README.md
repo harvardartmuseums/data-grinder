@@ -4,7 +4,7 @@ A simple script for running an image through third party computer vision service
 
 ## Requirements
 
-* Python 3.*
+* Python 3.9.*
 * Virtualenv
 
 
@@ -34,12 +34,10 @@ We recommend creating a virtual environment with [Virtualenv](https://pypi.org/p
 ```
 
 ### Set configuration values
-* Clone config-template.py to config.py.  
-* Open config.py in a text editor.
+* Clone .env-template to .env
+* Open .env in a text editor.
 * Enter API keys and credentials for the services you want to use.  
-* Google Vision requires a credentials file for authentication. Create a file named vision-credentials.json. Generate a sevice account key through your Google account API dashboard. Read more at https://cloud.google.com/vision/docs/common/auth. Paste the key into the vision-credentials.json file.
-* Set `TEMPORARY_FILE_DIR` to a valid folder that is set to allow read/write.
-
+* Google Vision requires a oauth credentials for authentication. Generate a sevice account key through your Google account API dashboard. Read more at https://cloud.google.com/vision/docs/common/auth. Paste the key as json into the .env file.
 
 ## Services Implemented
 
