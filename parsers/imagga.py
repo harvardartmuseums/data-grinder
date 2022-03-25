@@ -1,11 +1,11 @@
 import requests
-import config
+import os
 
 class Imagga(object):
 
 	def __init__(self):
-		self.api_key = config.IMAGGA_KEY
-		self.api_secret = config.IMAGGA_SECRET
+		self.api_key = os.getenv("IMAGGA_KEY")
+		self.api_secret = os.getenv("IMAGGA_SECRET")
 
 	def fetch(self, photo_file):
 		response = requests.get('https://api.imagga.com/v2/tags?image_url=%s' % photo_file, auth=(self.api_key, self.api_secret))

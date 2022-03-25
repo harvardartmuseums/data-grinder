@@ -1,13 +1,12 @@
+import os
 import requests
-import config
 
 class Colors(object):
 
-	# def __init__(self):
-		# self.api_key = config.IMAGGA_KEY
-		# self.api_secret = config.IMAGGA_SECRET
+	def __init__(self):
+		self.color_service = os.getenv("COLOR_SERVICE")
 
 	def fetch_colors(self, photo_file):
-		response = requests.get('https://ham-color-service.herokuapp.com/extract?image_url=%s' % photo_file)
+		response = requests.get('%s/extract?image_url=%s' % (self.color_service, photo_file))
 
 		return response.json()		

@@ -1,17 +1,42 @@
+import os
 import json
 import argparse
 import datetime
-import config
+import time
 import requests
 import imagehash
+from flask import Flask, request
+from dotenv import  load_dotenv
 from PIL import Image
 from parsers import clarifai, vision, imagga, iiif, mcsvision, colors, aws
 
+load_dotenv()
+
+temp_folder = os.path.dirname(os.path.realpath(__file__)) + "/temp"
+if not os.path.exists(temp_folder): 
+	os.mkdir(temp_folder)
+
+app = Flask(__name__)
+
+@app.route("/", methods=['GET'])
+def home():
+	return {"status": "ok"}
+
+@app.route("/extract", methods=['GET'])
+def extract():
+	response = {"status": "missing parameters url, services"}
+
+	url = request.args.get('url')
+	services = request.args.get('services')
+
+	if url and services: 
+		response = process_image(url, services)
+
+	return response
 
 def main(url, services):
 	image_info = process_image(url, services)
 	print(json.dumps(image_info))
-
 
 ## HELPER FUNCTIONS ##
 def get_image_id(URL):
@@ -30,7 +55,8 @@ def download_image(URL):
 	r = requests.get(URL, timeout=5)
 	if r.status_code == 200:
 		status = "ok"
-		path = config.TEMPORARY_FILE_DIR + "/temp.jpg"
+		# path = config.TEMPORARY_FILE_DIR + "/temp.jpg"
+		path = os.path.dirname(os.path.realpath(__file__)) + "/temp/temp.jpg"
 		
 		with open(path, 'wb') as out:
 			for chunk in r.iter_content(chunk_size=128):
@@ -44,8 +70,11 @@ def download_image(URL):
 def process_image(URL, services):
 	image = {
 		"url": URL,
-		"lastupdated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+		"lastupdated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+		"runtime": 0
 	}
+
+	start = time.time()
 
 	# get IDS ID
 	(status, id) = get_image_id(URL)
@@ -329,6 +358,9 @@ def process_image(URL, services):
 						text["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
 
 			image["aws"]["text"] = result
+
+	end = time.time()
+	image["runtime"] = end - start
 
 	return image
 
