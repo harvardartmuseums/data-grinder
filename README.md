@@ -1,6 +1,6 @@
 # Data Grinder
 
-A simple script for running an image through third party computer vision services that extract faces, text, colors, and tags.  
+A simple script and service for running an image through third party computer vision services that extract faces, text, colors, and tags.  
 
 ## Requirements
 
@@ -52,10 +52,17 @@ AWS Rekognition: labels, faces, text
 
 ## Usage
 
-Run from the command line:
+Run as a script from the command line:
 ```sh
 $ python main.py -url https://some.image/url
 ```
+OR
+
+Run as a local service: 
+```sh
+$ flask run 
+```
+Then open a  browser to http://127.0.0.1:5000/extract
 
 Parameters |  | Values
 ------------ | ------------- | -------------
