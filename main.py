@@ -41,7 +41,7 @@ def main(url, services):
 ## HELPER FUNCTIONS ##
 def get_image_id(URL):
 	r = requests.get(URL, timeout=5)
-	if r.status_code == 200:
+	if (r.status_code == 200) and (r.headers["Content-Type"] == 'image/jpeg'):
 		status = "ok"
 		id = r.url[37:]
 		
