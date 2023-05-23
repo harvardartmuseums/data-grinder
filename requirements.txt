@@ -34,7 +34,7 @@ pyparsing==3.0.7
 python-dateutil==2.8.2
 python-dotenv==0.19.2
 PyWavelets==1.3.0
-requests==2.27.1
+requests==2.31.0
 rsa==4.8
 s3transfer==0.5.2
 scipy==1.8.0
