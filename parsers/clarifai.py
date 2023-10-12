@@ -1,17 +1,39 @@
+import requests
 import os
 import json
-from clarifai.rest import ClarifaiApp
-from clarifai.rest import Image as ClImage
 
 class Clarifai(object):
 
-	def fetch(self, photo_file, id):
+	def __init__(self):
+		self.user_id = os.getenv("CLARIFAI_USER_ID")
+		self.pat = os.getenv("CLARIFAI_PAT")
+		self.app_id = os.getenv("CLARIFAI_APP_ID")
+		self.model_id = os.getenv("CLARIFAI_MODEL_ID")
+		self.base_url = "https://api.clarifai.com"
 
+	def fetch(self, photo_file, id):
 		try:
-			clarifai_api = ClarifaiApp(api_key = os.getenv("CLARIFAI_API_KEY"))
-			result = clarifai_api.models.get('general-v1.3').predict_by_url(photo_file)
+			url = self.base_url + "/v2/users/" + self.user_id + "/apps/" + self.app_id + "/models/" + self.model_id + "/outputs"
+
+			params = json.dumps({
+				"inputs": [
+					{
+					"data": {
+						"image": {
+						"url": photo_file
+						}
+					}
+					}
+				]
+			})
+			headers = {
+				'Authorization': 'Key ' + self.pat,
+				'Content-Type': 'application/json'
+			}
+			response = requests.post(url, headers=headers, data=params)
+
 		except Exception as e:
 			error =  json.loads(e.response.content)
 			print(error)
 			
-		return result
+		return response.json()
