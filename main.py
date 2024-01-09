@@ -8,7 +8,7 @@ import imagehash
 from flask import Flask, request
 from dotenv import  load_dotenv
 from PIL import Image
-from parsers import clarifai, vision, imagga, iiif, mcsvision, colors, aws
+from parsers import azureoai, clarifai, vision, imagga, iiif, mcsvision, colors, aws
 
 load_dotenv()
 
@@ -359,6 +359,14 @@ def process_image(URL, services):
 
 			image["aws"]["text"] = result
 
+		# Run through OpenAI
+		if "openai" in services: 
+			image["openai"] = {}
+
+			result = azureoai.AzureOAI().fetch(image_url)
+			image["openai"] = result
+
+
 	end = time.time()
 	image["runtime"] = end - start
 
@@ -369,7 +377,7 @@ def process_image(URL, services):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-url', nargs='?', default=None, required=True)
-	parser.add_argument('-services', nargs='+', choices=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash'], default=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash'])
+	parser.add_argument('-services', nargs='+', choices=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash', 'openai'], default=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash', 'openai'])
 	args = parser.parse_args()
 	main(args.url, args.services)
 # [END run_application]

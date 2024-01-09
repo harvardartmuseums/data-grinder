@@ -46,7 +46,8 @@ Clarifai: tag features, extract colors
 Imagga: tag features, extract colors, categorize  
 Google Vision: tag features, find faces, find text  
 Microsoft Cognitive Services: categories, tags, description, faces, color  
-AWS Rekognition: labels, faces, text
+AWS Rekognition: labels, faces, text  
+Azure OpenAI: description   
 
 ![Drawing](https://user-images.githubusercontent.com/3187493/81009548-df068480-8e22-11ea-921d-b88c8ceaf600.png)
 
@@ -67,7 +68,7 @@ Then open a  browser to http://127.0.0.1:5000/extract
 Parameters |  | Values
 ------------ | ------------- | -------------
 url | Any Harvard NRS URL that resolves to a IIIF compatible image
-services | (optional, default uses all services) One or more from the list of valid services separated by spaces | `imagga, gv, mcs, clarifai, color, aws, hash `
+services | (optional, default uses all services) One or more from the list of valid services separated by spaces | `imagga, gv, mcs, clarifai, color, aws, hash, openai`
 
 
 Example response:
@@ -84,11 +85,13 @@ Example response:
     "iiifbaseuri": "https://ids.lib.harvard.edu/ids/iiif/14178676",
     "idsid": "14178676",
     "colors": [],
+    "hashes": {},
     "clarifai": {},
     "microsoftvision": {},
     "googlevision": {},    
     "imagga": {},
-    "aws": {}
+    "aws": {},
+    "openai": {}
 }
 ```
 
@@ -108,3 +111,4 @@ Data in the response:
 `googlevision`:  
 `imagga`:  
 `aws`:  
+`openai`:  
