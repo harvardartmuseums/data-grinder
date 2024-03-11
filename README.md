@@ -49,7 +49,7 @@ Microsoft Cognitive Services: categories, tags, description, faces, color
 AWS Rekognition: labels, faces, text  
 Azure OpenAI: description   
 
-![Drawing](https://user-images.githubusercontent.com/3187493/81009548-df068480-8e22-11ea-921d-b88c8ceaf600.png)
+![API Tools-Data-Process Diagrams](https://github.com/harvardartmuseums/data-grinder/assets/3187493/31ddd052-9005-468a-9ae5-056235901b16)
 
 ## Usage
 
