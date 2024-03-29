@@ -8,7 +8,7 @@ import imagehash
 from flask import Flask, request
 from dotenv import  load_dotenv
 from PIL import Image
-from parsers import azureoai, clarifai, vision, imagga, iiif, mcsvision, colors, aws
+from parsers import azureoai, clarifai, vision, imagga, iiif, mcsvision, colors, aws, awsanthropic
 
 load_dotenv()
 
@@ -366,6 +366,13 @@ def process_image(URL, services):
 			result = azureoai.AzureOAI().fetch(image_url)
 			image["openai"] = result
 
+		# Run through Claude on AWS Bedrock
+		if "claude" in services: 
+			image["claude"] = {}
+
+			result = awsanthropic.AWSAnthropic().fetch(image_local_path)
+			image["claude"] = result
+
 
 	end = time.time()
 	image["runtime"] = end - start
@@ -377,7 +384,7 @@ def process_image(URL, services):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-url', nargs='?', default=None, required=True)
-	parser.add_argument('-services', nargs='+', choices=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash', 'openai'], default=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash', 'openai'])
+	parser.add_argument('-services', nargs='+', choices=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash', 'openai', 'claude'], default=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash', 'openai', 'claude'])
 	args = parser.parse_args()
 	main(args.url, args.services)
 # [END run_application]

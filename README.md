@@ -47,7 +47,8 @@ Imagga: tag features, extract colors, categorize
 Google Vision: tag features, find faces, find text  
 Microsoft Cognitive Services: categories, tags, description, faces, color  
 AWS Rekognition: labels, faces, text  
-Azure OpenAI: description   
+Azure OpenAI GPT-4: description   
+Anthropic Claude Haiku on AWS Bedrock: description
 
 ![API Tools-Data-Process Diagrams](https://github.com/harvardartmuseums/data-grinder/assets/3187493/31ddd052-9005-468a-9ae5-056235901b16)
 
@@ -68,7 +69,7 @@ Then open a  browser to http://127.0.0.1:5000/extract
 Parameters |  | Values
 ------------ | ------------- | -------------
 url | Any Harvard NRS URL that resolves to a IIIF compatible image
-services | (optional, default uses all services) One or more from the list of valid services separated by spaces | `imagga, gv, mcs, clarifai, color, aws, hash, openai`
+services | (optional, default uses all services) One or more from the list of valid services separated by spaces | `imagga, gv, mcs, clarifai, color, aws, hash, openai, claude`
 
 
 Example response:
