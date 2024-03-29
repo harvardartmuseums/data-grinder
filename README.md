@@ -50,7 +50,7 @@ AWS Rekognition: labels, faces, text
 Azure OpenAI GPT-4: description   
 Anthropic Claude Haiku on AWS Bedrock: description
 
-![API Tools-Data-Process Diagrams](https://github.com/harvardartmuseums/data-grinder/assets/3187493/31ddd052-9005-468a-9ae5-056235901b16)
+![API Tools-Data-Process Diagrams](https://github.com/harvardartmuseums/data-grinder/assets/3187493/cbc0fb5b-40c8-4af2-8657-2fb1a99e5dfb)
 
 ## Usage
 
