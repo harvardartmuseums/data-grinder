@@ -45,15 +45,24 @@ class AWSAnthropic(object):
                 }
             ],
         }
-    
-        awsresponse = client.invoke_model(
-            modelId=model_id,
-            body=json.dumps(request_body),
-        )
+        try: 
+            awsresponse = client.invoke_model(
+                modelId=model_id,
+                body=json.dumps(request_body),
+            )
 
-        # Process and print the response
-        result = json.loads(awsresponse.get("body").read())
-        response = result
+            # Process and print the response
+            result = json.loads(awsresponse.get("body").read())
+            response = result
+            response['status'] = 200
+            return response
+        
+        except ( client.exceptions.AccessDeniedException, client.exceptions.ResourceNotFoundException, client.exceptions.ThrottlingException, client.exceptions.ModelTimeoutException, client.exceptions.InternalServerException, client.exceptions.ValidationException, client.exceptions.ModelNotReadyException, client.exceptions.ServiceQuotaExceededException) as e:
+            response = {"status": 400}
+            return response
+            
+        except client.exceptions.ModelErrorException as e:
+            response = {"status": 500}
+            return response
 
 
-        return response
