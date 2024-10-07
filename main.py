@@ -28,7 +28,9 @@ def extract():
 
 	url = request.args.get('url')
 	services = request.args.get('services')
-
+	if services is not None:
+		services = services.split(',')
+	
 	if url and services: 
 		response = process_image(url, services)
 
@@ -366,12 +368,34 @@ def process_image(URL, services):
 			result = azureoai.AzureOAI().fetch(image_url)
 			image["openai"] = result
 
+		if "gpt-4" in services:
+			image["gpt-4"] = {}
+
+			result = azureoai.AzureOAI().fetch(image_url, "gpt-4")
+			image["gpt-4"] = result
+
+		if "gpt-4o" in services:
+			image["gpt-4o"] = {}
+
+			result = azureoai.AzureOAI().fetch(image_url, "gpt-4o")
+			image["gpt-4o"] = result
+
 		# Run through Claude on AWS Bedrock
 		if "claude" in services: 
 			image["claude"] = {}
 
 			result = awsanthropic.AWSAnthropic().fetch(image_local_path)
 			image["claude"] = result
+
+		if "claude-3-haiku" in services: 
+			image["claude-3-haiku"] = {}
+
+			result = awsanthropic.AWSAnthropic().fetch(image_local_path)
+			image["claude-3-haiku"] = result
+
+		if "claude-3-5-sonnet" in services:
+			result = awsanthropic.AWSAnthropic().fetch(image_local_path, "sonnet")
+			image["claude-3-5-sonnet"] = result
 
 
 	end = time.time()

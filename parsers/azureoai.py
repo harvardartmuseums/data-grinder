@@ -9,12 +9,18 @@ class AzureOAI(object):
         self.endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
         self.api_version = os.getenv("AZURE_OPENAI_API_VERSION")
 
-    def fetch(self, photo_file):
+    def fetch(self, photo_file, model="gpt-4"):
         client = AzureOpenAI(
             api_version = self.api_version,
             api_key = self.api_key,
             azure_endpoint = self.endpoint
         )
+
+        if model == "gpt-4":
+            self.model = "HAM-GPT-4-V-D1"
+
+        if model == "gpt-4o":
+            self.model = "HAM-GPT-4o-V-D1"
 
         prompt =  [ 
                 { "role": "system", "content": "You are a helpful assistant." }, 
