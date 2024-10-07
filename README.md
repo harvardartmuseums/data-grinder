@@ -48,7 +48,9 @@ Google Vision: tag features, find faces, find text
 Microsoft Cognitive Services: categories, tags, description, faces, color  
 AWS Rekognition: labels, faces, text  
 Azure OpenAI GPT-4: description   
-Anthropic Claude Haiku on AWS Bedrock: description
+Azure OpenAI GPT-4o: description   
+Anthropic Claude Haiku on AWS Bedrock: description  
+Anthropic Claude Sonnet on AWS Bedrock: description
 
 ![API Tools-Data-Process Diagrams](https://github.com/harvardartmuseums/data-grinder/assets/3187493/cbc0fb5b-40c8-4af2-8657-2fb1a99e5dfb)
 
@@ -69,7 +71,7 @@ Then open a  browser to http://127.0.0.1:5000/extract
 Parameters |  | Values
 ------------ | ------------- | -------------
 url | Any Harvard NRS URL that resolves to a IIIF compatible image
-services | (optional, default uses all services) One or more from the list of valid services separated by spaces | `imagga, gv, mcs, clarifai, color, aws, hash, openai, claude`
+services | (optional, default uses all services) One or more from the list of valid services separated by spaces | `imagga, gv, mcs, clarifai, color, aws, hash, openai, claude, gpt-4, gpt-4o, claude-3-haiku, claude-3-5-sonnet`
 
 
 Example response:
@@ -92,7 +94,12 @@ Example response:
     "googlevision": {},    
     "imagga": {},
     "aws": {},
-    "openai": {}
+    "openai": {},
+    "gpt-4": {},
+    "gpt-4o": {},
+    "claude": {},
+    "claude-3-haiku": {},
+    "claude-3-5-sonnet": {}
 }
 ```
 
