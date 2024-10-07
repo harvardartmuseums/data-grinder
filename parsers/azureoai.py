@@ -37,17 +37,33 @@ class AzureOAI(object):
                     }
                 ] } 
             ]
+        try: 
+            response = client.chat.completions.create(
+                model = self.model,
+                messages = prompt,
+                max_tokens = 2000
+            )
+            
+            result = {
+                "description": response.model_dump(),
+                "prompt": prompt,
+                "status": 200
+            }
 
-        response = client.chat.completions.create(
-            model = self.model,
-            messages = prompt,
-            max_tokens = 2000
-        )
-        
-        result = {
-            "description": response.model_dump(),
-            "prompt": prompt
-        }
+            return result
+        except AzureOpenAI.APIConnectionError as e:
+            print("The server could not be reached")
+            print(e.__cause__)  # an underlying Exception, likely raised within httpx.
+        except AzureOpenAI.RateLimitError as e:
+            print("A 429 status code was received; we should back off a bit.")
+        except AzureOpenAI.APIStatusError as e:
+            print("Another non-200-range status code was received")
+            print(e.status_code)
+            print(e.response)
+            result = {
+                "description": e.response.model_dump(),
+                "prompt": prompt,
+                "status": e.status_code
+            }
 
-        return result
-    
+            return result
