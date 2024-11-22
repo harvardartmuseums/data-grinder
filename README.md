@@ -42,17 +42,22 @@ We recommend creating a virtual environment with [Virtualenv](https://pypi.org/p
 ## Services Implemented
 
 HAM Color Service: extract colors  
+Hashing: compute average, color, perceptual, difference, wavelet hashes  
 Clarifai: tag features, extract colors  
 Imagga: tag features, extract colors, categorize  
 Google Vision: tag features, find faces, find text  
 Microsoft Cognitive Services: categories, tags, description, faces, color  
 AWS Rekognition: labels, faces, text  
-Azure OpenAI GPT-4: description   
-Azure OpenAI GPT-4o: description   
-Anthropic Claude Haiku on AWS Bedrock: description  
-Anthropic Claude Sonnet on AWS Bedrock: description
+OpenAI GPT-4 on Azure: description   
+OpenAI GPT-4o on Azure: description   
+Anthropic Claude 3 Haiku on AWS Bedrock: description  
+Anthropic Claude 3 Opus on AWS Bedrock: description  
+Anthropic Claude 3.5 Sonnet on AWS Bedrock: description  
+Anthropic Claude 3.5 Sonnet v2 on AWS Bedrock: description  
+Meta Llama 3.2 11b on AWS Bedrock: description  
+Meta Llama 3.2 90b on AWS Bedrock: description  
 
-![API Tools-Data-Process Diagrams](https://github.com/harvardartmuseums/data-grinder/assets/3187493/cbc0fb5b-40c8-4af2-8657-2fb1a99e5dfb)
+<img width="600" alt="API Tools-Data-Process Diagrams" src="https://github.com/user-attachments/assets/300c4517-68e1-4981-8601-419d74b7ebb9">
 
 ## Usage
 
@@ -71,7 +76,7 @@ Then open a  browser to http://127.0.0.1:5000/extract
 Parameters |  | Values
 ------------ | ------------- | -------------
 url | Any Harvard NRS URL that resolves to a IIIF compatible image
-services | (optional, default uses all services) One or more from the list of valid services separated by spaces | `imagga, gv, mcs, clarifai, color, aws, hash, openai, claude, gpt-4, gpt-4o, claude-3-haiku, claude-3-5-sonnet`
+services | (optional, default uses all services) One or more from the list of valid services separated by spaces | `imagga, gv, mcs, clarifai, color, aws, hash, openai, claude, gpt-4, gpt-4o, claude-3-haiku, claude-3-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, llama-3-2-11b, llama-3-2-90b`
 
 
 Example response:
@@ -99,7 +104,11 @@ Example response:
     "gpt-4o": {},
     "claude": {},
     "claude-3-haiku": {},
-    "claude-3-5-sonnet": {}
+    "claude-3-opus": {},
+    "claude-3-5-sonnet": {},
+    "claude-3-5-sonnet-v-2": {},
+    "llama-3-2-11b": {},
+    "llama-3-2-90b": {}
 }
 ```
 
@@ -114,9 +123,19 @@ Data in the response:
 `iiifbaseuri`: A fully formed IIIF URI for the image in the DRS.  
 `idsid`: The image file ID in the DRS returned when requesting the original image URL.  
 `colors`:  
+`hashes`:  
 `clarifai`:   
 `microsoftvision`:  
 `googlevision`:  
 `imagga`:  
 `aws`:  
 `openai`:  
+`gpt-4`:  
+`gpt-4o`:  
+`claude`:  
+`claude-3-haiku`:  
+`claude-3-opus`:  
+`claude-3-5-sonnet`:  
+`claude-3-5-sonnet-v-2`:  
+`llama-3-2-11b`:  
+`llama-3-2-90b`:  
