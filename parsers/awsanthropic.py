@@ -25,8 +25,14 @@ class AWSAnthropic(object):
         if model == "haiku":
             model_id = "anthropic.claude-3-haiku-20240307-v1:0"
 
+        if model == "opus":
+            model_id = "us.anthropic.claude-3-opus-20240229-v1:0"
+
         if model == "sonnet":
             model_id = "anthropic.claude-3-5-sonnet-20240620-v1:0"
+
+        if model == "sonnet-v-2":
+            model_id = "us.anthropic.claude-3-5-sonnet-20241022-v2:0"
 
         request_body = {
             "anthropic_version": "bedrock-2023-05-31",
