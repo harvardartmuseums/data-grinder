@@ -2,13 +2,27 @@ import requests
 
 class IIIFImage(object):
 
-	def get_base_uri(id):
-		return 'https://ids.lib.harvard.edu/ids/iiif/%s' % id
+	def __init__(self, id):
+		self.id = id
+		self.base_uri = f"https://ids.lib.harvard.edu/ids/iiif/{self.id}"
+		self.info_url = f"{self.base_uri}/info.json"
 
-	def get_full_image_url(id):
-		return 'https://ids.lib.harvard.edu/ids/iiif/%s/full/full/0/default.jpg' % id
+		self.info = requests.get(self.info_url).json()
 
-	def fetch(self, iiifImageURI):
-		response = requests.get('%s/info.json' % iiifImageURI)
+	def get_base_uri(self):
+		return self.base_uri
 
-		return response.json()
+	def get_full_image_url(self):
+		return f"{self.base_uri}/full/full/0/default.jpg"
+	
+	def get_scaled_image_url(self, scale):
+		return f"{self.base_uri}/full/{scale}/0/default.jpg"
+	
+	def get_fragment_image_url(self, x, y, w, h):
+		return f"{self.base_uri}/{x},{y},{w},{h}/full/0/default.jpg"
+
+	def fetch(self):
+		return self.info
+	
+	def info(self):
+		return self.info

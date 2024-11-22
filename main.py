@@ -8,7 +8,7 @@ import imagehash
 from flask import Flask, request
 from dotenv import  load_dotenv
 from PIL import Image
-from parsers import azureoai, clarifai, vision, imagga, iiif, mcsvision, colors, aws, awsanthropic
+from parsers import azureoai, clarifai, vision, imagga, iiif, mcsvision, colors, aws, awsanthropic, awsmeta
 
 load_dotenv()
 
@@ -53,12 +53,12 @@ def get_image_id(URL):
 
 	return (status, id)
 
-def download_image(URL):
+def download_image(URL,filename="temp.jpg"):
 	r = requests.get(URL, timeout=21)
 	if r.status_code == 200:
 		status = "ok"
 		# path = config.TEMPORARY_FILE_DIR + "/temp.jpg"
-		path = os.path.dirname(os.path.realpath(__file__)) + "/temp/temp.jpg"
+		path = os.path.dirname(os.path.realpath(__file__)) + "/temp/" + filename
 		
 		with open(path, 'wb') as out:
 			for chunk in r.iter_content(chunk_size=128):
@@ -84,13 +84,15 @@ def process_image(URL, services):
 	image["drsstatus"] = status
 
 	if status == "ok": 
-		image_url = iiif.IIIFImage.get_full_image_url(id)
+		iiifImage = iiif.IIIFImage(id)
+		image_url = iiifImage.get_full_image_url()
 
 		image["idsid"] = id
-		image["iiifbaseuri"] = iiif.IIIFImage.get_base_uri(id)
+		image["iiifbaseuri"] = iiifImage.get_base_uri()
 
 		# Download the image
 		(status, image_local_path) = download_image(image_url)
+		(status, image_local_path_scaled) = download_image(iiifImage.get_scaled_image_url("!1120,1120"),"temp_1120.jpg")
 
 		# Gather and store image metadata
 		im=Image.open(image_local_path)
@@ -98,11 +100,10 @@ def process_image(URL, services):
 		image["width"] = size[0]
 		image["height"] = size[1]
 
-		iiif_image_info = iiif.IIIFImage().fetch(image["iiifbaseuri"])
-		image["widthFull"] = iiif_image_info["width"]
-		image["heightFull"] = iiif_image_info["height"]
+		image["widthFull"] = iiifImage.info["width"]
+		image["heightFull"] = iiifImage.info["height"]
 
-		imageScaleFactor = iiif_image_info["width"]/image["width"]
+		imageScaleFactor = iiifImage.info["width"]/image["width"]
 
 		annotationFragmentFullImage = "xywh=0,0," + str(int(image["width"])) + "," + str(int(image["height"]))
 
@@ -185,8 +186,7 @@ def process_image(URL, services):
 					width = face["faceRectangle"]["width"]*imageScaleFactor
 					height = face["faceRectangle"]["height"]*imageScaleFactor
 
-					iiifFaceImageURL = image["iiifbaseuri"] + "/" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height)) + "/full/0/native.jpg"
-					face["iiifFaceImageURL"] = iiifFaceImageURL
+					face["iiifFaceImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
 					face["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
 
 					result["faces"][index] = face
@@ -236,8 +236,7 @@ def process_image(URL, services):
 					width = (bounding[1]["x"] - bounding[0]["x"])*imageScaleFactor
 					height = (bounding[2]["y"] - bounding[0]["y"])*imageScaleFactor
 
-					iiifFaceImageURL = image["iiifbaseuri"] + "/" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height)) + "/full/0/native.jpg"
-					face["iiifFaceImageURL"] = iiifFaceImageURL
+					face["iiifFaceImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
 					face["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
 
 					result["responses"][0]["faceAnnotations"][index] = face
@@ -272,8 +271,7 @@ def process_image(URL, services):
 					width = (max(seqX) - min(seqX))*imageScaleFactor+regionPadding
 					height = (max(seqY) - min(seqY))*imageScaleFactor+regionPadding
 
-					iiifTextImageURL = image["iiifbaseuri"] + "/" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height)) + "/full/0/native.jpg"
-					text["iiifTextImageURL"] = iiifTextImageURL
+					text["iiifTextImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
 					text["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
 
 					result["responses"][0]["textAnnotations"][index] = text		
@@ -318,8 +316,7 @@ def process_image(URL, services):
 							width = (image["width"]*instance["BoundingBox"]["Width"])*imageScaleFactor
 							height = (image["height"]*instance["BoundingBox"]["Height"])*imageScaleFactor
 
-							iiifImageURL = image["iiifbaseuri"] + "/" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height)) + "/full/0/native.jpg"
-							instance["iiifLabelImageURL"] = iiifImageURL
+							instance["iiifLabelImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
 							instance["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
 			
 			image["aws"]["labels"] = result
@@ -334,8 +331,7 @@ def process_image(URL, services):
 						width = (image["width"]*face["BoundingBox"]["Width"])*imageScaleFactor
 						height = (image["height"]*face["BoundingBox"]["Height"])*imageScaleFactor
 						
-						iiifImageURL = image["iiifbaseuri"] + "/" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height)) + "/full/0/native.jpg"
-						face["iiifFaceImageURL"] = iiifImageURL
+						face["iiifFaceImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
 						face["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
 			
 			image["aws"]["faces"] = result
@@ -355,8 +351,7 @@ def process_image(URL, services):
 						width = (image["width"]*abs(boundingBox["Width"]))*imageScaleFactor
 						height = (image["height"]*abs(boundingBox["Height"]))*imageScaleFactor
 
-						iiifImageURL = image["iiifbaseuri"] + "/" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height)) + "/full/0/native.jpg"
-						text["iiifTextImageURL"] = iiifImageURL
+						text["iiifTextImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
 						text["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
 
 			image["aws"]["text"] = result
@@ -393,9 +388,35 @@ def process_image(URL, services):
 			result = awsanthropic.AWSAnthropic().fetch(image_local_path)
 			image["claude-3-haiku"] = result
 
+		if "claude-3-opus" in services: 
+			image["claude-3-opus"] = {}
+
+			result = awsanthropic.AWSAnthropic().fetch(image_local_path, "opus")
+			image["claude-3-opus"] = result
+
 		if "claude-3-5-sonnet" in services:
+			image["claude-3-5-sonnet"] = {}
+
 			result = awsanthropic.AWSAnthropic().fetch(image_local_path, "sonnet")
 			image["claude-3-5-sonnet"] = result
+
+		if "claude-3-5-sonnet-v-2" in services:
+			image["claude-3-5-sonnet-v-2"] = {}
+
+			result = awsanthropic.AWSAnthropic().fetch(image_local_path, "sonnet-v-2")
+			image["claude-3-5-sonnet-v-2"] = result			
+
+		if "llama-3-2-11b" in services:
+			image["llama-3-2-11b"] = {}
+
+			result = awsmeta.AWSMeta().fetch(image_local_path_scaled, "llama-3-2-11b")
+			image["llama-3-2-11b"] = result		
+
+		if "llama-3-2-90b" in services:
+			image["llama-3-2-90b"] = {}
+
+			result = awsmeta.AWSMeta().fetch(image_local_path_scaled, "llama-3-2-90b")
+			image["llama-3-2-90b"] = result	
 
 
 	end = time.time()
