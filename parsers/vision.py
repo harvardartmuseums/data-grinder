@@ -57,4 +57,5 @@ class Vision(object):
             # [END construct_request]
             # [START parse_response]
             response = service_request.execute()
+            response["model"] = "unknown"
             return response
