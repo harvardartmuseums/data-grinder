@@ -89,6 +89,7 @@ def process_image(URL, services):
 
 		image["idsid"] = id
 		image["iiifbaseuri"] = iiifImage.get_base_uri()
+		image["iiifFullImageURL"] = iiifImage.get_full_image_url()
 
 		# Download the image
 		(status, image_local_path) = download_image(image_url)
@@ -361,18 +362,21 @@ def process_image(URL, services):
 			image["openai"] = {}
 
 			result = azureoai.AzureOAI().fetch(image_url)
+			result["annotationFragment"] = annotationFragmentFullImage
 			image["openai"] = result
 
 		if "gpt-4" in services:
 			image["gpt-4"] = {}
 
 			result = azureoai.AzureOAI().fetch(image_url, "gpt-4")
+			result["annotationFragment"] = annotationFragmentFullImage
 			image["gpt-4"] = result
 
 		if "gpt-4o" in services:
 			image["gpt-4o"] = {}
 
 			result = azureoai.AzureOAI().fetch(image_url, "gpt-4o")
+			result["annotationFragment"] = annotationFragmentFullImage
 			image["gpt-4o"] = result
 
 		# Run through Claude on AWS Bedrock
@@ -380,42 +384,49 @@ def process_image(URL, services):
 			image["claude"] = {}
 
 			result = awsanthropic.AWSAnthropic().fetch(image_local_path)
+			result["annotationFragment"] = annotationFragmentFullImage
 			image["claude"] = result
 
 		if "claude-3-haiku" in services: 
 			image["claude-3-haiku"] = {}
 
 			result = awsanthropic.AWSAnthropic().fetch(image_local_path)
+			result["annotationFragment"] = annotationFragmentFullImage
 			image["claude-3-haiku"] = result
 
 		if "claude-3-opus" in services: 
 			image["claude-3-opus"] = {}
 
 			result = awsanthropic.AWSAnthropic().fetch(image_local_path, "opus")
+			result["annotationFragment"] = annotationFragmentFullImage
 			image["claude-3-opus"] = result
 
 		if "claude-3-5-sonnet" in services:
 			image["claude-3-5-sonnet"] = {}
 
 			result = awsanthropic.AWSAnthropic().fetch(image_local_path, "sonnet")
+			result["annotationFragment"] = annotationFragmentFullImage
 			image["claude-3-5-sonnet"] = result
 
 		if "claude-3-5-sonnet-v-2" in services:
 			image["claude-3-5-sonnet-v-2"] = {}
 
 			result = awsanthropic.AWSAnthropic().fetch(image_local_path, "sonnet-v-2")
+			result["annotationFragment"] = annotationFragmentFullImage
 			image["claude-3-5-sonnet-v-2"] = result			
 
 		if "llama-3-2-11b" in services:
 			image["llama-3-2-11b"] = {}
 
 			result = awsmeta.AWSMeta().fetch(image_local_path_scaled, "llama-3-2-11b")
+			result["annotationFragment"] = annotationFragmentFullImage
 			image["llama-3-2-11b"] = result		
 
 		if "llama-3-2-90b" in services:
 			image["llama-3-2-90b"] = {}
 
 			result = awsmeta.AWSMeta().fetch(image_local_path_scaled, "llama-3-2-90b")
+			result["annotationFragment"] = annotationFragmentFullImage
 			image["llama-3-2-90b"] = result	
 
 
