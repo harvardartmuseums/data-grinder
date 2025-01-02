@@ -59,7 +59,7 @@ Meta Llama 3.2 90b on AWS Bedrock: description
 Amazon Nova Lite 1.0 on AWS Bedrock: description  
 Amazon Nova Pro 1.0 on AWS Bedrock: description  
 
-<img width="600" alt="API Tools-Data-Process Diagrams" src="https://github.com/user-attachments/assets/300c4517-68e1-4981-8601-419d74b7ebb9">
+<img width="600" alt="API Tools-Data-Process Diagrams" src="https://github.com/user-attachments/assets/daebb9a8-589d-4bee-bca6-688a774e522d" />
 
 ## Usage
 
