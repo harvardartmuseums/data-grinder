@@ -56,6 +56,8 @@ Anthropic Claude 3.5 Sonnet on AWS Bedrock: description
 Anthropic Claude 3.5 Sonnet v2 on AWS Bedrock: description  
 Meta Llama 3.2 11b on AWS Bedrock: description  
 Meta Llama 3.2 90b on AWS Bedrock: description  
+Amazon Nova Lite 1.0 on AWS Bedrock: description  
+Amazon Nova Pro 1.0 on AWS Bedrock: description  
 
 <img width="600" alt="API Tools-Data-Process Diagrams" src="https://github.com/user-attachments/assets/300c4517-68e1-4981-8601-419d74b7ebb9">
 
@@ -76,7 +78,7 @@ Then open a  browser to http://127.0.0.1:5000/extract
 Parameters |  | Values
 ------------ | ------------- | -------------
 url | Any Harvard NRS URL that resolves to a IIIF compatible image
-services | (optional, default uses all services) One or more from the list of valid services separated by spaces | `imagga, gv, mcs, clarifai, color, aws, hash, openai, claude, gpt-4, gpt-4o, claude-3-haiku, claude-3-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, llama-3-2-11b, llama-3-2-90b`
+services | (optional, default uses all services) One or more from the list of valid services separated by spaces | `imagga, gv, mcs, clarifai, color, aws, hash, gpt-4, gpt-4o, claude-3-haiku, claude-3-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, llama-3-2-11b, llama-3-2-90b, nova-lite-1-0, nova-pro-1-0`
 
 
 Example response:
@@ -99,16 +101,16 @@ Example response:
     "googlevision": {},    
     "imagga": {},
     "aws": {},
-    "openai": {},
     "gpt-4": {},
     "gpt-4o": {},
-    "claude": {},
     "claude-3-haiku": {},
     "claude-3-opus": {},
     "claude-3-5-sonnet": {},
     "claude-3-5-sonnet-v-2": {},
     "llama-3-2-11b": {},
-    "llama-3-2-90b": {}
+    "llama-3-2-90b": {},
+    "nova-lite-1-0": {},
+    "nova-pro-1-0": {}
 }
 ```
 
@@ -129,13 +131,13 @@ Data in the response:
 `googlevision`:  
 `imagga`:  
 `aws`:  
-`openai`:  
 `gpt-4`:  
 `gpt-4o`:  
-`claude`:  
 `claude-3-haiku`:  
 `claude-3-opus`:  
 `claude-3-5-sonnet`:  
 `claude-3-5-sonnet-v-2`:  
 `llama-3-2-11b`:  
 `llama-3-2-90b`:  
+`nova-lite-1-0`:  
+`nova-pro-1-0`:  

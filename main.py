@@ -8,7 +8,7 @@ import imagehash
 from flask import Flask, request
 from dotenv import  load_dotenv
 from PIL import Image
-from parsers import azureoai, clarifai, vision, imagga, iiif, mcsvision, colors, aws, awsanthropic, awsmeta
+from parsers import azureoai, clarifai, vision, imagga, iiif, mcsvision, colors, aws, awsanthropic, awsmeta, awsnova
 
 load_dotenv()
 
@@ -429,6 +429,20 @@ def process_image(URL, services):
 			result["annotationFragment"] = annotationFragmentFullImage
 			image["llama-3-2-90b"] = result	
 
+		if "nova-lite-1-0" in services:
+			image["nova-lite-1-0"] = {}
+
+			result = awsnova.AWSNova().fetch(image_local_path_scaled, "nova-lite-1-0")
+			result["annotationFragment"] = annotationFragmentFullImage
+			image["nova-lite-1-0"] = result	
+
+		if "nova-pro-1-0" in services:
+			image["nova-pro-1-0"] = {}
+
+			result = awsnova.AWSNova().fetch(image_local_path_scaled, "nova-pro-1-0")
+			result["annotationFragment"] = annotationFragmentFullImage
+			image["nova-pro-1-0"] = result	
+
 
 	end = time.time()
 	image["runtime"] = end - start
@@ -440,7 +454,7 @@ def process_image(URL, services):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-url', nargs='?', default=None, required=True)
-	parser.add_argument('-services', nargs='+', choices=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash', 'openai', 'claude'], default=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash', 'openai', 'claude'])
+	parser.add_argument('-services', nargs='+', choices=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash', 'openai', 'claude'], default=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash'])
 	args = parser.parse_args()
 	main(args.url, args.services)
 # [END run_application]
