@@ -8,7 +8,7 @@ import imagehash
 from flask import Flask, request
 from dotenv import  load_dotenv
 from PIL import Image
-from parsers import azureoai, clarifai, vision, imagga, iiif, mcsvision, colors, aws, awsanthropic, awsmeta, awsnova
+from parsers import azureoai, clarifai, vision, imagga, iiif, mcsvision, colors, aws, awsanthropic, awsmeta, awsnova, googlegemini
 
 load_dotenv()
 
@@ -442,6 +442,20 @@ def process_image(URL, services):
 			result = awsnova.AWSNova().fetch(image_local_path_scaled, "nova-pro-1-0")
 			result["annotationFragment"] = annotationFragmentFullImage
 			image["nova-pro-1-0"] = result	
+
+		if "gemini-2-0-flash" in services:
+			image["gemini-2-0-flash"] = {}
+
+			result = googlegemini.GoogleGemini().fetch(image_local_path_scaled, "gemini-2-0-flash")
+			result["annotationFragment"] = annotationFragmentFullImage
+			image["gemini-2-0-flash"] = result	
+			
+		if "gemini-2-0-flash-lite" in services:
+			image["gemini-2-0-flash-lite"] = {}
+
+			result = googlegemini.GoogleGemini().fetch(image_local_path_scaled, "gemini-2-0-flash-lite")
+			result["annotationFragment"] = annotationFragmentFullImage
+			image["gemini-2-0-flash-lite"] = result	
 
 
 	end = time.time()
