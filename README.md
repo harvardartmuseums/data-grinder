@@ -37,7 +37,6 @@ We recommend creating a virtual environment with [Virtualenv](https://pypi.org/p
 * Clone .env-template to .env
 * Open .env in a text editor.
 * Enter API keys and credentials for the services you want to use.  
-* Google Vision requires a oauth credentials for authentication. Generate a sevice account key through your Google account API dashboard. Read more at https://cloud.google.com/vision/docs/common/auth. Paste the key as json into the .env file.
 
 ## Services Implemented
 
@@ -112,7 +111,9 @@ Example response:
     "llama-3-2-11b": {},
     "llama-3-2-90b": {},
     "nova-lite-1-0": {},
-    "nova-pro-1-0": {}
+    "nova-pro-1-0": {},
+    "gemini-2-0-flash": {}, 
+    "gemini-2-0-flash-lite": {}
 }
 ```
 
@@ -143,3 +144,5 @@ Data in the response:
 `llama-3-2-90b`:  
 `nova-lite-1-0`:  
 `nova-pro-1-0`:  
+`gemini-2-0-flash`:  
+`gemini-2-0-flash-list`:  
