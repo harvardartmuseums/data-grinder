@@ -2,8 +2,6 @@ import os
 import base64
 import requests
 import json
-from google import genai
-from google.genai import types
 
 class GoogleGemini(object):
 
