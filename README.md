@@ -59,6 +59,7 @@ Amazon Nova Lite 1.0 on AWS Bedrock: description
 Amazon Nova Pro 1.0 on AWS Bedrock: description  
 Google Gemini 2.0 Flash: description
 Google Gemini 2.0 Flash-Lite: description
+Mistral Pixtral Large 25.02: description  
 
 <img width="600" alt="API Tools-Data-Process Diagrams" src="https://github.com/user-attachments/assets/daebb9a8-589d-4bee-bca6-688a774e522d" />
 
@@ -79,7 +80,7 @@ Then open a  browser to http://127.0.0.1:5000/extract
 Parameters |  | Values
 ------------ | ------------- | -------------
 url | Any Harvard NRS URL that resolves to a IIIF compatible image
-services | (optional, default uses all services) One or more from the list of valid services separated by spaces | `imagga, gv, mcs, clarifai, color, aws, hash, gpt-4, gpt-4o, claude-3-haiku, claude-3-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, llama-3-2-11b, llama-3-2-90b, nova-lite-1-0, nova-pro-1-0, gemini-2-0-flash, gemini-2-0-flash-lite`
+services | (optional, default uses all services) One or more from the list of valid services separated by spaces | `imagga, gv, mcs, clarifai, color, aws, hash, gpt-4, gpt-4o, claude-3-haiku, claude-3-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, llama-3-2-11b, llama-3-2-90b, nova-lite-1-0, nova-pro-1-0, gemini-2-0-flash, gemini-2-0-flash-lite, pixtral-large-2502`
 
 
 Example response:
@@ -113,7 +114,8 @@ Example response:
     "nova-lite-1-0": {},
     "nova-pro-1-0": {},
     "gemini-2-0-flash": {}, 
-    "gemini-2-0-flash-lite": {}
+    "gemini-2-0-flash-lite": {},
+    "pixtral-large-2502": {}
 }
 ```
 
@@ -146,3 +148,4 @@ Data in the response:
 `nova-pro-1-0`:  
 `gemini-2-0-flash`:  
 `gemini-2-0-flash-list`:  
+`pixtral-large-2502`:  

@@ -8,7 +8,7 @@ import imagehash
 from flask import Flask, request
 from dotenv import  load_dotenv
 from PIL import Image
-from parsers import azureoai, clarifai, vision, imagga, iiif, mcsvision, colors, aws, awsanthropic, awsmeta, awsnova, googlegemini
+from parsers import azureoai, clarifai, vision, imagga, iiif, mcsvision, colors, aws, awsanthropic, awsmeta, awsnova, googlegemini, awsmistral
 
 load_dotenv()
 
@@ -457,6 +457,12 @@ def process_image(URL, services):
 			result["annotationFragment"] = annotationFragmentFullImage
 			image["gemini-2-0-flash-lite"] = result	
 
+		if "pixtral-large-2502" in services:
+			image["pixtral-large-2502"] = {}
+
+			result = awsmistral.AWSMistral().fetch(image_local_path, "pixtral-large-2502")
+			result["annotationFragment"] = annotationFragmentFullImage
+			image["pixtral-large-2502"] = result
 
 	end = time.time()
 	image["runtime"] = end - start
