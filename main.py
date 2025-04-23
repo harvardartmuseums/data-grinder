@@ -22,6 +22,22 @@ app = Flask(__name__)
 def home():
 	return {"status": "ok"}
 
+@app.route("/list/services", methods=['GET'])
+def list_services():
+	return {"services": azureoai.OpenAIModel.list_models() + \
+			awsanthropic.AnthropicModel.list_models() + \
+			awsmeta.MetaModel.list_models() + \
+			awsnova.NovaModel.list_models() + \
+			googlegemini.GoogleGeminiModel.list_models() + \
+			awsmistral.MistralModel.list_models() + \
+			[{"name":"aws", "model_id":""}] +\
+			[{"name":"clarifai", "model_id":""}] +\
+			[{"name":"imagga", "model_id":""}] +\
+			[{"name":"mcs", "model_id":""}] +\
+			[{"name":"gv", "model_id":""}] +\
+			[{"name":"hash", "model_id":""}] +\
+			[{"name":"color", "model_id":""}]}
+
 @app.route("/extract", methods=['GET'])
 def extract():
 	response = {"status": "missing parameters url, services"}
@@ -358,111 +374,100 @@ def process_image(URL, services):
 			image["aws"]["text"] = result
 
 		# Run through OpenAI
-		if "openai" in services: 
-			image["openai"] = {}
-
-			result = azureoai.AzureOAI().fetch(image_url)
+		if azureoai.OpenAIModel.OPENAI.name in services: 
+			result = azureoai.AzureOAI().fetch(image_url, azureoai.OpenAIModel.OPENAI)
 			result["annotationFragment"] = annotationFragmentFullImage
-			image["openai"] = result
 
-		if "gpt-4" in services:
-			image["gpt-4"] = {}
+			image[azureoai.OpenAIModel.OPENAI.name] = result
 
-			result = azureoai.AzureOAI().fetch(image_url, "gpt-4")
+		if azureoai.OpenAIModel.GPT_4.name in services:
+			result = azureoai.AzureOAI().fetch(image_url, azureoai.OpenAIModel.GPT_4)
 			result["annotationFragment"] = annotationFragmentFullImage
-			image["gpt-4"] = result
 
-		if "gpt-4o" in services:
-			image["gpt-4o"] = {}
+			image[azureoai.OpenAIModel.GPT_4.name] = result
 
-			result = azureoai.AzureOAI().fetch(image_url, "gpt-4o")
+		if azureoai.OpenAIModel.GPT_4O.name in services:
+			result = azureoai.AzureOAI().fetch(image_url, azureoai.OpenAIModel.GPT_4O)
 			result["annotationFragment"] = annotationFragmentFullImage
-			image["gpt-4o"] = result
+
+			image[azureoai.OpenAIModel.GPT_4O.name] = result
 
 		# Run through Claude on AWS Bedrock
-		if "claude" in services: 
-			image["claude"] = {}
-
-			result = awsanthropic.AWSAnthropic().fetch(image_local_path)
+		if awsanthropic.AnthropicModel.CLAUDE.name in services: 
+			result = awsanthropic.AWSAnthropic().fetch(image_local_path, awsanthropic.AnthropicModel.CLAUDE)
 			result["annotationFragment"] = annotationFragmentFullImage
-			image["claude"] = result
 
-		if "claude-3-haiku" in services: 
-			image["claude-3-haiku"] = {}
+			image[awsanthropic.AnthropicModel.CLAUDE.name] = result
 
-			result = awsanthropic.AWSAnthropic().fetch(image_local_path)
+		if awsanthropic.AnthropicModel.CLAUDE_3_HAIKU.name in services: 
+			result = awsanthropic.AWSAnthropic().fetch(image_local_path, awsanthropic.AnthropicModel.CLAUDE_3_HAIKU)
 			result["annotationFragment"] = annotationFragmentFullImage
-			image["claude-3-haiku"] = result
 
-		if "claude-3-opus" in services: 
-			image["claude-3-opus"] = {}
+			image[awsanthropic.AnthropicModel.CLAUDE_3_HAIKU.name] = result
 
-			result = awsanthropic.AWSAnthropic().fetch(image_local_path, "opus")
+		if awsanthropic.AnthropicModel.CLAUDE_3_OPUS.name in services: 
+			result = awsanthropic.AWSAnthropic().fetch(image_local_path, awsanthropic.AnthropicModel.CLAUDE_3_OPUS)
 			result["annotationFragment"] = annotationFragmentFullImage
-			image["claude-3-opus"] = result
 
-		if "claude-3-5-sonnet" in services:
-			image["claude-3-5-sonnet"] = {}
+			image[awsanthropic.AnthropicModel.CLAUDE_3_OPUS.name] = result
 
-			result = awsanthropic.AWSAnthropic().fetch(image_local_path, "sonnet")
+		if awsanthropic.AnthropicModel.CLAUDE_3_5_SONNET.name in services:
+			result = awsanthropic.AWSAnthropic().fetch(image_local_path, awsanthropic.AnthropicModel.CLAUDE_3_5_SONNET)
 			result["annotationFragment"] = annotationFragmentFullImage
-			image["claude-3-5-sonnet"] = result
-
-		if "claude-3-5-sonnet-v-2" in services:
-			image["claude-3-5-sonnet-v-2"] = {}
-
-			result = awsanthropic.AWSAnthropic().fetch(image_local_path, "sonnet-v-2")
+	
+			image[awsanthropic.AnthropicModel.CLAUDE_3_5_SONNET.name] = result
+	
+		if awsanthropic.AnthropicModel.CLAUDE_3_5_SONNET_2.name in services:
+			result = awsanthropic.AWSAnthropic().fetch(image_local_path, awsanthropic.AnthropicModel.CLAUDE_3_5_SONNET_2)
 			result["annotationFragment"] = annotationFragmentFullImage
-			image["claude-3-5-sonnet-v-2"] = result			
 
-		if "llama-3-2-11b" in services:
-			image["llama-3-2-11b"] = {}
+			image[awsanthropic.AnthropicModel.CLAUDE_3_5_SONNET_2.name] = result			
 
-			result = awsmeta.AWSMeta().fetch(image_local_path_scaled, "llama-3-2-11b")
+		# Run through Llama on AWS Bedrock
+		if awsmeta.MetaModel.LLAMA_3_2_11B.name in services:
+			result = awsmeta.AWSMeta().fetch(image_local_path_scaled, awsmeta.MetaModel.LLAMA_3_2_11B)
 			result["annotationFragment"] = annotationFragmentFullImage
-			image["llama-3-2-11b"] = result		
 
-		if "llama-3-2-90b" in services:
-			image["llama-3-2-90b"] = {}
+			image[awsmeta.MetaModel.LLAMA_3_2_11B.name] = result		
 
-			result = awsmeta.AWSMeta().fetch(image_local_path_scaled, "llama-3-2-90b")
+		if awsmeta.MetaModel.LLAMA_3_2_90B.name in services:
+			result = awsmeta.AWSMeta().fetch(image_local_path_scaled, awsmeta.MetaModel.LLAMA_3_2_90B)
 			result["annotationFragment"] = annotationFragmentFullImage
-			image["llama-3-2-90b"] = result	
 
-		if "nova-lite-1-0" in services:
-			image["nova-lite-1-0"] = {}
+			image[awsmeta.MetaModel.LLAMA_3_2_90B.name] = result	
 
-			result = awsnova.AWSNova().fetch(image_local_path_scaled, "nova-lite-1-0")
+		# Run through Nova on AWS Bedrock
+		if awsnova.NovaModel.NOVA_LITE_1_0.name in services:
+			result = awsnova.AWSNova().fetch(image_local_path_scaled, awsnova.NovaModel.NOVA_LITE_1_0)
 			result["annotationFragment"] = annotationFragmentFullImage
-			image["nova-lite-1-0"] = result	
 
-		if "nova-pro-1-0" in services:
-			image["nova-pro-1-0"] = {}
+			image[awsnova.NovaModel.NOVA_LITE_1_0.name] = result	
 
-			result = awsnova.AWSNova().fetch(image_local_path_scaled, "nova-pro-1-0")
+		if awsnova.NovaModel.NOVA_PRO_1_0.name in services:
+			result = awsnova.AWSNova().fetch(image_local_path_scaled, awsnova.NovaModel.NOVA_PRO_1_0)
 			result["annotationFragment"] = annotationFragmentFullImage
-			image["nova-pro-1-0"] = result	
 
-		if "gemini-2-0-flash" in services:
-			image["gemini-2-0-flash"] = {}
+			image[awsnova.NovaModel.NOVA_PRO_1_0.name] = result	
 
-			result = googlegemini.GoogleGemini().fetch(image_local_path_scaled, "gemini-2-0-flash")
+		# Run through Gemini on Vertex
+		if googlegemini.GoogleGeminiModel.FLASH_2_0.name in services:
+			result = googlegemini.GoogleGemini().fetch(image_local_path_scaled, googlegemini.GoogleGeminiModel.FLASH_2_0)
 			result["annotationFragment"] = annotationFragmentFullImage
-			image["gemini-2-0-flash"] = result	
+
+			image[googlegemini.GoogleGeminiModel.FLASH_2_0.name] = result	
 			
-		if "gemini-2-0-flash-lite" in services:
-			image["gemini-2-0-flash-lite"] = {}
-
-			result = googlegemini.GoogleGemini().fetch(image_local_path_scaled, "gemini-2-0-flash-lite")
+		if googlegemini.GoogleGeminiModel.FLASH_LITE_2_0.name in services:
+			result = googlegemini.GoogleGemini().fetch(image_local_path_scaled, googlegemini.GoogleGeminiModel.FLASH_LITE_2_0)
 			result["annotationFragment"] = annotationFragmentFullImage
-			image["gemini-2-0-flash-lite"] = result	
 
-		if "pixtral-large-2502" in services:
-			image["pixtral-large-2502"] = {}
+			image[googlegemini.GoogleGeminiModel.FLASH_LITE_2_0.name] = result	
 
-			result = awsmistral.AWSMistral().fetch(image_local_path, "pixtral-large-2502")
+		# Run through Pixtral on AWS Bedrock
+		if awsmistral.MistralModel.PIXTRAL_LARGE_2502.name in services:
+			result = awsmistral.AWSMistral().fetch(image_local_path, awsmistral.MistralModel.PIXTRAL_LARGE_2502)
 			result["annotationFragment"] = annotationFragmentFullImage
-			image["pixtral-large-2502"] = result
+
+			image[awsmistral.MistralModel.PIXTRAL_LARGE_2502.name] = result
 
 	end = time.time()
 	image["runtime"] = end - start
