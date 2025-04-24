@@ -330,6 +330,24 @@ def process_image(URL, services):
 
 			image["imagga"]["categories"] = result
 
+			# Process faces
+			result = imagga.Imagga().fetch_faces(image_url)
+			if "faces" in result["result"]:
+				for index in range(len(result["result"]["faces"])):
+					face = result["result"]["faces"][index]
+
+					xOffset = face["coordinates"]["xmin"]*imageScaleFactor
+					yOffset = face["coordinates"]["ymin"]*imageScaleFactor
+					width = face["coordinates"]["width"]*imageScaleFactor
+					height = face["coordinates"]["height"]*imageScaleFactor
+
+					face["iiifFaceImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
+					face["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
+
+					result["result"]["faces"][index] = face
+
+			image["imagga"]["faces"] = result
+
 			# Process colors
 			result = imagga.Imagga().fetch_colors(image_url)
 			image["imagga"]["colors"] = result

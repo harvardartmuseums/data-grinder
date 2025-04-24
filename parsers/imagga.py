@@ -28,5 +28,13 @@ class Imagga(object):
 		response = response.json()
 		
 		response['model'] = 'unknown'
-		
+
 		return response
+	
+	def fetch_faces(self, photo_file):
+		response = requests.get('https://api.imagga.com/v2/faces/detections?image_url=%s' % photo_file, auth=(self.api_key, self.api_secret))
+		response = response.json()
+		
+		response['model'] = 'unknown'
+		
+		return response	
