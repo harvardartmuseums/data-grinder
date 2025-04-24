@@ -208,6 +208,21 @@ def process_image(URL, services):
 
 					result["faces"][index] = face
 
+			# convert objects to IIIF image API URLs
+			if "objects" in result:
+				for index in range(len(result["objects"])):
+					object = result["objects"][index]
+
+					xOffset = object["rectangle"]["x"]*imageScaleFactor
+					yOffset = object["rectangle"]["y"]*imageScaleFactor
+					width = object["rectangle"]["w"]*imageScaleFactor
+					height = object["rectangle"]["h"]*imageScaleFactor
+
+					object["iiifFaceImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
+					object["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
+
+					result["objects"][index] = object					
+
 			image["microsoftvision"]["analyze"] = result
 
 		# Run through Google Vision

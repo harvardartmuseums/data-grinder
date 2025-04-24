@@ -13,7 +13,7 @@ class MCSVision(object):
 	def fetch_analyze(self, photo_file):
 		url = self.base_url + 'analyze'
 
-		params = {'visualFeatures': 'Categories,Tags,Description,Faces,Color'}
+		params = {'visualFeatures': 'Categories,Tags,Description,Faces,Color,Objects'}
 		headers = {
 			'Ocp-Apim-Subscription-Key': self.api_key,
 			'Content-Type': 'application/octet-stream'
