@@ -330,6 +330,10 @@ def process_image(URL, services):
 
 			image["imagga"]["categories"] = result
 
+			# Process colors
+			result = imagga.Imagga().fetch_colors(image_url)
+			image["imagga"]["colors"] = result
+
 		# Run through AWS Rekognition
 		if "aws" in services:
 			image["aws"] = {}

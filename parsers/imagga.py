@@ -27,4 +27,6 @@ class Imagga(object):
 		response = requests.get('https://api.imagga.com/v2/colors?image_url=%s' % photo_file, auth=(self.api_key, self.api_secret))
 		response = response.json()
 		
+		response['model'] = 'unknown'
+		
 		return response
