@@ -123,8 +123,10 @@ Example response:
         }
     },
     "googlevision": {
+        "faceAnnotations": [],
         "fullTextAnnotation": {},
         "labelAnnotations": [],
+        "landmarkAnnotations": [],
         "textAnnotations": []
     },    
     "imagga": {
