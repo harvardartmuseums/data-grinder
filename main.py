@@ -187,6 +187,9 @@ def process_image(URL, services):
 
 			# Process caption
 			result = clarifai.Clarifai().fetch_caption(image_url)
+			if "data" in result["outputs"][0]:
+				result["outputs"][0]["data"]["annotationFragment"] = annotationFragmentFullImage
+
 			image["clarifai"]["caption"] = result
 
 		# Run through Microsoft Cognitive Services
