@@ -98,11 +98,46 @@ Example response:
     "idsid": "14178676",
     "colors": [],
     "hashes": {},
-    "clarifai": {},
-    "microsoftvision": {},
-    "googlevision": {},    
-    "imagga": {},
-    "aws": {},
+    "clarifai": {
+        "caption": {},
+        "classification": {},
+        "object": {}
+    },
+    "microsoftvision": {
+        "analyze": {
+            "categories": [],
+            "color": {},
+            "description": {
+                "captions": [],
+                "tags": []                
+            },
+            "faces": [],
+            "objects": [],
+            "tags": []            
+        },
+        "describe": {
+            "description": {
+                "captions": [],
+                "tags": []
+            }
+        }
+    },
+    "googlevision": {
+        "fullTextAnnotation": {},
+        "labelAnnotations": [],
+        "textAnnotations": []
+    },    
+    "imagga": {
+        "categories": {},
+        "colors": {},
+        "faces": {},
+        "tags": {}
+    },
+    "aws": {
+        "faces": {},
+        "labels": {},
+        "text": {}
+    },
     "gpt-4": {},
     "gpt-4o": {},
     "claude-3-haiku": {},
