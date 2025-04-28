@@ -43,9 +43,9 @@ We recommend creating a virtual environment with [Virtualenv](https://pypi.org/p
 HAM Color Service: extract colors  
 Hashing: compute average, color, perceptual, difference, wavelet hashes  
 Clarifai: tag features, tag objects, write captions  
-Imagga: tag features, extract colors, categorize  
+Imagga: tag features, extract colors, categorize, faces  
 Google Vision: tag features, find faces, find text  
-Microsoft Cognitive Services: categories, tags, description, faces, color  
+Microsoft Cognitive Services: categories, tags, description, faces, color, objects  
 AWS Rekognition: labels, faces, text  
 OpenAI GPT-4 on Azure: description   
 OpenAI GPT-4o on Azure: description   
@@ -57,11 +57,11 @@ Meta Llama 3.2 11b on AWS Bedrock: description
 Meta Llama 3.2 90b on AWS Bedrock: description  
 Amazon Nova Lite 1.0 on AWS Bedrock: description  
 Amazon Nova Pro 1.0 on AWS Bedrock: description  
-Google Gemini 2.0 Flash: description
-Google Gemini 2.0 Flash-Lite: description
+Google Gemini 2.0 Flash: description  
+Google Gemini 2.0 Flash-Lite: description  
 Mistral Pixtral Large 25.02: description  
 
-<img width="600" alt="API Tools-Data-Process Diagrams" src="https://github.com/user-attachments/assets/daebb9a8-589d-4bee-bca6-688a774e522d" />
+<img width="600" alt="API Tools-Data-Process Diagrams" src="https://github.com/user-attachments/assets/d6ae133b-f8ab-4df5-b890-67ba72fb3049" />
 
 ## Usage
 
