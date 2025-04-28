@@ -42,7 +42,7 @@ We recommend creating a virtual environment with [Virtualenv](https://pypi.org/p
 
 HAM Color Service: extract colors  
 Hashing: compute average, color, perceptual, difference, wavelet hashes  
-Clarifai: tag features, extract colors  
+Clarifai: tag features, tag objects, write captions  
 Imagga: tag features, extract colors, categorize  
 Google Vision: tag features, find faces, find text  
 Microsoft Cognitive Services: categories, tags, description, faces, color  

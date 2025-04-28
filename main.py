@@ -157,14 +157,37 @@ def process_image(URL, services):
 		
 		# Run through Clarifai
 		if "clarifai" in services:
-			result = clarifai.Clarifai().fetch(image_url, id)
+			image["clarifai"] = {}
 			
-			# Process concepts
+			# Process classification
+			result = clarifai.Clarifai().fetch(image_url)
 			if "data" in result["outputs"][0]:
 				for concept in result["outputs"][0]["data"]["concepts"]:
 					concept["annotationFragment"] = annotationFragmentFullImage
 
-			image["clarifai"] = result
+			image["clarifai"]["classification"] = result
+
+			# Process object detection
+			result = clarifai.Clarifai().fetch_objects(image_url)
+			if "data" in result["outputs"][0]:
+				for region in result["outputs"][0]["data"]["regions"]:
+					boundingBox = region["region_info"]["bounding_box"]
+					
+					left = int((boundingBox['left_col'] * image["width"])*imageScaleFactor)
+					top = int((boundingBox['top_row'] * image["height"])*imageScaleFactor)
+					right = int((boundingBox['right_col'] * image["width"])*imageScaleFactor)
+					bottom = int((boundingBox['bottom_row'] * image["height"])*imageScaleFactor)
+					
+					width = right - left
+					height = bottom - top
+
+					region["annotationFragment"] = "xywh=" + str(left) + "," + str(top) + "," + str(width) + "," + str(height)
+
+			image["clarifai"]["objects"] = result			
+
+			# Process caption
+			result = clarifai.Clarifai().fetch_caption(image_url)
+			image["clarifai"]["caption"] = result
 
 		# Run through Microsoft Cognitive Services
 		if "mcs" in services: 
