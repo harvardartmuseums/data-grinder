@@ -1,6 +1,41 @@
 import base64
 import os
 from googleapiclient import discovery
+from enum import Enum
+
+class GVisionModel(Enum):
+	BASE = (
+		"gv",
+		"",
+		[]
+	)
+
+	def __init__(self, name: str, model_id: str, functions: list):
+		self._model_id = model_id
+		self._name = name
+		self._functions = functions
+
+	def list_models():
+		return [
+			{
+				"name": model.name,
+				"model_id": model.model_id,
+				"functions": model.functions
+			}
+			for model in GVisionModel
+		]
+
+	@property
+	def model_id(self):
+		return self._model_id    
+	
+	@property
+	def name(self):
+		return self._name   
+	
+	@property
+	def functions(self):
+		return self._functions
 
 class Vision(object):
 

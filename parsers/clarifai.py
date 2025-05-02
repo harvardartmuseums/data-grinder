@@ -1,6 +1,41 @@
 import requests
 import os
 import json
+from enum import Enum
+
+class ClarifaiModel(Enum):
+	BASE = (
+		"clarifai",
+		"",
+		["colors", "caption", "classification", "objects"]
+	)
+
+	def __init__(self, name: str, model_id: str, functions: list):
+		self._model_id = model_id
+		self._name = name
+		self._functions = functions
+
+	def list_models():
+		return [
+			{
+				"name": model.name,
+				"model_id": model.model_id,
+				"functions": model.functions
+			}
+			for model in ClarifaiModel
+		]
+
+	@property
+	def model_id(self):
+		return self._model_id    
+	
+	@property
+	def name(self):
+		return self._name   
+	
+	@property
+	def functions(self):
+		return self._functions
 
 class Clarifai(object):
 
