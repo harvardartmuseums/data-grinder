@@ -30,11 +30,11 @@ def list_services():
 			awsnova.NovaModel.list_models() + \
 			googlegemini.GoogleGeminiModel.list_models() + \
 			awsmistral.MistralModel.list_models() + \
-			[{"name":"aws", "model_id":""}] +\
-			[{"name":"clarifai", "model_id":""}] +\
-			[{"name":"imagga", "model_id":""}] +\
-			[{"name":"mcs", "model_id":""}] +\
-			[{"name":"gv", "model_id":""}] +\
+			aws.AWSModel.list_models() + \
+			clarifai.ClarifaiModel.list_models() + \
+			imagga.ImaggaModel.list_models() + \
+			mcsvision.MCSVisionModel.list_models() + \
+			vision.GVisionModel.list_models() + \
 			[{"name":"hash", "model_id":""}] +\
 			[{"name":"color", "model_id":""}]}
 
@@ -45,8 +45,8 @@ def extract():
 	url = request.args.get('url')
 	services = request.args.get('services')
 	if services is not None:
-		services = services.split(',')
-	
+		services = parse_service_features(services)
+
 	if url and services: 
 		response = process_image(url, services)
 
@@ -57,6 +57,36 @@ def main(url, services):
 	print(json.dumps(image_info))
 
 ## HELPER FUNCTIONS ##
+def parse_service_features(query: str, default_value: str = "all"):
+    result = {}
+
+    for part in query.split(","):
+        part = part.strip()
+        if not part:
+            continue
+
+        # If no colon, just assume key with default value
+        if ":" not in part:
+            key = part.strip()
+            result[key] = [default_value]
+            continue
+
+        key, features_str = part.split(":", 1)
+        key = key.strip()
+
+        # If feature list is missing or empty/whitespace-only
+        if not features_str.strip():
+            features = [default_value]
+        else:
+            features = [f.strip() for f in features_str.split("|") if f.strip()]
+            if not features:
+                features = [default_value]
+
+        result[key] = features
+
+    return result
+
+
 def get_image_id(URL):
 	r = requests.get(URL, timeout=21)
 	if (r.status_code == 200) and (r.headers["Content-Type"] == 'image/jpeg'):
@@ -156,44 +186,48 @@ def process_image(URL, services):
 			image["colors"] = result["colors"]
 		
 		# Run through Clarifai
-		if "clarifai" in services:
+		if clarifai.ClarifaiModel.BASE.name in services:
 			image["clarifai"] = {}
+			features = services["clarifai"]
 			
-			# Process classification
-			result = clarifai.Clarifai().fetch(image_url)
-			if "data" in result["outputs"][0]:
-				for concept in result["outputs"][0]["data"]["concepts"]:
-					concept["annotationFragment"] = annotationFragmentFullImage
+			# Process classification			
+			if any(val in ["all", "classification"] for val in features):
+				result = clarifai.Clarifai().fetch(image_url)
+				if "data" in result["outputs"][0]:
+					for concept in result["outputs"][0]["data"]["concepts"]:
+						concept["annotationFragment"] = annotationFragmentFullImage
 
-			image["clarifai"]["classification"] = result
+				image["clarifai"]["classification"] = result
 
 			# Process object detection
-			result = clarifai.Clarifai().fetch_objects(image_url)
-			if "data" in result["outputs"][0]:
-				for region in result["outputs"][0]["data"]["regions"]:
-					boundingBox = region["region_info"]["bounding_box"]
-					
-					left = int((boundingBox['left_col'] * image["width"])*imageScaleFactor)
-					top = int((boundingBox['top_row'] * image["height"])*imageScaleFactor)
-					right = int((boundingBox['right_col'] * image["width"])*imageScaleFactor)
-					bottom = int((boundingBox['bottom_row'] * image["height"])*imageScaleFactor)
-					
-					width = right - left
-					height = bottom - top
+			if any(val in ["all", "objects"] for val in features):
+				result = clarifai.Clarifai().fetch_objects(image_url)
+				if "data" in result["outputs"][0]:
+					for region in result["outputs"][0]["data"]["regions"]:
+						boundingBox = region["region_info"]["bounding_box"]
+						
+						left = int((boundingBox['left_col'] * image["width"])*imageScaleFactor)
+						top = int((boundingBox['top_row'] * image["height"])*imageScaleFactor)
+						right = int((boundingBox['right_col'] * image["width"])*imageScaleFactor)
+						bottom = int((boundingBox['bottom_row'] * image["height"])*imageScaleFactor)
+						
+						width = right - left
+						height = bottom - top
 
-					region["annotationFragment"] = "xywh=" + str(left) + "," + str(top) + "," + str(width) + "," + str(height)
+						region["annotationFragment"] = "xywh=" + str(left) + "," + str(top) + "," + str(width) + "," + str(height)
 
-			image["clarifai"]["objects"] = result			
+				image["clarifai"]["objects"] = result			
 
 			# Process caption
-			result = clarifai.Clarifai().fetch_caption(image_url)
-			if "data" in result["outputs"][0]:
-				result["outputs"][0]["data"]["annotationFragment"] = annotationFragmentFullImage
+			if any(val in ["all", "caption"] for val in features):
+				result = clarifai.Clarifai().fetch_caption(image_url)
+				if "data" in result["outputs"][0]:
+					result["outputs"][0]["data"]["annotationFragment"] = annotationFragmentFullImage
 
-			image["clarifai"]["caption"] = result
+				image["clarifai"]["caption"] = result
 
 		# Run through Microsoft Cognitive Services
-		if "mcs" in services: 
+		if mcsvision.MCSVisionModel.BASE.name in services: 
 			image["microsoftvision"] = {}
 
 			result = mcsvision.MCSVision().fetch_description(image_local_path)
@@ -252,7 +286,7 @@ def process_image(URL, services):
 			image["microsoftvision"]["analyze"] = result
 
 		# Run through Google Vision
-		if "gv" in services: 
+		if vision.GVisionModel.BASE.name in services: 
 			result = vision.Vision().fetch(image_local_path)
 
 			# Process labels/tags
@@ -337,104 +371,113 @@ def process_image(URL, services):
 			image["googlevision"] = result
 
 		# Run through Imagga
-		if "imagga" in services: 
+		if imagga.ImaggaModel.BASE.name in services: 
 			image["imagga"] = {}
+			features = services["imagga"]
 
 			# Process tags
-			result = imagga.Imagga().fetch(image_url)
-			if "tags" in result["result"]:
-				for tag in result["result"]["tags"]:
-					tag["annotationFragment"] = annotationFragmentFullImage
+			if any(val in ["all", "tags"] for val in features):
+				result = imagga.Imagga().fetch(image_url)
+				if "tags" in result["result"]:
+					for tag in result["result"]["tags"]:
+						tag["annotationFragment"] = annotationFragmentFullImage
 
-			image["imagga"]["tags"] = result
+				image["imagga"]["tags"] = result
 
 			# Process categories
-			result = imagga.Imagga().fetch_categories(image_url)
-			if "categories" in result["result"]:
-				for category in result["result"]["categories"]:
-					category["annotationFragment"] = annotationFragmentFullImage
+			if any(val in ["all", "categories"] for val in features):
+				result = imagga.Imagga().fetch_categories(image_url)
+				if "categories" in result["result"]:
+					for category in result["result"]["categories"]:
+						category["annotationFragment"] = annotationFragmentFullImage
 
-			image["imagga"]["categories"] = result
-
-			# Process faces
-			result = imagga.Imagga().fetch_faces(image_url)
-			if "faces" in result["result"]:
-				for index in range(len(result["result"]["faces"])):
-					face = result["result"]["faces"][index]
-
-					xOffset = face["coordinates"]["xmin"]*imageScaleFactor
-					yOffset = face["coordinates"]["ymin"]*imageScaleFactor
-					width = face["coordinates"]["width"]*imageScaleFactor
-					height = face["coordinates"]["height"]*imageScaleFactor
-
-					face["iiifFaceImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
-					face["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
-
-					result["result"]["faces"][index] = face
-
-			image["imagga"]["faces"] = result
-
-			# Process colors
-			result = imagga.Imagga().fetch_colors(image_url)
-			image["imagga"]["colors"] = result
-
-		# Run through AWS Rekognition
-		if "aws" in services:
-			image["aws"] = {}
-
-			# Process labels
-			result = aws.AWS().fetch_labels(image_local_path)
-			if "Labels" in result:
-				for label in result["Labels"]:
-					label["annotationFragment"] = annotationFragmentFullImage
-
-					for instance in label["Instances"]:
-						if "BoundingBox" in instance:
-
-							xOffset = (image["width"]*instance["BoundingBox"]["Left"])*imageScaleFactor
-							yOffset = (image["height"]*instance["BoundingBox"]["Top"])*imageScaleFactor
-							width = (image["width"]*instance["BoundingBox"]["Width"])*imageScaleFactor
-							height = (image["height"]*instance["BoundingBox"]["Height"])*imageScaleFactor
-
-							instance["iiifLabelImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
-							instance["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
-			
-			image["aws"]["labels"] = result
+				image["imagga"]["categories"] = result
 
 			# Process faces
-			result = aws.AWS().fetch_faces(image_local_path)
-			if "FaceDetails" in result:
-				for face in result["FaceDetails"]:
-					if "BoundingBox" in face:
-						xOffset = (image["width"]*face["BoundingBox"]["Left"])*imageScaleFactor
-						yOffset = (image["height"]*face["BoundingBox"]["Top"])*imageScaleFactor
-						width = (image["width"]*face["BoundingBox"]["Width"])*imageScaleFactor
-						height = (image["height"]*face["BoundingBox"]["Height"])*imageScaleFactor
-						
+			if any(val in ["all", "faces"] for val in features):
+				result = imagga.Imagga().fetch_faces(image_url)
+				if "faces" in result["result"]:
+					for index in range(len(result["result"]["faces"])):
+						face = result["result"]["faces"][index]
+
+						xOffset = face["coordinates"]["xmin"]*imageScaleFactor
+						yOffset = face["coordinates"]["ymin"]*imageScaleFactor
+						width = face["coordinates"]["width"]*imageScaleFactor
+						height = face["coordinates"]["height"]*imageScaleFactor
+
 						face["iiifFaceImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
 						face["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
-			
-			image["aws"]["faces"] = result
+
+						result["result"]["faces"][index] = face
+
+				image["imagga"]["faces"] = result
+
+			# Process colors
+			if any(val in ["all", "colors"] for val in features):
+				result = imagga.Imagga().fetch_colors(image_url)
+				image["imagga"]["colors"] = result
+
+		# Run through AWS Rekognition
+		if aws.AWSModel.BASE.name in services:
+			image["aws"] = {}
+			features = services["aws"]
+
+			# Process labels
+			if any(val in ["all", "labels"] for val in features):
+				result = aws.AWS().fetch_labels(image_local_path)
+				if "Labels" in result:
+					for label in result["Labels"]:
+						label["annotationFragment"] = annotationFragmentFullImage
+
+						for instance in label["Instances"]:
+							if "BoundingBox" in instance:
+
+								xOffset = (image["width"]*instance["BoundingBox"]["Left"])*imageScaleFactor
+								yOffset = (image["height"]*instance["BoundingBox"]["Top"])*imageScaleFactor
+								width = (image["width"]*instance["BoundingBox"]["Width"])*imageScaleFactor
+								height = (image["height"]*instance["BoundingBox"]["Height"])*imageScaleFactor
+
+								instance["iiifLabelImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
+								instance["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
+				
+				image["aws"]["labels"] = result
+
+			# Process faces
+			if any(val in ["all", "faces"] for val in features):
+				result = aws.AWS().fetch_faces(image_local_path)
+				if "FaceDetails" in result:
+					for face in result["FaceDetails"]:
+						if "BoundingBox" in face:
+							xOffset = (image["width"]*face["BoundingBox"]["Left"])*imageScaleFactor
+							yOffset = (image["height"]*face["BoundingBox"]["Top"])*imageScaleFactor
+							width = (image["width"]*face["BoundingBox"]["Width"])*imageScaleFactor
+							height = (image["height"]*face["BoundingBox"]["Height"])*imageScaleFactor
+							
+							face["iiifFaceImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
+							face["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
+				
+				image["aws"]["faces"] = result
 
 			# Proces text
-			result = aws.AWS().fetch_text(image_local_path)
-			if "TextDetections" in result:
-				for text in result["TextDetections"]:
-					if "Geometry" in text:
-						boundingBox = text["Geometry"]["BoundingBox"]
+			if any(val in ["all", "text"] for val in features):
+				result = aws.AWS().fetch_text(image_local_path)
+				if "TextDetections" in result:
+					for text in result["TextDetections"]:
+						if "Geometry" in text:
+							boundingBox = text["Geometry"]["BoundingBox"]
 
-						xOffset = (image["width"]*boundingBox["Left"])*imageScaleFactor
-						yOffset = (image["height"]*boundingBox["Top"])*imageScaleFactor
+							xOffset = (image["width"]*boundingBox["Left"])*imageScaleFactor
+							yOffset = (image["height"]*boundingBox["Top"])*imageScaleFactor
 
-						# Sometimes width and height are reported as negative values. AWS documentation doesn't say why this happens.
-						# I'm using ABS as a hack to make values that work in IIIF fragments
-						width = (image["width"]*abs(boundingBox["Width"]))*imageScaleFactor
-						height = (image["height"]*abs(boundingBox["Height"]))*imageScaleFactor
+							# Sometimes width and height are reported as negative values. AWS documentation doesn't say why this happens.
+							# I'm using ABS as a hack to make values that work in IIIF fragments
+							width = (image["width"]*abs(boundingBox["Width"]))*imageScaleFactor
+							height = (image["height"]*abs(boundingBox["Height"]))*imageScaleFactor
 
-						text["iiifTextImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
-						text["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
+							text["iiifTextImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
+							text["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
 
-			image["aws"]["text"] = result
+				image["aws"]["text"] = result
 
 		# Run through OpenAI
 		if azureoai.OpenAIModel.OPENAI.name in services: 
