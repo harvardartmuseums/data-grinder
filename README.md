@@ -75,13 +75,31 @@ Run as a local service:
 ```sh
 $ flask run 
 ```
-Then open a  browser to http://127.0.0.1:5000/extract
+Then open a browser to http://127.0.0.1:5000 to check the status of the application.
+
+### List available services and functions
+
+```
+http://127.0.0.1:5000/list/services
+```
+
+### Run an image against one or more services
+
+```
+http://127.0.0.1:5000/extract
+```
 
 Parameters |  | Values
 ------------ | ------------- | -------------
 url | Any Harvard NRS URL that resolves to a IIIF compatible image
-services | (optional, default uses all services) One or more from the list of valid services separated by spaces | `imagga, gv, mcs, clarifai, color, aws, hash, gpt-4, gpt-4o, claude-3-haiku, claude-3-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, llama-3-2-11b, llama-3-2-90b, nova-lite-1-0, nova-pro-1-0, gemini-2-0-flash, gemini-2-0-flash-lite, pixtral-large-2502`
+services | (optional, default uses all services) One or more from the list of valid services separated by commas | `imagga, gv, mcs, clarifai, color, aws, hash, gpt-4, gpt-4o, claude-3-haiku, claude-3-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, llama-3-2-11b, llama-3-2-90b, nova-lite-1-0, nova-pro-1-0, gemini-2-0-flash, gemini-2-0-flash-lite, pixtral-large-2502`
 
+
+Example request:  
+
+```
+http://127.0.0.1:5000/extract?url=https://nrs.harvard.edu/urn-3:HUAM:DDC251942_dynmc&services=imagga,clarifai:caption|classification
+```
 
 Example response:
 ```json
