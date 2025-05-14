@@ -229,61 +229,64 @@ def process_image(URL, services):
 		# Run through Microsoft Cognitive Services
 		if mcsvision.MCSVisionModel.BASE.name in services: 
 			image["microsoftvision"] = {}
+			features = services[mcsvision.MCSVisionModel.BASE.name]
 
-			result = mcsvision.MCSVision().fetch_description(image_local_path)
-			# Process description->captions
-			if "description" in result:
-				for caption in result["description"]["captions"]:
-					caption["annotationFragment"] = annotationFragmentFullImage
-			image["microsoftvision"]["describe"] = result
+			if any(val in ["all", "describe"] for val in features):
+				result = mcsvision.MCSVision().fetch_description(image_local_path)
+				# Process description->captions
+				if "description" in result:
+					for caption in result["description"]["captions"]:
+						caption["annotationFragment"] = annotationFragmentFullImage
+				image["microsoftvision"]["describe"] = result
 
-			result = mcsvision.MCSVision().fetch_analyze(image_local_path)
-			# Process description->captions
-			if "description" in result:
-				for caption in result["description"]["captions"]:
-					caption["annotationFragment"] = annotationFragmentFullImage
-			
-			# Process categories
-			if "categories" in result:
-				for category in result["categories"]:
-					category["annotationFragment"] = annotationFragmentFullImage
+			if any(val in ["all", "analyze"] for val in features):
+				result = mcsvision.MCSVision().fetch_analyze(image_local_path)
+				# Process description->captions
+				if "description" in result:
+					for caption in result["description"]["captions"]:
+						caption["annotationFragment"] = annotationFragmentFullImage
+				
+				# Process categories
+				if "categories" in result:
+					for category in result["categories"]:
+						category["annotationFragment"] = annotationFragmentFullImage
 
-			# Process tags
-			if "tags" in result:
-				for tag in result["tags"]:
-					tag["annotationFragment"] = annotationFragmentFullImage
+				# Process tags
+				if "tags" in result:
+					for tag in result["tags"]:
+						tag["annotationFragment"] = annotationFragmentFullImage
 
-			# convert faces to IIIF image API URLs
-			if "faces" in result:
-				for index in range(len(result["faces"])):
-					face = result["faces"][index]
+				# convert faces to IIIF image API URLs
+				if "faces" in result:
+					for index in range(len(result["faces"])):
+						face = result["faces"][index]
 
-					xOffset = face["faceRectangle"]["left"]*imageScaleFactor
-					yOffset = face["faceRectangle"]["top"]*imageScaleFactor
-					width = face["faceRectangle"]["width"]*imageScaleFactor
-					height = face["faceRectangle"]["height"]*imageScaleFactor
+						xOffset = face["faceRectangle"]["left"]*imageScaleFactor
+						yOffset = face["faceRectangle"]["top"]*imageScaleFactor
+						width = face["faceRectangle"]["width"]*imageScaleFactor
+						height = face["faceRectangle"]["height"]*imageScaleFactor
 
-					face["iiifFaceImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
-					face["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
+						face["iiifFaceImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
+						face["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
 
-					result["faces"][index] = face
+						result["faces"][index] = face
 
-			# convert objects to IIIF image API URLs
-			if "objects" in result:
-				for index in range(len(result["objects"])):
-					object = result["objects"][index]
+				# convert objects to IIIF image API URLs
+				if "objects" in result:
+					for index in range(len(result["objects"])):
+						object = result["objects"][index]
 
-					xOffset = object["rectangle"]["x"]*imageScaleFactor
-					yOffset = object["rectangle"]["y"]*imageScaleFactor
-					width = object["rectangle"]["w"]*imageScaleFactor
-					height = object["rectangle"]["h"]*imageScaleFactor
+						xOffset = object["rectangle"]["x"]*imageScaleFactor
+						yOffset = object["rectangle"]["y"]*imageScaleFactor
+						width = object["rectangle"]["w"]*imageScaleFactor
+						height = object["rectangle"]["h"]*imageScaleFactor
 
-					object["iiifFaceImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
-					object["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
+						object["iiifFaceImageURL"] = iiifImage.get_fragment_image_url(str(int(xOffset)), str(int(yOffset)), str(int(width)), str(int(height)))
+						object["annotationFragment"] = "xywh=" + str(int(xOffset)) + "," + str(int(yOffset)) + "," + str(int(width)) + "," + str(int(height))
 
-					result["objects"][index] = object					
+						result["objects"][index] = object					
 
-			image["microsoftvision"]["analyze"] = result
+				image["microsoftvision"]["analyze"] = result
 
 		# Run through Google Vision
 		if vision.GVisionModel.BASE.name in services: 
