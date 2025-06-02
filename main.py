@@ -138,8 +138,8 @@ def process_image(URL, services):
 		image["iiifFullImageURL"] = iiifImage.get_full_image_url()
 
 		# Download the image
-		(status, image_local_path) = download_image(image_url)
-		(status, image_local_path_scaled) = download_image(iiifImage.get_scaled_image_url("!1120,1120"),"temp_1120.jpg")
+		(status, image_local_path) = download_image(image_url, f"temp_{id}.jpg")
+		(status, image_local_path_scaled) = download_image(iiifImage.get_scaled_image_url("!1120,1120"),f"temp_{id}_1120.jpg")
 
 		# Gather and store image metadata
 		im=Image.open(image_local_path)
