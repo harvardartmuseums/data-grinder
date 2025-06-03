@@ -203,18 +203,19 @@ def process_image(URL, services):
 			if any(val in ["all", "objects"] for val in features):
 				result = clarifai.Clarifai().fetch_objects(image_url)
 				if "data" in result["outputs"][0]:
-					for region in result["outputs"][0]["data"]["regions"]:
-						boundingBox = region["region_info"]["bounding_box"]
-						
-						left = int((boundingBox['left_col'] * image["width"])*imageScaleFactor)
-						top = int((boundingBox['top_row'] * image["height"])*imageScaleFactor)
-						right = int((boundingBox['right_col'] * image["width"])*imageScaleFactor)
-						bottom = int((boundingBox['bottom_row'] * image["height"])*imageScaleFactor)
-						
-						width = right - left
-						height = bottom - top
+					if "regions" in result["outputs"][0]["data"]:
+						for region in result["outputs"][0]["data"]["regions"]:
+							boundingBox = region["region_info"]["bounding_box"]
+							
+							left = int((boundingBox['left_col'] * image["width"])*imageScaleFactor)
+							top = int((boundingBox['top_row'] * image["height"])*imageScaleFactor)
+							right = int((boundingBox['right_col'] * image["width"])*imageScaleFactor)
+							bottom = int((boundingBox['bottom_row'] * image["height"])*imageScaleFactor)
+							
+							width = right - left
+							height = bottom - top
 
-						region["annotationFragment"] = "xywh=" + str(left) + "," + str(top) + "," + str(width) + "," + str(height)
+							region["annotationFragment"] = "xywh=" + str(left) + "," + str(top) + "," + str(width) + "," + str(height)
 
 				image["clarifai"]["objects"] = result			
 
