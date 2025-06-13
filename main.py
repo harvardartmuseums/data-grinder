@@ -139,7 +139,7 @@ def process_image(URL, services):
 
 		# Download the image
 		(status, image_local_path) = download_image(image_url, f"temp_{id}.jpg")
-		(status, image_local_path_scaled) = download_image(iiifImage.get_scaled_image_url("!1120,1120"),f"temp_{id}_1120.jpg")
+		(status, image_local_path_scaled) = download_image(iiifImage.get_scaled_image_url("!1110,1110"),f"temp_{id}_1110.jpg")
 
 		# Gather and store image metadata
 		im=Image.open(image_local_path)
@@ -574,7 +574,7 @@ def process_image(URL, services):
 
 		# Run through Pixtral on AWS Bedrock
 		if awsmistral.MistralModel.PIXTRAL_LARGE_2502.name in services:
-			result = awsmistral.AWSMistral().fetch(image_local_path, awsmistral.MistralModel.PIXTRAL_LARGE_2502)
+			result = awsmistral.AWSMistral().fetch(image_local_path_scaled, awsmistral.MistralModel.PIXTRAL_LARGE_2502)
 			result["annotationFragment"] = annotationFragmentFullImage
 
 			image[awsmistral.MistralModel.PIXTRAL_LARGE_2502.name] = result
