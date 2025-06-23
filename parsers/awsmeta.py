@@ -87,12 +87,19 @@ class AWSMeta(object):
 			return response
 		
 		except ( client.exceptions.AccessDeniedException, client.exceptions.ResourceNotFoundException, client.exceptions.ThrottlingException, client.exceptions.ModelTimeoutException, client.exceptions.InternalServerException, client.exceptions.ValidationException, client.exceptions.ModelNotReadyException, client.exceptions.ServiceQuotaExceededException) as e:
-			print(e)
-			response = {"status": 400}
+			response = {
+				"model": model.model_id,
+				"status": 400,
+				"description": str(e)
+			}
 			return response
 			
 		except client.exceptions.ModelErrorException as e:
-			response = {"status": 500}
+			response = {
+				"model": model.model_id,
+				"status": 500,
+				"description": str(e)
+			}
 			return response
 
 

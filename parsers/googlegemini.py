@@ -79,5 +79,9 @@ class GoogleGemini(object):
 			return response
 
 		except Exception as e:
-			response = {"status": 500}
+			response = {
+				"model": model.model_id,
+				"status": 500,
+				"description": str(e)
+			}
 			return response
