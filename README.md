@@ -60,6 +60,9 @@ Amazon Nova Pro 1.0 on AWS Bedrock: description
 Google Gemini 2.0 Flash: description  
 Google Gemini 2.0 Flash-Lite: description  
 Mistral Pixtral Large 25.02: description  
+Qwen 2.5 VL 7B Instruct on Hyperbolic: description  
+Qwen 2.5 VL 72B Instruct on Hyperbolic: description  
+
 
 <img width="600" alt="API Tools-Data-Process Diagrams" src="https://github.com/user-attachments/assets/d6ae133b-f8ab-4df5-b890-67ba72fb3049" />
 
@@ -92,7 +95,7 @@ http://127.0.0.1:5000/extract
 Parameters |  | Values
 ------------ | ------------- | -------------
 url | Any Harvard NRS URL that resolves to a IIIF compatible image
-services | (optional, default uses all services) One or more from the list of valid services separated by commas | `imagga, gv, mcs, clarifai, color, aws, hash, gpt-4, gpt-4o, claude-3-haiku, claude-3-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, llama-3-2-11b, llama-3-2-90b, nova-lite-1-0, nova-pro-1-0, gemini-2-0-flash, gemini-2-0-flash-lite, pixtral-large-2502`
+services | (optional, default uses all services) One or more from the list of valid services separated by commas | `imagga, gv, mcs, clarifai, color, aws, hash, gpt-4, gpt-4o, claude-3-haiku, claude-3-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, llama-3-2-11b, llama-3-2-90b, nova-lite-1-0, nova-pro-1-0, gemini-2-0-flash, gemini-2-0-flash-lite, pixtral-large-2502, qwen-2-5-vl-7b, qwen-2-5-vl-72b`
 
 
 Example request:  
@@ -170,7 +173,9 @@ Example response:
     "nova-pro-1-0": {},
     "gemini-2-0-flash": {}, 
     "gemini-2-0-flash-lite": {},
-    "pixtral-large-2502": {}
+    "pixtral-large-2502": {},
+    "qwen-2-5-vl-7b": {},
+    "qwen-2-5-vl-72b": {}
 }
 ```
 
@@ -204,3 +209,5 @@ Data in the response:
 `gemini-2-0-flash`:  
 `gemini-2-0-flash-list`:  
 `pixtral-large-2502`:  
+`qwen-2-5-vl-7b`:  
+`qwen-2-5-vl-72b`:  

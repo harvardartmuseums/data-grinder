@@ -8,7 +8,22 @@ import imagehash
 from flask import Flask, request
 from dotenv import  load_dotenv
 from PIL import Image
-from parsers import azureoai, clarifai, vision, imagga, iiif, mcsvision, colors, aws, awsanthropic, awsmeta, awsnova, googlegemini, awsmistral
+from parsers import (
+    azureoai, 
+    clarifai, 
+    vision, 
+    imagga, 
+    iiif, 
+    mcsvision, 
+    colors, 
+    aws, 
+    awsanthropic,
+	awsmeta,
+	awsnova,
+	googlegemini,
+	awsmistral,
+	qwen
+)
 
 load_dotenv()
 
@@ -30,6 +45,7 @@ def list_services():
 			awsnova.NovaModel.list_models() + \
 			googlegemini.GoogleGeminiModel.list_models() + \
 			awsmistral.MistralModel.list_models() + \
+			qwen.QwenModel.list_models() + \
 			aws.AWSModel.list_models() + \
 			clarifai.ClarifaiModel.list_models() + \
 			imagga.ImaggaModel.list_models() + \
@@ -578,6 +594,19 @@ def process_image(URL, services):
 			result["annotationFragment"] = annotationFragmentFullImage
 
 			image[awsmistral.MistralModel.PIXTRAL_LARGE_2502.name] = result
+
+		# Run through Qwen on Hyperbolic
+		if qwen.QwenModel.QWEN_2_5_VL_7B.name in services:
+			result = qwen.Qwen().fetch(image_url, qwen.QwenModel.QWEN_2_5_VL_7B)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[qwen.QwenModel.QWEN_2_5_VL_7B.name] = result
+
+		if qwen.QwenModel.QWEN_2_5_VL_72B.name in services:
+			result = qwen.Qwen().fetch(image_url, qwen.QwenModel.QWEN_2_5_VL_72B)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[qwen.QwenModel.QWEN_2_5_VL_72B.name] = result
 
 	end = time.time()
 	image["runtime"] = end - start
