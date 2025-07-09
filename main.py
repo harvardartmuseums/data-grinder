@@ -104,15 +104,21 @@ def parse_service_features(query: str, default_value: str = "all"):
 
 
 def get_image_id(URL):
-	r = requests.get(URL, timeout=21)
-	if (r.status_code == 200) and (r.headers["Content-Type"] == 'image/jpeg'):
-		status = "ok"
-		id = r.url[37:]
-		
-	else:
+	try:
+		r = requests.get(URL, timeout=21)
+		r.raise_for_status()
+		if r.headers.get("Content-Type") == 'image/jpeg':
+			status = "ok"
+			id = r.url[37:]
+		else:
+			status = "bad"
+			id = ""
+	except requests.exceptions.RequestException as e:
 		status = "bad"
 		id = ""
-
+	except Exception as e:
+		status = "bad"
+		id = ""
 	return (status, id)
 
 def download_image(URL,filename="temp.jpg"):
