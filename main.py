@@ -22,7 +22,8 @@ from parsers import (
 	awsnova,
 	googlegemini,
 	awsmistral,
-	qwen
+	qwen,
+	salesforce
 )
 
 load_dotenv()
@@ -51,6 +52,7 @@ def list_services():
 			imagga.ImaggaModel.list_models() + \
 			mcsvision.MCSVisionModel.list_models() + \
 			vision.GVisionModel.list_models() + \
+			salesforce.SalesForceModel.list_models() + \
 			[{"name":"hash", "model_id":""}] +\
 			[{"name":"color", "model_id":""}]}
 
@@ -240,14 +242,6 @@ def process_image(URL, services):
 							region["annotationFragment"] = "xywh=" + str(left) + "," + str(top) + "," + str(width) + "," + str(height)
 
 				image["clarifai"]["objects"] = result			
-
-			# Process caption
-			if any(val in ["all", "caption"] for val in features):
-				result = clarifai.Clarifai().fetch_caption(image_url)
-				if "data" in result["outputs"][0]:
-					result["outputs"][0]["data"]["annotationFragment"] = annotationFragmentFullImage
-
-				image["clarifai"]["caption"] = result
 
 		# Run through Microsoft Cognitive Services
 		if mcsvision.MCSVisionModel.BASE.name in services: 
@@ -613,6 +607,28 @@ def process_image(URL, services):
 			result["annotationFragment"] = annotationFragmentFullImage
 
 			image[qwen.QwenModel.QWEN_2_5_VL_72B.name] = result
+
+		# Run through BLIP on Clarifai
+		if salesforce.SalesForceModel.BLIP.name in services:
+			result = salesforce.SalesForce().fetch(image_url, salesforce.SalesForceModel.BLIP)
+			if "data" in result["outputs"][0]:
+				result["outputs"][0]["data"]["annotationFragment"] = annotationFragmentFullImage
+
+			image[salesforce.SalesForceModel.BLIP.name] = result
+
+		if salesforce.SalesForceModel.BLIP_2.name in services:
+			result = salesforce.SalesForce().fetch(image_url, salesforce.SalesForceModel.BLIP_2)
+			if "data" in result["outputs"][0]:
+				result["outputs"][0]["data"]["annotationFragment"] = annotationFragmentFullImage
+
+			image[salesforce.SalesForceModel.BLIP_2.name] = result
+
+		if salesforce.SalesForceModel.BLIP_2_6_7B.name in services:
+			result = salesforce.SalesForce().fetch(image_url, salesforce.SalesForceModel.BLIP_2_6_7B)
+			if "data" in result["outputs"][0]:
+				result["outputs"][0]["data"]["annotationFragment"] = annotationFragmentFullImage
+
+			image[salesforce.SalesForceModel.BLIP_2_6_7B.name] = result
 
 	end = time.time()
 	image["runtime"] = end - start
