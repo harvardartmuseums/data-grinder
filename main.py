@@ -206,8 +206,8 @@ def process_image(URL, services):
 
 		# Run through HAM color service
 		if "color" in services: 
-			result = colors.Colors().fetch_colors(image_url)
-			image["colors"] = result["colors"]
+			result = colors.Colors().fetch(image_local_path)
+			image["colors"] = result
 		
 		# Run through Clarifai
 		if clarifai.ClarifaiModel.BASE.name in services:
