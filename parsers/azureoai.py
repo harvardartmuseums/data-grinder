@@ -15,6 +15,10 @@ class OpenAIModel(Enum):
 		"gpt-4o",
 		"HAM-GPT-4o-V-D1"
 	)
+	GPT_4_1_MINI = (
+		"gpt-4-1-mini",
+		"HAM-GPT-4-1-MINI-D1"
+	)
 
 	def __init__(self, name: str, model_id: str):
 		self._model_id = model_id

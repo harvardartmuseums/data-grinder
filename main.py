@@ -530,6 +530,12 @@ def process_image(URL, services):
 
 			image[azureoai.OpenAIModel.GPT_4O.name] = result
 
+		if azureoai.OpenAIModel.GPT_4_1_MINI.name in services:
+			result = azureoai.AzureOAI().fetch(image_url, azureoai.OpenAIModel.GPT_4_1_MINI)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[azureoai.OpenAIModel.GPT_4_1_MINI.name] = result
+
 		# Run through Claude on AWS Bedrock
 		if awsanthropic.AnthropicModel.CLAUDE.name in services: 
 			result = awsanthropic.AWSAnthropic().fetch(image_local_path, awsanthropic.AnthropicModel.CLAUDE)
