@@ -23,6 +23,14 @@ class AnthropicModel(Enum):
 		"claude-3-5-sonnet-v-2", 
 		"us.anthropic.claude-3-5-sonnet-20241022-v2:0"
 	)
+	CLAUDE_3_7_SONNET = (
+		"claude-3-7-sonnet",
+		"us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+	)
+	CLAUDE_4_SONNET = (
+		"claude-4-sonnet",
+		"global.anthropic.claude-sonnet-4-20250514-v1:0"
+	)
 
 	def __init__(self, name: str, model_id: str):
 		self._model_id = model_id
