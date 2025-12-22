@@ -15,6 +15,14 @@ class AnthropicModel(Enum):
 		"claude-3-opus",
 		"us.anthropic.claude-3-opus-20240229-v1:0"
 	)
+	CLAUDE_4_1_OPUS = (
+		"claude-4-1-opus",
+		"us.anthropic.claude-opus-4-1-20250805-v1:0"
+	)
+	CLAUDE_4_5_OPUS = (
+		"claude-4-5-opus",
+		"us.anthropic.claude-opus-4-5-20251101-v1:0"
+	)
 	CLAUDE_3_5_SONNET = (
 		"claude-3-5-sonnet",
 		"anthropic.claude-3-5-sonnet-20240620-v1:0"

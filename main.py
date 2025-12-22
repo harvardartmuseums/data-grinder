@@ -555,6 +555,18 @@ def process_image(URL, services):
 
 			image[awsanthropic.AnthropicModel.CLAUDE_3_OPUS.name] = result
 
+		if awsanthropic.AnthropicModel.CLAUDE_4_1_OPUS.name in services: 
+			result = awsanthropic.AWSAnthropic().fetch(image_local_path, awsanthropic.AnthropicModel.CLAUDE_4_1_OPUS)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[awsanthropic.AnthropicModel.CLAUDE_4_1_OPUS.name] = result
+			
+		if awsanthropic.AnthropicModel.CLAUDE_4_5_OPUS.name in services: 
+			result = awsanthropic.AWSAnthropic().fetch(image_local_path, awsanthropic.AnthropicModel.CLAUDE_4_5_OPUS)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[awsanthropic.AnthropicModel.CLAUDE_4_5_OPUS.name] = result
+
 		if awsanthropic.AnthropicModel.CLAUDE_3_5_SONNET.name in services:
 			result = awsanthropic.AWSAnthropic().fetch(image_local_path, awsanthropic.AnthropicModel.CLAUDE_3_5_SONNET)
 			result["annotationFragment"] = annotationFragmentFullImage
