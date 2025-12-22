@@ -50,9 +50,13 @@ AWS Rekognition: labels, faces, text
 OpenAI GPT-4 on Azure: description   
 OpenAI GPT-4o on Azure: description   
 Anthropic Claude 3 Haiku on AWS Bedrock: description  
-Anthropic Claude 3 Opus on AWS Bedrock: description  
+Anthropic Claude 3 Opus on AWS Bedrock: description (deprecated by AWS on January 15, 2026)  
+Anthropic Claude 4.1 Opus on AWS Bedrock: description  
+Anthropic Claude 4.5 Opus on AWS Bedrock: description  
 Anthropic Claude 3.5 Sonnet on AWS Bedrock: description  
 Anthropic Claude 3.5 Sonnet v2 on AWS Bedrock: description  
+Anthropic Claude 3.7 Sonnet on AWS Bedrock: description (deprecated by AWS on April 28, 2026)  
+Anthropic Claude 4.5 Sonnet on AWS Bedrock: description  
 Meta Llama 3.2 11b on AWS Bedrock: description  
 Meta Llama 3.2 90b on AWS Bedrock: description  
 Amazon Nova Lite 1.0 on AWS Bedrock: description  
@@ -165,8 +169,13 @@ Example response:
     "gpt-4o": {},
     "claude-3-haiku": {},
     "claude-3-opus": {},
+    "claude-4-1-opus": {},
+    "claude-4-5-opus": {},
     "claude-3-5-sonnet": {},
     "claude-3-5-sonnet-v-2": {},
+    "claude-3-7-sonnet": {},
+    "claude-4-sonnet": {},
+    "claude-4-5-sonnet": {},
     "llama-3-2-11b": {},
     "llama-3-2-90b": {},
     "nova-lite-1-0": {},
@@ -200,8 +209,13 @@ Data in the response:
 `gpt-4o`:  
 `claude-3-haiku`:  
 `claude-3-opus`:  
+`claude-4-1-opus`:  
+`claude-4-5-opus`:  
 `claude-3-5-sonnet`:  
 `claude-3-5-sonnet-v-2`:  
+`claude-3-7-sonnet`:  
+`claude-4-sonnet`:  
+`claude-4-5-sonnet`:  
 `llama-3-2-11b`:  
 `llama-3-2-90b`:  
 `nova-lite-1-0`:  
