@@ -591,6 +591,12 @@ def process_image(URL, services):
 
 			image[awsanthropic.AnthropicModel.CLAUDE_4_SONNET.name] = result			
 
+		if awsanthropic.AnthropicModel.CLAUDE_4_5_SONNET.name in services:
+			result = awsanthropic.AWSAnthropic().fetch(image_local_path, awsanthropic.AnthropicModel.CLAUDE_4_5_SONNET)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[awsanthropic.AnthropicModel.CLAUDE_4_5_SONNET.name] = result			
+			
 		# Run through Llama on AWS Bedrock
 		if awsmeta.MetaModel.LLAMA_3_2_11B.name in services:
 			result = awsmeta.AWSMeta().fetch(image_local_path_scaled, awsmeta.MetaModel.LLAMA_3_2_11B)
