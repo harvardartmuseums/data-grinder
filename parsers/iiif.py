@@ -4,7 +4,7 @@ class IIIFImage(object):
 
 	def __init__(self, id):
 		self.id = id
-		self.base_uri = f"https://ids.lib.harvard.edu/ids/iiif/{self.id}"
+		self.base_uri = f"https://ids.lib.harvard.edu/mps/{self.id}"
 		self.info_url = f"{self.base_uri}/info.json"
 
 		self.info = requests.get(self.info_url).json()

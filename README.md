@@ -115,7 +115,7 @@ Example response:
     "heightFull": 1024,
     "scalefactor": 1.333907056798623,    
     "url": "https://nrs.harvard.edu/urn-3:huam:75033B_dynmc",    
-    "iiifbaseuri": "https://ids.lib.harvard.edu/ids/iiif/14178676",
+    "iiifbaseuri": "https://ids.lib.harvard.edu/mps/14178676",
     "idsid": "14178676",
     "colors": [],
     "hashes": {},

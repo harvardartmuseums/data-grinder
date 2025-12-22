@@ -111,7 +111,7 @@ def get_image_id(URL):
 		r.raise_for_status()
 		if r.headers.get("Content-Type") == 'image/jpeg':
 			status = "ok"
-			id = r.url[37:]
+			id = r.url[32:]
 		else:
 			status = "bad"
 			id = ""
