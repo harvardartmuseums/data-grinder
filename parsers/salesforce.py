@@ -1,5 +1,6 @@
 import requests
 import os
+import base64
 import json
 from enum import Enum
 
@@ -44,14 +45,17 @@ class SalesForce(object):
 		self.pat = os.getenv("CLARIFAI_PAT")
 		
 	def __make_params(self, photo_file):
+		with open(photo_file, 'rb') as image:
+			image_content = base64.b64encode(image.read()).decode('utf-8')
+			
 		return {
 				"inputs": [
 					{
-					"data": {
-						"image": {
-						"url": photo_file
+						"data": {
+							"image": {
+								"base64": image_content
+							}
 						}
-					}
 					}
 				]
 			}

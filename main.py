@@ -216,7 +216,7 @@ def process_image(URL, services):
 			
 			# Process classification			
 			if any(val in ["all", "classification"] for val in features):
-				result = clarifai.Clarifai().fetch(image_url)
+				result = clarifai.Clarifai().fetch(image_local_path)
 				if "data" in result["outputs"][0]:
 					for concept in result["outputs"][0]["data"]["concepts"]:
 						concept["annotationFragment"] = annotationFragmentFullImage
@@ -225,7 +225,7 @@ def process_image(URL, services):
 
 			# Process object detection
 			if any(val in ["all", "objects"] for val in features):
-				result = clarifai.Clarifai().fetch_objects(image_url)
+				result = clarifai.Clarifai().fetch_objects(image_local_path)
 				if "data" in result["outputs"][0]:
 					if "regions" in result["outputs"][0]["data"]:
 						for region in result["outputs"][0]["data"]["regions"]:
@@ -245,11 +245,11 @@ def process_image(URL, services):
 
 			# Process colors 
 			if any(val in ["all", "colors"] for val in features):
-				result = clarifai.Clarifai().fetch_colors(image_url)
+				result = clarifai.Clarifai().fetch_colors(image_local_path)
 				image["clarifai"]["colors"] = result
 
 			if any(val in ["all", "caption"] for val in features):
-				result = clarifai.Clarifai().fetch_caption(image_url)
+				result = clarifai.Clarifai().fetch_caption(image_local_path)
 				if "data" in result["outputs"][0]:
 					result["outputs"][0]["data"]["annotationFragment"] = annotationFragmentFullImage				
 					
@@ -658,21 +658,21 @@ def process_image(URL, services):
 
 		# Run through BLIP on Clarifai
 		if salesforce.SalesForceModel.BLIP.name in services:
-			result = salesforce.SalesForce().fetch(image_url, salesforce.SalesForceModel.BLIP)
+			result = salesforce.SalesForce().fetch(image_local_path, salesforce.SalesForceModel.BLIP)
 			if "data" in result["outputs"][0]:
 				result["outputs"][0]["data"]["annotationFragment"] = annotationFragmentFullImage
 
 			image[salesforce.SalesForceModel.BLIP.name] = result
 
 		if salesforce.SalesForceModel.BLIP_2.name in services:
-			result = salesforce.SalesForce().fetch(image_url, salesforce.SalesForceModel.BLIP_2)
+			result = salesforce.SalesForce().fetch(image_local_path, salesforce.SalesForceModel.BLIP_2)
 			if "data" in result["outputs"][0]:
 				result["outputs"][0]["data"]["annotationFragment"] = annotationFragmentFullImage
 
 			image[salesforce.SalesForceModel.BLIP_2.name] = result
 
 		if salesforce.SalesForceModel.BLIP_2_6_7B.name in services:
-			result = salesforce.SalesForce().fetch(image_url, salesforce.SalesForceModel.BLIP_2_6_7B)
+			result = salesforce.SalesForce().fetch(image_local_path, salesforce.SalesForceModel.BLIP_2_6_7B)
 			if "data" in result["outputs"][0]:
 				result["outputs"][0]["data"]["annotationFragment"] = annotationFragmentFullImage
 
