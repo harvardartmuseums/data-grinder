@@ -1,5 +1,6 @@
 import openai 
 import os
+import base64
 from enum import Enum
 
 class QwenModel(Enum):
@@ -43,6 +44,9 @@ class Qwen(object):
 			base_url="https://api.hyperbolic.xyz/v1"
 		)
 
+		with open(photo_file, 'rb') as image:
+			image_content = base64.b64encode(image.read()).decode('utf-8')
+
 		prompt =  [ 
 				{ "role": "system", "content": "You are a helpful assistant." }, 
 				{ "role": "user", "content": [  
@@ -53,7 +57,7 @@ class Qwen(object):
 					{ 
 						"type": "image_url",
 						"image_url": {
-							"url": photo_file
+							"url": f"data:image/png;base64,{image_content}"
 						}
 					}
 				] } 
@@ -67,7 +71,7 @@ class Qwen(object):
 			
 			result = {
 				"description": response.model_dump(),
-				"prompt": prompt,
+				"prompt": "",
 				"status": 200
 			}
 

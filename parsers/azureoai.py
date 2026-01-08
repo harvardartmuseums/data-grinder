@@ -1,5 +1,6 @@
 from openai import AzureOpenAI
 import os
+import base64
 from enum import Enum
 
 class OpenAIModel(Enum):
@@ -54,6 +55,9 @@ class AzureOAI(object):
 			azure_endpoint = self.endpoint
 		)
 
+		with open(photo_file, 'rb') as image:
+			image_content = base64.b64encode(image.read()).decode('utf-8')
+
 		prompt =  [ 
 				{ "role": "system", "content": "You are a helpful assistant." }, 
 				{ "role": "user", "content": [  
@@ -64,7 +68,7 @@ class AzureOAI(object):
 					{ 
 						"type": "image_url",
 						"image_url": {
-							"url": photo_file
+							"url": f"data:image/png;base64,{image_content}"
 						}
 					}
 				] } 
@@ -78,7 +82,7 @@ class AzureOAI(object):
 			
 			result = {
 				"description": response.model_dump(),
-				"prompt": prompt,
+				"prompt": "",
 				"status": 200
 			}
 

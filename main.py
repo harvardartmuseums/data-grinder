@@ -409,7 +409,7 @@ def process_image(URL, services):
 
 			# Process tags
 			if any(val in ["all", "tags"] for val in features):
-				result = imagga.Imagga().fetch(image_url)
+				result = imagga.Imagga().fetch(image_local_path)
 				if "tags" in result["result"]:
 					for tag in result["result"]["tags"]:
 						tag["annotationFragment"] = annotationFragmentFullImage
@@ -418,7 +418,7 @@ def process_image(URL, services):
 
 			# Process categories
 			if any(val in ["all", "categories"] for val in features):
-				result = imagga.Imagga().fetch_categories(image_url)
+				result = imagga.Imagga().fetch_categories(image_local_path)
 				if "categories" in result["result"]:
 					for category in result["result"]["categories"]:
 						category["annotationFragment"] = annotationFragmentFullImage
@@ -427,7 +427,7 @@ def process_image(URL, services):
 
 			# Process faces
 			if any(val in ["all", "faces"] for val in features):
-				result = imagga.Imagga().fetch_faces(image_url)
+				result = imagga.Imagga().fetch_faces(image_local_path)
 				if "faces" in result["result"]:
 					for index in range(len(result["result"]["faces"])):
 						face = result["result"]["faces"][index]
@@ -446,7 +446,7 @@ def process_image(URL, services):
 
 			# Process colors
 			if any(val in ["all", "colors"] for val in features):
-				result = imagga.Imagga().fetch_colors(image_url)
+				result = imagga.Imagga().fetch_colors(image_local_path)
 				image["imagga"]["colors"] = result
 
 		# Run through AWS Rekognition
@@ -513,25 +513,25 @@ def process_image(URL, services):
 
 		# Run through OpenAI
 		if azureoai.OpenAIModel.OPENAI.name in services: 
-			result = azureoai.AzureOAI().fetch(image_url, azureoai.OpenAIModel.OPENAI)
+			result = azureoai.AzureOAI().fetch(image_local_path, azureoai.OpenAIModel.OPENAI)
 			result["annotationFragment"] = annotationFragmentFullImage
 
 			image[azureoai.OpenAIModel.OPENAI.name] = result
 
 		if azureoai.OpenAIModel.GPT_4.name in services:
-			result = azureoai.AzureOAI().fetch(image_url, azureoai.OpenAIModel.GPT_4)
+			result = azureoai.AzureOAI().fetch(image_local_path, azureoai.OpenAIModel.GPT_4)
 			result["annotationFragment"] = annotationFragmentFullImage
 
 			image[azureoai.OpenAIModel.GPT_4.name] = result
 
 		if azureoai.OpenAIModel.GPT_4O.name in services:
-			result = azureoai.AzureOAI().fetch(image_url, azureoai.OpenAIModel.GPT_4O)
+			result = azureoai.AzureOAI().fetch(image_local_path, azureoai.OpenAIModel.GPT_4O)
 			result["annotationFragment"] = annotationFragmentFullImage
 
 			image[azureoai.OpenAIModel.GPT_4O.name] = result
 
 		if azureoai.OpenAIModel.GPT_4_1_MINI.name in services:
-			result = azureoai.AzureOAI().fetch(image_url, azureoai.OpenAIModel.GPT_4_1_MINI)
+			result = azureoai.AzureOAI().fetch(image_local_path, azureoai.OpenAIModel.GPT_4_1_MINI)
 			result["annotationFragment"] = annotationFragmentFullImage
 
 			image[azureoai.OpenAIModel.GPT_4_1_MINI.name] = result
@@ -645,13 +645,13 @@ def process_image(URL, services):
 
 		# Run through Qwen on Hyperbolic
 		if qwen.QwenModel.QWEN_2_5_VL_7B.name in services:
-			result = qwen.Qwen().fetch(image_url, qwen.QwenModel.QWEN_2_5_VL_7B)
+			result = qwen.Qwen().fetch(image_local_path, qwen.QwenModel.QWEN_2_5_VL_7B)
 			result["annotationFragment"] = annotationFragmentFullImage
 
 			image[qwen.QwenModel.QWEN_2_5_VL_7B.name] = result
 
 		if qwen.QwenModel.QWEN_2_5_VL_72B.name in services:
-			result = qwen.Qwen().fetch(image_url, qwen.QwenModel.QWEN_2_5_VL_72B)
+			result = qwen.Qwen().fetch(image_local_path, qwen.QwenModel.QWEN_2_5_VL_72B)
 			result["annotationFragment"] = annotationFragmentFullImage
 
 			image[qwen.QwenModel.QWEN_2_5_VL_72B.name] = result

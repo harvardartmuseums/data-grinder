@@ -42,8 +42,14 @@ class Imagga(object):
 		self.api_key = os.getenv("IMAGGA_KEY")
 		self.api_secret = os.getenv("IMAGGA_SECRET")
 
+	def __make_files(self, photo_file):
+		with open(photo_file, 'rb') as image:
+			image_content = image.read()
+
+		return {'image': image_content}
+
 	def fetch(self, photo_file):
-		response = requests.get('https://api.imagga.com/v2/tags?image_url=%s' % photo_file, auth=(self.api_key, self.api_secret))
+		response = requests.post('https://api.imagga.com/v2/tags', files=self.__make_files(photo_file), auth=(self.api_key, self.api_secret))
 		response = response.json()
 
 		response['model'] = 'unknown'
@@ -51,7 +57,7 @@ class Imagga(object):
 		return response
 
 	def fetch_categories(self, photo_file):
-		response = requests.get('https://api.imagga.com/v2/categories/personal_photos?image_url=%s' % photo_file, auth=(self.api_key, self.api_secret))
+		response = requests.post('https://api.imagga.com/v2/categories/personal_photos', files=self.__make_files(photo_file), auth=(self.api_key, self.api_secret))
 		response = response.json()
 		
 		response['model'] = 'personal_photos'
@@ -59,7 +65,7 @@ class Imagga(object):
 		return response
 
 	def fetch_colors(self, photo_file):
-		response = requests.get('https://api.imagga.com/v2/colors?image_url=%s' % photo_file, auth=(self.api_key, self.api_secret))
+		response = requests.post('https://api.imagga.com/v2/colors', files=self.__make_files(photo_file), auth=(self.api_key, self.api_secret))
 		response = response.json()
 		
 		response['model'] = 'unknown'
@@ -67,7 +73,7 @@ class Imagga(object):
 		return response
 	
 	def fetch_faces(self, photo_file):
-		response = requests.get('https://api.imagga.com/v2/faces/detections?image_url=%s' % photo_file, auth=(self.api_key, self.api_secret))
+		response = requests.post('https://api.imagga.com/v2/faces/detections', files=self.__make_files(photo_file), auth=(self.api_key, self.api_secret))
 		response = response.json()
 		
 		response['model'] = 'unknown'
