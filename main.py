@@ -32,6 +32,10 @@ temp_folder = os.path.dirname(os.path.realpath(__file__)) + "/temp"
 if not os.path.exists(temp_folder): 
 	os.mkdir(temp_folder)
 
+# number of days to keep a downloaded image before refreshing it; configurable via
+# environment variable to ease testing
+CACHE_DAYS = int(os.getenv("IMAGE_CACHE_DAYS", "30"))
+
 app = Flask(__name__)
 
 @app.route("/", methods=['GET'])
@@ -105,19 +109,27 @@ def parse_service_features(query: str, default_value: str = "all"):
     return result
 
 def download_image(URL,filename="temp.jpg"):
-	r = requests.get(URL, timeout=21)
-	if r.status_code == 200:
-		status = "ok"
-		path = os.path.dirname(os.path.realpath(__file__)) + "/temp/" + filename
-		
-		with open(path, 'wb') as out:
-			for chunk in r.iter_content(chunk_size=128):
-				out.write(chunk)
-	else:
-		status = "bad"
-		path = ""
+    # try to reuse a recently downloaded copy in the temp folder
+    path = os.path.join(temp_folder, filename)
 
-	return (status, path)
+    if os.path.exists(path):
+        age = time.time() - os.path.getmtime(path)
+        # check against configurable cache lifetime
+        if age < CACHE_DAYS * 24 * 3600:
+            return ("ok", path)
+        # otherwise fall through and re-download a fresh copy
+
+    r = requests.get(URL, timeout=21)
+    if r.status_code == 200:
+        status = "ok"
+        with open(path, 'wb') as out:
+            for chunk in r.iter_content(chunk_size=128):
+                out.write(chunk)
+    else:
+        status = "bad"
+        path = ""
+
+    return (status, path)
 
 def process_image(URL, services):
 	image = {
