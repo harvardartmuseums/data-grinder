@@ -8,7 +8,7 @@ class ClarifaiModel(Enum):
 	BASE = (
 		"clarifai",
 		"",
-		["caption", "classification", "colors", "objects"]
+		["classification", "colors", "objects"]
 	)
 
 	def __init__(self, name: str, model_id: str, functions: list):
@@ -94,18 +94,6 @@ class Clarifai(object):
 	def fetch_colors(self, photo_file):
 		try:
 			url = f"{self.base_url}/v2/users/clarifai/apps/main/models/color-recognition/outputs"
-			response = requests.post(url, 
-							headers=self.__make_headers(), 
-							data=json.dumps(self.__make_params(photo_file)))
-			return response.json()
-
-		except Exception as e:
-			error =  json.loads(e.response.content)
-			return {"status": 500, "error": response.json()}
-
-	def fetch_caption(self, photo_file):
-		try:
-			url = f"{self.base_url}/v2/users/clarifai/apps/main/models/general-english-image-caption-clip/outputs"
 			response = requests.post(url, 
 							headers=self.__make_headers(), 
 							data=json.dumps(self.__make_params(photo_file)))

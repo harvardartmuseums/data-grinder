@@ -235,14 +235,7 @@ def process_image(URL, services):
 			# Process colors 
 			if any(val in ["all", "colors"] for val in features):
 				result = clarifai.Clarifai().fetch_colors(image_local_path)
-				image["clarifai"]["colors"] = result
-
-			if any(val in ["all", "caption"] for val in features):
-				result = clarifai.Clarifai().fetch_caption(image_local_path)
-				if "data" in result["outputs"][0]:
-					result["outputs"][0]["data"]["annotationFragment"] = annotationFragmentFullImage				
-					
-				image["clarifai"]["caption"] = result								
+				image["clarifai"]["colors"] = result					
 
 		# Run through Microsoft Cognitive Services
 		if mcsvision.MCSVisionModel.BASE.name in services: 
