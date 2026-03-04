@@ -84,7 +84,8 @@ class Clarifai(object):
 			url = f"{self.base_url}/v2/users/clarifai/apps/main/models/general-image-detection/outputs"
 			response = requests.post(url, 
 							headers=self.__make_headers(), 
-							data=json.dumps(self.__make_params(photo_file)))
+							data=json.dumps(self.__make_params(photo_file)),
+							timeout=30)
 			return response.json()
 
 		except Exception as e:
