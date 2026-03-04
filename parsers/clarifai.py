@@ -3,6 +3,7 @@ import os
 import base64
 import json
 from enum import Enum
+from requests.exceptions import Timeout, ConnectionError, RequestException
 
 class ClarifaiModel(Enum):
 	BASE = (
@@ -72,12 +73,21 @@ class Clarifai(object):
 			url = f"{self.base_url}/v2/users/clarifai/apps/main/models/general-image-recognition/outputs"
 			response = requests.post(url, 
 							headers=self.__make_headers(), 
-							data=json.dumps(self.__make_params(photo_file)))
+							data=json.dumps(self.__make_params(photo_file)),
+							timeout=30)
 			return response.json()
 
+		except Timeout:
+			return {"status": 504, "error": "Request to Clarifai API timed out"}
+
+		except ConnectionError as e:
+			return {"status": 503, "error": f"Connection error: {str(e)}"}
+
+		except RequestException as e:
+			return {"status": 500, "error": f"Request error: {str(e)}"}
+
 		except Exception as e:
-			error =  json.loads(e.response.content)
-			return {"status": 500, "error": response.json()}
+			return {"status": 500, "error": f"Unexpected error: {str(e)}"}
 
 	def fetch_objects(self, photo_file):
 		try:
@@ -88,18 +98,35 @@ class Clarifai(object):
 							timeout=30)
 			return response.json()
 
+		except Timeout:
+			return {"status": 504, "error": "Request to Clarifai API timed out"}
+
+		except ConnectionError as e:
+			return {"status": 503, "error": f"Connection error: {str(e)}"}
+
+		except RequestException as e:
+			return {"status": 500, "error": f"Request error: {str(e)}"}
+
 		except Exception as e:
-			error =  json.loads(e.response.content)
-			return {"status": 500, "error": response.json()}
+			return {"status": 500, "error": f"Unexpected error: {str(e)}"}
 
 	def fetch_colors(self, photo_file):
 		try:
 			url = f"{self.base_url}/v2/users/clarifai/apps/main/models/color-recognition/outputs"
 			response = requests.post(url, 
 							headers=self.__make_headers(), 
-							data=json.dumps(self.__make_params(photo_file)))
+							data=json.dumps(self.__make_params(photo_file)),
+							timeout=30)
 			return response.json()
 
+		except Timeout:
+			return {"status": 504, "error": "Request to Clarifai API timed out"}
+
+		except ConnectionError as e:
+			return {"status": 503, "error": f"Connection error: {str(e)}"}
+
+		except RequestException as e:
+			return {"status": 500, "error": f"Request error: {str(e)}"}
+
 		except Exception as e:
-			error =  json.loads(e.response.content)
-			return {"status": 500, "error": response.json()}
+			return {"status": 500, "error": f"Unexpected error: {str(e)}"}
