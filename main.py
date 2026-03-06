@@ -206,7 +206,7 @@ def process_image(URL, services):
 			# Process classification			
 			if any(val in ["all", "classification"] for val in features):
 				result = clarifai.Clarifai().fetch(image_local_path)
-				if "data" in result["outputs"][0]:
+				if "outputs" in result and len(result["outputs"]) > 0 and "data" in result["outputs"][0]:
 					for concept in result["outputs"][0]["data"]["concepts"]:
 						concept["annotationFragment"] = annotationFragmentFullImage
 
@@ -215,7 +215,7 @@ def process_image(URL, services):
 			# Process object detection
 			if any(val in ["all", "objects"] for val in features):
 				result = clarifai.Clarifai().fetch_objects(image_local_path)
-				if "data" in result["outputs"][0]:
+				if "outputs" in result and len(result["outputs"]) > 0 and "data" in result["outputs"][0]:
 					if "regions" in result["outputs"][0]["data"]:
 						for region in result["outputs"][0]["data"]["regions"]:
 							boundingBox = region["region_info"]["bounding_box"]
