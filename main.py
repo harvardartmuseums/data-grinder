@@ -635,12 +635,24 @@ def process_image(URL, services):
 			result["annotationFragment"] = annotationFragmentFullImage
 
 			image[googlegemini.GoogleGeminiModel.FLASH_2_0.name] = result	
+
+		if googlegemini.GoogleGeminiModel.FLASH_2_5.name in services:
+			result = googlegemini.GoogleGemini().fetch(image_local_path_scaled, googlegemini.GoogleGeminiModel.FLASH_2_5)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[googlegemini.GoogleGeminiModel.FLASH_2_5.name] = result	
 			
 		if googlegemini.GoogleGeminiModel.FLASH_LITE_2_0.name in services:
 			result = googlegemini.GoogleGemini().fetch(image_local_path_scaled, googlegemini.GoogleGeminiModel.FLASH_LITE_2_0)
 			result["annotationFragment"] = annotationFragmentFullImage
 
 			image[googlegemini.GoogleGeminiModel.FLASH_LITE_2_0.name] = result	
+			
+		if googlegemini.GoogleGeminiModel.FLASH_LITE_2_5.name in services:
+			result = googlegemini.GoogleGemini().fetch(image_local_path_scaled, googlegemini.GoogleGeminiModel.FLASH_LITE_2_5)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[googlegemini.GoogleGeminiModel.FLASH_LITE_2_5.name] = result	
 
 		# Run through Mistral on AWS Bedrock
 		if awsmistral.MistralModel.PIXTRAL_LARGE_2502.name in services:

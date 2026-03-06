@@ -8,9 +8,17 @@ class GoogleGeminiModel(Enum):
 		"gemini-2-0-flash-lite",
 		"gemini-2.0-flash-lite"
 	)
+	FLASH_LITE_2_5 = (
+		"gemini-2-5-flash-lite",
+		"gemini-2.5-flash-lite"
+	)
 	FLASH_2_0 = (
 		"gemini-2-0-flash",
 		"gemini-2.0-flash"
+	)
+	FLASH_2_5 = (
+		"gemini-2-5-flash",
+		"gemini-2.5-flash"
 	)
 
 	def __init__(self, name: str, model_id: str):
