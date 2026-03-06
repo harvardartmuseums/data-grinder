@@ -11,6 +11,14 @@ class MetaModel(Enum):
 		"llama-3-2-90b",
 		"us.meta.llama3-2-90b-instruct-v1:0"
 	)
+	LLAMA_4_MAVERICK_17B = (
+		"llama-4-maverick-17b",
+		"us.meta.llama4-maverick-17b-instruct-v1:0"
+	)
+	LLAMA_4_SCOUT_17B = (
+		"llama-4-scout-17b",
+		"us.meta.llama4-scout-17b-instruct-v1:0"
+	)
 
 	def __init__(self, name: str, model_id: str):
 		self._model_id = model_id

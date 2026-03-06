@@ -592,6 +592,18 @@ def process_image(URL, services):
 
 			image[awsmeta.MetaModel.LLAMA_3_2_90B.name] = result	
 
+		if awsmeta.MetaModel.LLAMA_4_MAVERICK_17B.name in services:
+			result = awsmeta.AWSMeta().fetch(image_local_path_scaled, awsmeta.MetaModel.LLAMA_4_MAVERICK_17B)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[awsmeta.MetaModel.LLAMA_4_MAVERICK_17B.name] = result	
+
+		if awsmeta.MetaModel.LLAMA_4_SCOUT_17B.name in services:
+			result = awsmeta.AWSMeta().fetch(image_local_path_scaled, awsmeta.MetaModel.LLAMA_4_SCOUT_17B)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[awsmeta.MetaModel.LLAMA_4_SCOUT_17B.name] = result	
+
 		# Run through Nova on AWS Bedrock
 		if awsnova.NovaModel.NOVA_LITE_1_0.name in services:
 			result = awsnova.AWSNova().fetch(image_local_path_scaled, awsnova.NovaModel.NOVA_LITE_1_0)
