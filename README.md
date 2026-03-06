@@ -49,21 +49,34 @@ Microsoft Cognitive Services: categories, tags, description, faces, color, objec
 AWS Rekognition: labels, faces, text  
 OpenAI GPT-4 on Azure: description   
 OpenAI GPT-4o on Azure: description   
+OpenAI GPT-4.1 Mini on Azure: description   
 Anthropic Claude 3 Haiku on AWS Bedrock: description  
+Anthropic Claude 4.5 Haiku on AWS Bedrock: description  
 Anthropic Claude 3 Opus on AWS Bedrock: description (deprecated by AWS on January 15, 2026)  
 Anthropic Claude 4.1 Opus on AWS Bedrock: description  
 Anthropic Claude 4.5 Opus on AWS Bedrock: description  
-Anthropic Claude 3.5 Sonnet on AWS Bedrock: description  
-Anthropic Claude 3.5 Sonnet v2 on AWS Bedrock: description  
+Anthropic Claude 3.5 Sonnet on AWS Bedrock: description (deprecated by AWS)  
+Anthropic Claude 3.5 Sonnet v2 on AWS Bedrock: description (deprecated by AWS)  
 Anthropic Claude 3.7 Sonnet on AWS Bedrock: description (deprecated by AWS on April 28, 2026)  
+Anthropic Claude 4 Sonnet on AWS Bedrock: description  
 Anthropic Claude 4.5 Sonnet on AWS Bedrock: description  
 Meta Llama 3.2 11b on AWS Bedrock: description  
 Meta Llama 3.2 90b on AWS Bedrock: description  
+Meta Llama 4 Maverick 17b on AWS Bedrock: description  
+Meta Llama 4 Scout 17b on AWS Bedrock: description  
 Amazon Nova Lite 1.0 on AWS Bedrock: description  
+Amazon Nova Lite 2 on AWS Bedrock: description  
 Amazon Nova Pro 1.0 on AWS Bedrock: description  
 Google Gemini 2.0 Flash: description  
+Google Gemini 2.5 Flash: description  
 Google Gemini 2.0 Flash-Lite: description  
+Google Gemini 2.5 Flash-Lite: description  
 Mistral Pixtral Large 25.02: description  
+Mistral Magistral Small 2509: description  
+Mistral Ministral 3 3B: description  
+Mistral Ministral 3 8B: description  
+Mistral Ministral 3 14B: description  
+Mistral Large 3 675B: description  
 Qwen 2.5 VL 7B Instruct on Hyperbolic: description  
 Qwen 2.5 VL 72B Instruct on Hyperbolic: description  
 
@@ -99,7 +112,7 @@ http://127.0.0.1:5000/extract
 Parameters |  | Values
 ------------ | ------------- | -------------
 url | Any Harvard NRS URL that resolves to a IIIF compatible image
-services | (optional, default uses all services) One or more from the list of valid services separated by commas | `imagga, gv, mcs, clarifai, color, aws, hash, gpt-4, gpt-4o, claude-3-haiku, claude-3-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, llama-3-2-11b, llama-3-2-90b, nova-lite-1-0, nova-pro-1-0, gemini-2-0-flash, gemini-2-0-flash-lite, pixtral-large-2502, qwen-2-5-vl-7b, qwen-2-5-vl-72b`
+services | (optional, default uses all services) One or more from the list of valid services separated by commas | `imagga, gv, mcs, clarifai, color, aws, hash, gpt-4, gpt-4o, gpt-4-1-mini, claude, claude-3-haiku, claude-4-5-haiku, claude-3-opus, claude-4-1-opus, claude-4-5-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, claude-3-7-sonnet, claude-4-sonnet, claude-4-5-sonnet, llama-3-2-11b, llama-3-2-90b, llama-4-maverick-17b, llama-4-scout-17b, nova-lite-1-0, nova-pro-1-0, nova-lite-2-0, gemini-2-0-flash-lite, gemini-2-5-flash-lite, gemini-2-0-flash, gemini-2-5-flash, pixtral-large-2502, magistral-small-2509, ministral-3-3b, ministral-3-8b, ministral-3-14b, mistral-large-3-675b, qwen-2-5-vl-7b, qwen-2-5-vl-72b, blip-2, blip-2-6-7B`
 
 
 Example request:  
