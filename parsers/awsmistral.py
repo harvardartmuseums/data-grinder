@@ -7,6 +7,26 @@ class MistralModel(Enum):
 		"pixtral-large-2502",
 		"us.mistral.pixtral-large-2502-v1:0"
 	)
+	MAGISTRAL_SMALL_2509 = (
+		"magistral-small-2509",
+		"mistral.magistral-small-2509"
+	)
+	MINISTRAL_3_3B = (
+		"ministral-3-3b",
+		"mistral.ministral-3-3b-instruct"
+	)
+	MINISTRAL_3_8B = (
+		"ministral-3-8b",
+		"mistral.ministral-3-8b-instruct"
+	)
+	MINISTRAL_3_14B = (
+		"ministral-3-14b",
+		"mistral.ministral-3-14b-instruct"
+	)
+	MISTRAL_LARGE_3_675B = (
+		"mistral-large-3-675b",
+		"mistral.mistral-large-3-675b-instruct"
+	)
 
 	def __init__(self, name: str, model_id: str):
 		self._model_id = model_id

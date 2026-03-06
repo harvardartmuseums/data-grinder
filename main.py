@@ -624,12 +624,42 @@ def process_image(URL, services):
 
 			image[googlegemini.GoogleGeminiModel.FLASH_LITE_2_0.name] = result	
 
-		# Run through Pixtral on AWS Bedrock
+		# Run through Mistral on AWS Bedrock
 		if awsmistral.MistralModel.PIXTRAL_LARGE_2502.name in services:
 			result = awsmistral.AWSMistral().fetch(image_local_path_scaled, awsmistral.MistralModel.PIXTRAL_LARGE_2502)
 			result["annotationFragment"] = annotationFragmentFullImage
 
 			image[awsmistral.MistralModel.PIXTRAL_LARGE_2502.name] = result
+
+		if awsmistral.MistralModel.MAGISTRAL_SMALL_2509.name in services:
+			result = awsmistral.AWSMistral().fetch(image_local_path_scaled, awsmistral.MistralModel.MAGISTRAL_SMALL_2509)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[awsmistral.MistralModel.MAGISTRAL_SMALL_2509.name] = result
+
+		if awsmistral.MistralModel.MINISTRAL_3_3B.name in services:
+			result = awsmistral.AWSMistral().fetch(image_local_path_scaled, awsmistral.MistralModel.MINISTRAL_3_3B)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[awsmistral.MistralModel.MINISTRAL_3_3B.name] = result
+
+		if awsmistral.MistralModel.MINISTRAL_3_8B.name in services:
+			result = awsmistral.AWSMistral().fetch(image_local_path_scaled, awsmistral.MistralModel.MINISTRAL_3_8B)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[awsmistral.MistralModel.MINISTRAL_3_8B.name] = result
+
+		if awsmistral.MistralModel.MINISTRAL_3_14B.name in services:
+			result = awsmistral.AWSMistral().fetch(image_local_path_scaled, awsmistral.MistralModel.MINISTRAL_3_14B)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[awsmistral.MistralModel.MINISTRAL_3_14B.name] = result
+
+		if awsmistral.MistralModel.MISTRAL_LARGE_3_675B.name in services:
+			result = awsmistral.AWSMistral().fetch(image_local_path_scaled, awsmistral.MistralModel.MISTRAL_LARGE_3_675B)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[awsmistral.MistralModel.MISTRAL_LARGE_3_675B.name] = result
 
 		# Run through Qwen on Hyperbolic
 		if qwen.QwenModel.QWEN_2_5_VL_7B.name in services:
