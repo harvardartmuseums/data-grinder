@@ -5,48 +5,64 @@ from enum import Enum
 class AnthropicModel(Enum):
 	CLAUDE = (
 		"claude",
-		"anthropic.claude-3-haiku-20240307-v1:0"
+		"anthropic.claude-3-haiku-20240307-v1:0",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9}
 	)    
 	CLAUDE_3_HAIKU = (
 		"claude-3-haiku",
-		"anthropic.claude-3-haiku-20240307-v1:0"
+		"anthropic.claude-3-haiku-20240307-v1:0",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9}
+	)
+	CLAUDE_4_5_HAIKU = (
+		"claude-4-5-haiku",
+		"us.anthropic.claude-haiku-4-5-20251001-v1:0",
+		{"maxTokens": 2048, "temperature": 0.5}
 	)
 	CLAUDE_3_OPUS = (
 		"claude-3-opus",
-		"us.anthropic.claude-3-opus-20240229-v1:0"
+		"us.anthropic.claude-3-opus-20240229-v1:0",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9}
 	)
 	CLAUDE_4_1_OPUS = (
 		"claude-4-1-opus",
-		"us.anthropic.claude-opus-4-1-20250805-v1:0"
+		"us.anthropic.claude-opus-4-1-20250805-v1:0",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9}
 	)
 	CLAUDE_4_5_OPUS = (
 		"claude-4-5-opus",
-		"us.anthropic.claude-opus-4-5-20251101-v1:0"
+		"us.anthropic.claude-opus-4-5-20251101-v1:0",
+		{"maxTokens": 2048, "temperature": 0.5}
 	)
 	CLAUDE_3_5_SONNET = (
 		"claude-3-5-sonnet",
-		"anthropic.claude-3-5-sonnet-20240620-v1:0"
+		"anthropic.claude-3-5-sonnet-20240620-v1:0",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9}
 	)
 	CLAUDE_3_5_SONNET_2 = (
 		"claude-3-5-sonnet-v-2", 
-		"us.anthropic.claude-3-5-sonnet-20241022-v2:0"
+		"us.anthropic.claude-3-5-sonnet-20241022-v2:0",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9}
 	)
 	CLAUDE_3_7_SONNET = (
 		"claude-3-7-sonnet",
-		"us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+		"us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9}
 	)
 	CLAUDE_4_SONNET = (
 		"claude-4-sonnet",
-		"global.anthropic.claude-sonnet-4-20250514-v1:0"
+		"global.anthropic.claude-sonnet-4-20250514-v1:0",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9}
 	)
 	CLAUDE_4_5_SONNET = (
 		"claude-4-5-sonnet",
-		"global.anthropic.claude-sonnet-4-5-20250929-v1:0"
+		"global.anthropic.claude-sonnet-4-5-20250929-v1:0",
+		{"maxTokens": 2048, "temperature": 0.5}
 	)
 
-	def __init__(self, name: str, model_id: str):
+	def __init__(self, name: str, model_id: str, inference_config: dict):
 		self._model_id = model_id
 		self._name = name
+		self._inference_config = inference_config
 
 	def list_models():
 		return [
@@ -64,6 +80,10 @@ class AnthropicModel(Enum):
 	@property
 	def name(self):
 		return self._name    
+	
+	@property
+	def inference_config(self):
+		return self._inference_config
 
 class AWSAnthropic(object):
 
@@ -109,7 +129,7 @@ class AWSAnthropic(object):
 			awsresponse = client.converse(
 				modelId=model.model_id,
 				messages=messages,
-				inferenceConfig={"maxTokens": 2048, "temperature": 0.5, "topP": 0.9}
+				inferenceConfig=model.inference_config
 			)
 
 			# Process and print the response

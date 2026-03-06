@@ -531,6 +531,12 @@ def process_image(URL, services):
 
 			image[awsanthropic.AnthropicModel.CLAUDE_3_HAIKU.name] = result
 
+		if awsanthropic.AnthropicModel.CLAUDE_4_5_HAIKU.name in services: 
+			result = awsanthropic.AWSAnthropic().fetch(image_local_path, awsanthropic.AnthropicModel.CLAUDE_4_5_HAIKU)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[awsanthropic.AnthropicModel.CLAUDE_4_5_HAIKU.name] = result
+
 		if awsanthropic.AnthropicModel.CLAUDE_3_OPUS.name in services: 
 			result = awsanthropic.AWSAnthropic().fetch(image_local_path, awsanthropic.AnthropicModel.CLAUDE_3_OPUS)
 			result["annotationFragment"] = annotationFragmentFullImage
