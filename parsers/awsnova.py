@@ -11,6 +11,10 @@ class NovaModel(Enum):
 		"nova-pro-1-0",
 		"amazon.nova-pro-v1:0"
 	)
+	NOVA_LITE_2_0 = (
+		"nova-lite-2-0",
+		"us.amazon.nova-2-lite-v1:0"
+	)
 
 	def __init__(self, name: str, model_id: str):
 		self._model_id = model_id

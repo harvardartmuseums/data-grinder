@@ -605,6 +605,12 @@ def process_image(URL, services):
 
 			image[awsnova.NovaModel.NOVA_PRO_1_0.name] = result	
 
+		if awsnova.NovaModel.NOVA_LITE_2_0.name in services:
+			result = awsnova.AWSNova().fetch(image_local_path_scaled, awsnova.NovaModel.NOVA_LITE_2_0)
+			result["annotationFragment"] = annotationFragmentFullImage
+
+			image[awsnova.NovaModel.NOVA_LITE_2_0.name] = result	
+
 		# Run through Gemini on Vertex
 		if googlegemini.GoogleGeminiModel.FLASH_2_0.name in services:
 			result = googlegemini.GoogleGemini().fetch(image_local_path_scaled, googlegemini.GoogleGeminiModel.FLASH_2_0)
