@@ -9,15 +9,15 @@ from flask import Flask, request
 from dotenv import  load_dotenv
 from PIL import Image
 from parsers import (
-    azureoai, 
-    clarifai, 
-    vision, 
-    imagga, 
-    iiif, 
-    mcsvision, 
-    colors, 
-    aws, 
-    awsanthropic,
+	azureoai, 
+	clarifai, 
+	vision, 
+	imagga, 
+	iiif, 
+	mcsvision, 
+	colors, 
+	aws, 
+	awsanthropic,
 	awsmeta,
 	awsnova,
 	googlegemini,
@@ -80,56 +80,68 @@ def main(url, services):
 
 ## HELPER FUNCTIONS ##
 def parse_service_features(query: str, default_value: str = "all"):
-    result = {}
+	result = {}
 
-    for part in query.split(","):
-        part = part.strip()
-        if not part:
-            continue
+	for part in query.split(","):
+		part = part.strip()
+		if not part:
+			continue
 
-        # If no colon, just assume key with default value
-        if ":" not in part:
-            key = part.strip()
-            result[key] = [default_value]
-            continue
+		# If no colon, just assume key with default value
+		if ":" not in part:
+			key = part.strip()
+			result[key] = [default_value]
+			continue
 
-        key, features_str = part.split(":", 1)
-        key = key.strip()
+		key, features_str = part.split(":", 1)
+		key = key.strip()
 
-        # If feature list is missing or empty/whitespace-only
-        if not features_str.strip():
-            features = [default_value]
-        else:
-            features = [f.strip() for f in features_str.split("|") if f.strip()]
-            if not features:
-                features = [default_value]
+		# If feature list is missing or empty/whitespace-only
+		if not features_str.strip():
+			features = [default_value]
+		else:
+			features = [f.strip() for f in features_str.split("|") if f.strip()]
+			if not features:
+				features = [default_value]
 
-        result[key] = features
+		result[key] = features
 
-    return result
+	return result
 
 def download_image(URL,filename="temp.jpg"):
-    # try to reuse a recently downloaded copy in the temp folder
-    path = os.path.join(temp_folder, filename)
+	# create a subfolder using the first four characters of the filename 
+	# to avoid having too many files in a single folder which can cause performance issues on some file systems
+	# this also makes it easier to manage and clean up cached images if needed
+	subfolder_name = filename[:4]
+	subfolder_path = os.path.join(temp_folder, subfolder_name)
+	
+	# Create subfolder if it doesn't exist
+	if not os.path.exists(subfolder_path):
+		os.makedirs(subfolder_path)
+	
+	path = os.path.join(subfolder_path, filename)
 
-    if os.path.exists(path):
-        age = time.time() - os.path.getmtime(path)
-        # check against configurable cache lifetime
-        if age < CACHE_DAYS * 24 * 3600:
-            return ("ok", path)
-        # otherwise fall through and re-download a fresh copy
+	# try to reuse a recently downloaded copy in the temp folder 
+	# to avoid unnecessary downloads and speed up processing
+	# check file modified time to ensure it's not too old
+	if os.path.exists(path):
+		age = time.time() - os.path.getmtime(path)
+		# check against configurable cache lifetime
+		if age < CACHE_DAYS * 24 * 3600:
+			return ("ok", path)
+		# otherwise fall through and re-download a fresh copy
 
-    r = requests.get(URL, timeout=21)
-    if r.status_code == 200:
-        status = "ok"
-        with open(path, 'wb') as out:
-            for chunk in r.iter_content(chunk_size=128):
-                out.write(chunk)
-    else:
-        status = "bad"
-        path = ""
+	r = requests.get(URL, timeout=21)
+	if r.status_code == 200:
+		status = "ok"
+		with open(path, 'wb') as out:
+			for chunk in r.iter_content(chunk_size=128):
+				out.write(chunk)
+	else:
+		status = "bad"
+		path = ""
 
-    return (status, path)
+	return (status, path)
 
 def process_image(URL, services):
 	image = {
@@ -151,8 +163,8 @@ def process_image(URL, services):
 		image["iiifFullImageURL"] = iiifImage.get_full_image_url()
 
 		# Download the image
-		(status, image_local_path) = download_image(image_url, f"temp_{iiifImage.id}.jpg")
-		(status, image_local_path_scaled) = download_image(iiifImage.get_scaled_image_url("!1110,1110"),f"temp_{iiifImage.id}_1110.jpg")
+		(status, image_local_path) = download_image(image_url, f"{iiifImage.id}.jpg")
+		(status, image_local_path_scaled) = download_image(iiifImage.get_scaled_image_url("!1110,1110"),f"{iiifImage.id}_1110.jpg")
 
 		# Gather and store image metadata
 		im=Image.open(image_local_path)
