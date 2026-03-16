@@ -19,8 +19,7 @@ class IIIFImage(object):
 	KNOWN_URL_MAPPINGS = {
 		'https://ids.lib.harvard.edu/ids/': 'harvard_ids',
 		'https://ids.lib.harvard.edu/mps/': 'harvard_mps',
-		'https://mps.lib.harvard.edu/assets/image/': 'harvard_mps_asset',
-		'https://mps.lib.harvard.edu/assets/images/drs:': 'harvard_mps_drs_asset',
+		'https://mps.lib.harvard.edu/assets/image/drs:': 'harvard_mps_drs_asset',
 	}
 
 	def __init__(self, uri: str):
