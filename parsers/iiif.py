@@ -1,11 +1,12 @@
-import requests
-import os
 import logging
+import requests
 from typing import Optional, Dict, Any
 from urllib.parse import urlparse
 
 class IIIFImage(object):
 	"""A class for handling IIIF (International Image Interoperability Framework) images."""
+
+	logger = logging.getLogger(__name__)
 	
 	# Status constants
 	STATUS_OK = "ok"
@@ -37,11 +38,15 @@ class IIIFImage(object):
 		if not parsed.scheme or not parsed.netloc:
 			raise ValueError("URI must be a valid URL with scheme and netloc")
 		
-		self.base_uri = uri.rstrip('/')  # Remove trailing slash for consistency
+		self.original_uri = uri.rstrip('/')
+		self.base_uri = self.original_uri
 		self.info_url = f"{self.base_uri}/info.json"
 		self.id: Optional[int] = -1
 		self.status = self.STATUS_UNKNOWN
 		self.info: Dict[str, Any] = {}
+		self.request_metrics = {
+			"info_json_fetches": 0,
+		}
 		
 		self.__fetch_info()
 
@@ -109,21 +114,35 @@ class IIIFImage(object):
 	def get_status(self) -> str:
 		"""Get the current status of the IIIF image service."""
 		return self.status
+
+	def get_request_metrics(self) -> Dict[str, int]:
+		"""Get counters for outbound IIIF requests."""
+		return dict(self.request_metrics)
 	
 	def __fetch_info(self):
 		"""Fetch IIIF info.json with error handling."""
 		try:
+			self.request_metrics["info_json_fetches"] += 1
+			self.logger.info("Fetching IIIF info.json: %s", self.info_url)
 			response = requests.get(self.info_url, timeout=self.REQUEST_TIMEOUT)
 			response.raise_for_status()
+			resolved_base_uri = response.url.removesuffix("/info.json").rstrip("/")
+			self.logger.info(
+				"Fetched IIIF info.json: requested=%s resolved=%s status=%s",
+				self.info_url,
+				response.url,
+				response.status_code,
+			)
 			self.status = self.STATUS_OK
-			self.id = self.__extract_id_from_url(response.url.rstrip('/info.json'))
+			self.base_uri = resolved_base_uri
+			self.id = self.__extract_id_from_url(resolved_base_uri)
 			self.info = response.json()
 		except requests.exceptions.RequestException as e:
-			logging.error(f"Failed to fetch info.json from {self.info_url}: {e}")
+			self.logger.error("Failed to fetch info.json from %s: %s", self.info_url, e)
 			self.status = self.STATUS_BAD
 			self.info = {}
 		except ValueError as e:  # JSON decode error
-			logging.error(f"Invalid JSON in info.json from {self.info_url}: {e}")
+			self.logger.error("Invalid JSON in info.json from %s: %s", self.info_url, e)
 			self.status = self.STATUS_BAD
 			self.info = {}
 	

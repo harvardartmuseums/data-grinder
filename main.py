@@ -3,6 +3,7 @@ import json
 import argparse
 import datetime
 import time
+import logging
 import requests
 import imagehash
 from flask import Flask, request
@@ -27,6 +28,14 @@ from parsers import (
 )
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
+
+log_level_name = os.getenv("LOG_LEVEL", "INFO").upper()
+log_level = getattr(logging, log_level_name, logging.INFO)
+if not logging.getLogger().handlers:
+	logging.basicConfig(level=log_level)
+logging.getLogger().setLevel(log_level)
 
 temp_folder = os.path.dirname(os.path.realpath(__file__)) + "/temp"
 if not os.path.exists(temp_folder): 
@@ -108,7 +117,7 @@ def parse_service_features(query: str, default_value: str = "all"):
 
 	return result
 
-def download_image(URL,filename="temp.jpg"):
+def download_image(URL, filename="temp.jpg", metrics=None):
 	# create a subfolder using the first four characters of the filename 
 	# to avoid having too many files in a single folder which can cause performance issues on some file systems
 	# this also makes it easier to manage and clean up cached images if needed
@@ -128,16 +137,34 @@ def download_image(URL,filename="temp.jpg"):
 		age = time.time() - os.path.getmtime(path)
 		# check against configurable cache lifetime
 		if age < CACHE_DAYS * 24 * 3600:
+			if metrics is not None:
+				metrics["image_cache_hits"] += 1
+			logger.info("Image cache hit: url=%s path=%s age_seconds=%.0f", URL, path, age)
 			return ("ok", path)
 		# otherwise fall through and re-download a fresh copy
 
-	r = requests.get(URL, timeout=21)
+	if metrics is not None:
+		metrics["image_fetches"] += 1
+	logger.info("Downloading image: requested=%s path=%s", URL, path)
+	r = requests.get(URL, timeout=21, stream=True)
 	if r.status_code == 200:
 		status = "ok"
+		logger.info(
+			"Downloaded image: requested=%s resolved=%s status=%s",
+			URL,
+			r.url,
+			r.status_code,
+		)
 		with open(path, 'wb') as out:
 			for chunk in r.iter_content(chunk_size=128):
 				out.write(chunk)
 	else:
+		logger.warning(
+			"Image download failed: requested=%s resolved=%s status=%s",
+			URL,
+			r.url,
+			r.status_code,
+		)
 		status = "bad"
 		path = ""
 
@@ -153,18 +180,27 @@ def process_image(URL, services):
 	start = time.time()
 
 	iiifImage = iiif.IIIFImage(URL)
+	iiif_metrics = iiifImage.get_request_metrics()
+	request_metrics = {
+		"info_json_fetches": iiif_metrics["info_json_fetches"],
+		"image_fetches": 0,
+		"image_cache_hits": 0,
+	}
 	image["drsstatus"] = iiifImage.status
 
 	if iiifImage.is_valid(): 
 		image_url = iiifImage.get_full_image_url()
+		scaled_image_url = iiifImage.get_scaled_image_url("!1110,1110")
 
 		image["idsid"] = int(iiifImage.id)
 		image["iiifbaseuri"] = iiifImage.get_base_uri()
 		image["iiifFullImageURL"] = iiifImage.get_full_image_url()
 
 		# Download the image
-		(status, image_local_path) = download_image(image_url, f"{iiifImage.id}.jpg")
-		(status, image_local_path_scaled) = download_image(iiifImage.get_scaled_image_url("!1110,1110"),f"{iiifImage.id}_1110.jpg")
+		logger.info("Fetching IIIF full image: %s", image_url)
+		(status, image_local_path) = download_image(image_url, f"{iiifImage.id}.jpg", request_metrics)
+		logger.info("Fetching IIIF scaled image: %s", scaled_image_url)
+		(status, image_local_path_scaled) = download_image(scaled_image_url, f"{iiifImage.id}_1110.jpg", request_metrics)
 
 		# Gather and store image metadata
 		im=Image.open(image_local_path)
@@ -740,6 +776,17 @@ def process_image(URL, services):
 
 	end = time.time()
 	image["runtime"] = end - start
+	logger.info(
+		"IIIF request summary: source_url=%s base_uri=%s drsstatus=%s info_json_fetches=%s image_fetches=%s image_cache_hits=%s nrs_mps_fetches=%s runtime_seconds=%.3f",
+		URL,
+		iiifImage.get_base_uri(),
+		image["drsstatus"],
+		request_metrics["info_json_fetches"],
+		request_metrics["image_fetches"],
+		request_metrics["image_cache_hits"],
+		request_metrics["info_json_fetches"] + request_metrics["image_fetches"],
+		image["runtime"],
+	)
 
 	return image
 
