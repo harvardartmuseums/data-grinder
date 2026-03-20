@@ -491,13 +491,28 @@ def process_image(URL, services):
 		image["iiifbaseuri"]   = iiif_image.get_base_uri()
 		image["iiifFullImageURL"] = image_url
 
-		# Download full and scaled copies
-		_, image_local_path        = download_image(image_url, f"{iiif_image.id}.jpg")
-		_, image_local_path_scaled = download_image(iiif_image.get_scaled_image_url("!1110,1110"), f"{iiif_image.id}_1110.jpg")
+		# Download the full image
+		_, image_local_path = download_image(image_url, f"{iiif_image.id}.jpg")
 
 		# Image metadata
 		im = Image.open(image_local_path)
 		image["width"], image["height"] = im.size
+
+		# Create a locally-scaled copy (fit within 1110×1110) without a second HTTP request.
+		# Regenerate if it doesn't exist or is older than CACHE_DAYS.
+		image_local_path_scaled = os.path.join(
+			os.path.dirname(image_local_path),
+			f"{iiif_image.id}_1110.jpg"
+		)
+		scaled_needs_refresh = (
+			not os.path.exists(image_local_path_scaled)
+			or (time.time() - os.path.getmtime(image_local_path_scaled)) >= CACHE_DAYS * 24 * 3600
+		)
+		if scaled_needs_refresh:
+			im_scaled = im.copy()
+			im_scaled.thumbnail((1110, 1110), Image.LANCZOS)
+			im_scaled.save(image_local_path_scaled)
+			
 		image["widthFull"]  = iiif_image.info["width"]
 		image["heightFull"] = iiif_image.info["height"]
 
