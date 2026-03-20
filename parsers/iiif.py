@@ -3,6 +3,9 @@ import os
 import logging
 from typing import Optional, Dict, Any
 from urllib.parse import urlparse
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class IIIFImage(object):
 	"""A class for handling IIIF (International Image Interoperability Framework) images."""
@@ -113,8 +116,9 @@ class IIIFImage(object):
 	
 	def __fetch_info(self):
 		"""Fetch IIIF info.json with error handling."""
+		user_agent = os.getenv("USER_AGENT", "data-grinder/1.0")
 		try:
-			response = requests.get(self.info_url, timeout=self.REQUEST_TIMEOUT)
+			response = requests.get(self.info_url, headers={"User-Agent": user_agent}, timeout=self.REQUEST_TIMEOUT)
 			response.raise_for_status()
 			self.status = self.STATUS_OK
 			self.id = self.__extract_id_from_url(response.url.rstrip('/info.json'))
@@ -139,7 +143,6 @@ class IIIFImage(object):
 			Extracted ID string
 		"""
 
-		print(url)
 		if not url:
 			return -1
 			

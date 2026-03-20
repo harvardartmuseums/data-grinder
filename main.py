@@ -28,6 +28,8 @@ from parsers import (
 
 load_dotenv()
 
+USER_AGENT = os.getenv("USER_AGENT", "data-grinder/1.0")
+
 temp_folder = os.path.dirname(os.path.realpath(__file__)) + "/temp"
 if not os.path.exists(temp_folder): 
 	os.mkdir(temp_folder)
@@ -180,7 +182,8 @@ def download_image(URL,filename="temp.jpg"):
 			return ("ok", path)
 		# otherwise fall through and re-download a fresh copy
 
-	r = requests.get(URL, timeout=21)
+	r = requests.get(URL, headers={"User-Agent": USER_AGENT}, timeout=21)
+	
 	if r.status_code == 200:
 		status = "ok"
 		with open(path, 'wb') as out:

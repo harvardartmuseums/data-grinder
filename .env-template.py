@@ -22,3 +22,5 @@ HYPERBOLIC_API_KEY = ""
 IMAGE_CACHE_DAYS = 30
 
 FLASK_APP = "main"
+
+USER_AGENT = "data-grinder/1.0"
