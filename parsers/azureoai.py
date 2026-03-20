@@ -1,4 +1,4 @@
-from openai import AzureOpenAI
+from openai import AzureOpenAI, BadRequestError, APIConnectionError, RateLimitError, APIStatusError, ContentFilterFinishReasonError
 import os
 import base64
 from enum import Enum
@@ -87,19 +87,68 @@ class AzureOAI(object):
 			}
 
 			return result
-		except AzureOpenAI.APIConnectionError as e:
-			print("The server could not be reached")
-			print(e.__cause__)  # an underlying Exception, likely raised within httpx.
-		except AzureOpenAI.RateLimitError as e:
-			print("A 429 status code was received; we should back off a bit.")
-		except AzureOpenAI.APIStatusError as e:
-			print("Another non-200-range status code was received")
-			print(e.status_code)
-			print(e.response)
-			result = {
-				"description": e.response.model_dump(),
-				"prompt": prompt,
-				"status": e.status_code
-			}
 
+		except APIConnectionError as e:
+			return {
+				"model": model.model_id,
+				"status": e.status_code,
+				"description": str(e),
+				"prompt": prompt
+			}	
+
+		except RateLimitError as e:
+			# A 429 status code was received; we should back off a bit
+			return {
+				"model": model.model_id,
+				"status": e.status_code,
+				"description": str(e),
+				"prompt": prompt
+			}					
+
+		except ContentFilterFinishReasonError as e:
+			response = {
+				"model": model.model_id,
+				"status": e.status_code,
+				"description": "Content filter triggered: " + str(e),
+				"prompt": prompt
+			}
+			return response
+
+		except BadRequestError as e:
+			if "content_filter" in str(e) or "ResponsibleAIPolicyViolation" in str(e):
+				description = {
+					"choices": [
+						{
+							"finish_reason": "content_filter",
+							"message": {
+								"content": e.body["message"]
+							},
+							**e.body["inner_error"]
+						}
+					],
+					"model": "unknown",
+					"error": e.body
+				}
+			else:
+				description = str(e)
+
+			return {
+				"status": e.status_code,
+				"description": description,
+				"prompt": prompt
+			}		
+
+		except APIStatusError as e:
+			result = {
+				"status": e.status_code,
+				"description": str(e),
+				"prompt": prompt
+			}
 			return result
+		
+		except Exception as e:
+			response = {
+				"status": 500,
+				"description": str(e)
+			}
+			return response
