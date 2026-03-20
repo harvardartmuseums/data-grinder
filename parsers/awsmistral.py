@@ -5,38 +5,53 @@ from enum import Enum
 class MistralModel(Enum):
 	PIXTRAL_LARGE_2502 = (
 		"pixtral-large-2502",
-		"us.mistral.pixtral-large-2502-v1:0"
+		"us.mistral.pixtral-large-2502-v1:0",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
+		None
 	)
 	MAGISTRAL_SMALL_2509 = (
 		"magistral-small-2509",
-		"mistral.magistral-small-2509"
+		"mistral.magistral-small-2509",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
+		None
 	)
 	MINISTRAL_3_3B = (
 		"ministral-3-3b",
-		"mistral.ministral-3-3b-instruct"
+		"mistral.ministral-3-3b-instruct",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
+		None
 	)
 	MINISTRAL_3_8B = (
 		"ministral-3-8b",
-		"mistral.ministral-3-8b-instruct"
+		"mistral.ministral-3-8b-instruct",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
+		None
 	)
 	MINISTRAL_3_14B = (
 		"ministral-3-14b",
-		"mistral.ministral-3-14b-instruct"
+		"mistral.ministral-3-14b-instruct",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
+		None
 	)
 	MISTRAL_LARGE_3_675B = (
 		"mistral-large-3-675b",
-		"mistral.mistral-large-3-675b-instruct"
+		"mistral.mistral-large-3-675b-instruct",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
+		None
 	)
 
-	def __init__(self, name: str, model_id: str):
+	def __init__(self, name: str, model_id: str, inference_config: dict, eol_date: str):
 		self._model_id = model_id
 		self._name = name
+		self._inference_config = inference_config
+		self._eol_date = eol_date
 
 	def list_models():
 		return [
 			{
 				"name": model.name,
-				"model_id": model.model_id
+				"model_id": model.model_id,
+				"eol_date": model.eol_date
 			}
 			for model in MistralModel
 		]
@@ -48,6 +63,14 @@ class MistralModel(Enum):
 	@property
 	def name(self):
 		return self._name    
+
+	@property
+	def inference_config(self):
+		return self._inference_config
+
+	@property
+	def eol_date(self):
+		return self._eol_date
 	
 class AWSMistral(object):
 
@@ -93,7 +116,7 @@ class AWSMistral(object):
 			awsresponse = client.converse(
 				modelId=model.model_id,
 				messages=messages,
-				inferenceConfig={"maxTokens": 2048, "temperature": 0.5, "topP": 0.9}
+				inferenceConfig=model.inference_config
 			)
 
 			# Process and print the response

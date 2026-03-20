@@ -6,30 +6,41 @@ from enum import Enum
 class OpenAIModel(Enum):
 	OPENAI = (
 		"openai",
-		"HAM-GPT-4-V-D1"
+		"HAM-GPT-4-V-D1",
+		{"maxTokens": 2000, "temperature": 1.0, "topP": 1.0},
+		None
 	)        
 	GPT_4 = (
 		"gpt-4",
-		"HAM-GPT-4-V-D1"
+		"HAM-GPT-4-V-D1",
+		{"maxTokens": 2000, "temperature": 1.0, "topP": 1.0},
+		None
 	)    
 	GPT_4O = (
 		"gpt-4o",
-		"HAM-GPT-4o-V-D1"
+		"HAM-GPT-4o-V-D1",
+		{"maxTokens": 2000, "temperature": 1.0, "topP": 1.0},
+		None
 	)
 	GPT_4_1_MINI = (
 		"gpt-4-1-mini",
-		"HAM-GPT-4-1-MINI-D1"
+		"HAM-GPT-4-1-MINI-D1",
+		{"maxTokens": 2000, "temperature": 1.0, "topP": 1.0},
+		None
 	)
 
-	def __init__(self, name: str, model_id: str):
+	def __init__(self, name: str, model_id: str, inference_config: dict, eol_date: str):
 		self._model_id = model_id
 		self._name = name
+		self._inference_config = inference_config
+		self._eol_date = eol_date
 
 	def list_models():
 		return [
 			{
 				"name": model.name,
-				"model_id": model.model_id
+				"model_id": model.model_id,
+				"eol_date": model.eol_date
 			}
 			for model in OpenAIModel
 		]
@@ -40,6 +51,14 @@ class OpenAIModel(Enum):
 	@property
 	def name(self):
 		return self._name    
+
+	@property
+	def inference_config(self):
+		return self._inference_config
+
+	@property
+	def eol_date(self):
+		return self._eol_date
 
 class AzureOAI(object):
 
@@ -77,7 +96,7 @@ class AzureOAI(object):
 			response = client.chat.completions.create(
 				model = model.model_id,
 				messages = prompt,
-				max_tokens = 2000
+				max_tokens = model.inference_config["maxTokens"]
 			)
 			
 			result = {

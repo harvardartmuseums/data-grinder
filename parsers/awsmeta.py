@@ -5,30 +5,41 @@ from enum import Enum
 class MetaModel(Enum):
 	LLAMA_3_2_11B = (
 		"llama-3-2-11b",
-		"us.meta.llama3-2-11b-instruct-v1:0"
+		"us.meta.llama3-2-11b-instruct-v1:0",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
+		None
 	)
 	LLAMA_3_2_90B = (
 		"llama-3-2-90b",
-		"us.meta.llama3-2-90b-instruct-v1:0"
+		"us.meta.llama3-2-90b-instruct-v1:0",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
+		None
 	)
 	LLAMA_4_MAVERICK_17B = (
 		"llama-4-maverick-17b",
-		"us.meta.llama4-maverick-17b-instruct-v1:0"
+		"us.meta.llama4-maverick-17b-instruct-v1:0",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
+		None
 	)
 	LLAMA_4_SCOUT_17B = (
 		"llama-4-scout-17b",
-		"us.meta.llama4-scout-17b-instruct-v1:0"
+		"us.meta.llama4-scout-17b-instruct-v1:0",
+		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
+		None
 	)
 
-	def __init__(self, name: str, model_id: str):
+	def __init__(self, name: str, model_id: str, inference_config: dict, eol_date: str):
 		self._model_id = model_id
 		self._name = name
+		self._inference_config = inference_config
+		self._eol_date = eol_date
 
 	def list_models():
 		return [
 			{
 				"name": model.name,
-				"model_id": model.model_id
+				"model_id": model.model_id,
+				"eol_date": model.eol_date
 			}
 			for model in MetaModel
 		]
@@ -40,6 +51,14 @@ class MetaModel(Enum):
 	@property
 	def name(self):
 		return self._name    
+
+	@property
+	def inference_config(self):
+		return self._inference_config
+
+	@property
+	def eol_date(self):
+		return self._eol_date
 	
 class AWSMeta(object):
 
@@ -85,7 +104,7 @@ class AWSMeta(object):
 			awsresponse = client.converse(
 				modelId=model.model_id,
 				messages=messages,
-				inferenceConfig={"maxTokens": 2048, "temperature": 0.5, "topP": 0.9}
+				inferenceConfig=model.inference_config
 			)
 
 			# Process and print the response

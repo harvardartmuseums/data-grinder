@@ -6,22 +6,29 @@ from enum import Enum
 class QwenModel(Enum):
 	QWEN_2_5_VL_7B = (
 		"qwen-2-5-vl-7b",
-		"Qwen/Qwen2.5-VL-7B-Instruct"
+		"Qwen/Qwen2.5-VL-7B-Instruct",
+		{"maxTokens": 2000, "temperature": 1.0, "topP": 1.0},
+		None
 	)
 	QWEN_2_5_VL_72B = (
 		"qwen-2-5-vl-72b",
-		"Qwen/Qwen2.5-VL-72B-Instruct"
+		"Qwen/Qwen2.5-VL-72B-Instruct",
+		{"maxTokens": 2000, "temperature": 1.0, "topP": 1.0},
+		None
 	)
 
-	def __init__(self, name: str, model_id: str):
+	def __init__(self, name: str, model_id: str, inference_config: dict, eol_date: str):
 		self._model_id = model_id
 		self._name = name
+		self._inference_config = inference_config
+		self._eol_date = eol_date
 
 	def list_models():
 		return [
 			{
 				"name": model.name,
-				"model_id": model.model_id
+				"model_id": model.model_id,
+				"eol_date": model.eol_date
 			}
 			for model in QwenModel
 		]
@@ -32,6 +39,14 @@ class QwenModel(Enum):
 	@property
 	def name(self):
 		return self._name    
+
+	@property
+	def inference_config(self):
+		return self._inference_config
+
+	@property
+	def eol_date(self):
+		return self._eol_date
 
 class Qwen(object):
 
@@ -66,7 +81,7 @@ class Qwen(object):
 			response = client.chat.completions.create(
 				model = model.model_id,
 				messages = prompt,
-				max_tokens = 2000
+				max_tokens = model.inference_config["maxTokens"]
 			)
 			
 			result = {
