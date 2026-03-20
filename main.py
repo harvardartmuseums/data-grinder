@@ -484,7 +484,9 @@ def process_image(URL, services):
 	iiif_image = iiif.IIIFImage(URL)
 	image["drsstatus"] = iiif_image.status
 
-	if iiif_image.is_valid():
+	if not iiif_image.is_valid():
+		time.sleep(1)
+	else:
 		image_url = iiif_image.get_full_image_url()
 
 		image["idsid"]         = int(iiif_image.id)
