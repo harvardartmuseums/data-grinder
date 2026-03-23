@@ -7,13 +7,13 @@ class MetaModel(Enum):
 		"llama-3-2-11b",
 		"us.meta.llama3-2-11b-instruct-v1:0",
 		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
-		None
+		"2026-07-07"
 	)
 	LLAMA_3_2_90B = (
 		"llama-3-2-90b",
 		"us.meta.llama3-2-90b-instruct-v1:0",
 		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
-		None
+		"2026-07-07"
 	)
 	LLAMA_4_MAVERICK_17B = (
 		"llama-4-maverick-17b",
