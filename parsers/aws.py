@@ -25,7 +25,8 @@ class AWSModel(Enum):
 			{
 				"name": model.name,
 				"model_id": model.model_id,
-				"functions": model.functions
+				"functions": model.functions,
+				"provider": model.provider
 			}
 			for model in AWSModel
 		]
@@ -41,6 +42,10 @@ class AWSModel(Enum):
 	@property
 	def functions(self):
 		return self._functions
+
+	@property
+	def provider(self):
+		return "AWS Rekognition"
 
 class AWS(object):
 
@@ -114,6 +119,7 @@ class AWS(object):
                 ) from e
             raise
 
+        response['provider'] = AWSModel.BASE.provider
         return response
 
     def fetch_faces(self, photo_file):
@@ -130,6 +136,7 @@ class AWS(object):
                 ) from e
             raise
 
+        response['provider'] = AWSModel.BASE.provider
         return response
 
     def fetch_text(self, photo_file):
@@ -146,4 +153,5 @@ class AWS(object):
                 ) from e
             raise
 
+        response['provider'] = AWSModel.BASE.provider
         return response

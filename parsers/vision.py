@@ -20,7 +20,8 @@ class GVisionModel(Enum):
 			{
 				"name": model.name,
 				"model_id": model.model_id,
-				"functions": model.functions
+				"functions": model.functions,
+				"provider": model.provider
 			}
 			for model in GVisionModel
 		]
@@ -36,6 +37,10 @@ class GVisionModel(Enum):
 	@property
 	def functions(self):
 		return self._functions
+
+	@property
+	def provider(self):
+		return "Google Vision"
 
 class Vision(object):
 
@@ -86,4 +91,5 @@ class Vision(object):
 			# [START parse_response]
 			response = service_request.execute()
 			response["model"] = "unknown"
+			response["provider"] = GVisionModel.BASE.provider
 			return response

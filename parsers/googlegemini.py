@@ -40,7 +40,8 @@ class GoogleGeminiModel(Enum):
 			{
 				"name": model.name,
 				"model_id": model.model_id,
-				"eol_date": model.eol_date
+				"eol_date": model.eol_date,
+				"provider": model.provider
 			}
 			for model in GoogleGeminiModel
 		]
@@ -60,7 +61,11 @@ class GoogleGeminiModel(Enum):
 	@property
 	def eol_date(self):
 		return self._eol_date
-	
+
+	@property
+	def provider(self):
+		return "Google Gemini"
+
 class GoogleGemini(object):
 
 	def __init__(self):
@@ -103,12 +108,14 @@ class GoogleGemini(object):
 			response = result
 			response['model'] = model_id
 			response['status'] = 200			
+			response['provider'] = model.provider
 			return response
 
 		except Exception as e:
 			response = {
 				"model": model.model_id,
 				"status": 500,
-				"description": str(e)
+				"description": str(e),
+				"provider": model.provider
 			}
 			return response

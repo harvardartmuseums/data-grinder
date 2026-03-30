@@ -39,7 +39,8 @@ class MetaModel(Enum):
 			{
 				"name": model.name,
 				"model_id": model.model_id,
-				"eol_date": model.eol_date
+				"eol_date": model.eol_date,
+				"provider": model.provider
 			}
 			for model in MetaModel
 		]
@@ -59,7 +60,11 @@ class MetaModel(Enum):
 	@property
 	def eol_date(self):
 		return self._eol_date
-	
+
+	@property
+	def provider(self):
+		return "Meta"
+
 class AWSMeta(object):
 
 	def __init__(self):
@@ -111,13 +116,15 @@ class AWSMeta(object):
 			response = awsresponse
 			response['model'] = model.model_id
 			response['status'] = 200
+			response['provider'] = model.provider
 			return response
 		
 		except ( client.exceptions.AccessDeniedException, client.exceptions.ResourceNotFoundException, client.exceptions.ThrottlingException, client.exceptions.ModelTimeoutException, client.exceptions.InternalServerException, client.exceptions.ValidationException, client.exceptions.ModelNotReadyException, client.exceptions.ServiceQuotaExceededException) as e:
 			response = {
 				"model": model.model_id,
 				"status": 400,
-				"description": str(e)
+				"description": str(e),
+				"provider": model.provider
 			}
 			return response
 			
@@ -125,7 +132,8 @@ class AWSMeta(object):
 			response = {
 				"model": model.model_id,
 				"status": 500,
-				"description": str(e)
+				"description": str(e),
+				"provider": model.provider
 			}
 			return response
 

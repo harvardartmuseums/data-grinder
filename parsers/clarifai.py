@@ -22,7 +22,8 @@ class ClarifaiModel(Enum):
 			{
 				"name": model.name,
 				"model_id": model.model_id,
-				"functions": model.functions
+				"functions": model.functions,
+				"provider": model.provider
 			}
 			for model in ClarifaiModel
 		]
@@ -38,6 +39,10 @@ class ClarifaiModel(Enum):
 	@property
 	def functions(self):
 		return self._functions
+
+	@property
+	def provider(self):
+		return "Clarifai"
 
 class Clarifai(object):
 
@@ -75,19 +80,21 @@ class Clarifai(object):
 							headers=self.__make_headers(), 
 							data=json.dumps(self.__make_params(photo_file)),
 							timeout=30)
-			return response.json()
+			result = response.json()
+			result['provider'] = ClarifaiModel.BASE.provider
+			return result
 
 		except Timeout:
-			return {"status": 504, "error": "Request to Clarifai API timed out"}
+			return {"status": 504, "error": "Request to Clarifai API timed out", "provider": ClarifaiModel.BASE.provider}
 
 		except ConnectionError as e:
-			return {"status": 503, "error": f"Connection error: {str(e)}"}
+			return {"status": 503, "error": f"Connection error: {str(e)}", "provider": ClarifaiModel.BASE.provider}
 
 		except RequestException as e:
-			return {"status": 500, "error": f"Request error: {str(e)}"}
+			return {"status": 500, "error": f"Request error: {str(e)}", "provider": ClarifaiModel.BASE.provider}
 
 		except Exception as e:
-			return {"status": 500, "error": f"Unexpected error: {str(e)}"}
+			return {"status": 500, "error": f"Unexpected error: {str(e)}", "provider": ClarifaiModel.BASE.provider}
 
 	def fetch_objects(self, photo_file):
 		try:
@@ -96,19 +103,21 @@ class Clarifai(object):
 							headers=self.__make_headers(), 
 							data=json.dumps(self.__make_params(photo_file)),
 							timeout=30)
-			return response.json()
+			result = response.json()
+			result['provider'] = ClarifaiModel.BASE.provider
+			return result
 
 		except Timeout:
-			return {"status": 504, "error": "Request to Clarifai API timed out"}
+			return {"status": 504, "error": "Request to Clarifai API timed out", "provider": ClarifaiModel.BASE.provider}
 
 		except ConnectionError as e:
-			return {"status": 503, "error": f"Connection error: {str(e)}"}
+			return {"status": 503, "error": f"Connection error: {str(e)}", "provider": ClarifaiModel.BASE.provider}
 
 		except RequestException as e:
-			return {"status": 500, "error": f"Request error: {str(e)}"}
+			return {"status": 500, "error": f"Request error: {str(e)}", "provider": ClarifaiModel.BASE.provider}
 
 		except Exception as e:
-			return {"status": 500, "error": f"Unexpected error: {str(e)}"}
+			return {"status": 500, "error": f"Unexpected error: {str(e)}", "provider": ClarifaiModel.BASE.provider}
 
 	def fetch_colors(self, photo_file):
 		try:
@@ -117,16 +126,18 @@ class Clarifai(object):
 							headers=self.__make_headers(), 
 							data=json.dumps(self.__make_params(photo_file)),
 							timeout=30)
-			return response.json()
+			result = response.json()
+			result['provider'] = ClarifaiModel.BASE.provider
+			return result
 
 		except Timeout:
-			return {"status": 504, "error": "Request to Clarifai API timed out"}
+			return {"status": 504, "error": "Request to Clarifai API timed out", "provider": ClarifaiModel.BASE.provider}
 
 		except ConnectionError as e:
-			return {"status": 503, "error": f"Connection error: {str(e)}"}
+			return {"status": 503, "error": f"Connection error: {str(e)}", "provider": ClarifaiModel.BASE.provider}
 
 		except RequestException as e:
-			return {"status": 500, "error": f"Request error: {str(e)}"}
+			return {"status": 500, "error": f"Request error: {str(e)}", "provider": ClarifaiModel.BASE.provider}
 
 		except Exception as e:
-			return {"status": 500, "error": f"Unexpected error: {str(e)}"}
+			return {"status": 500, "error": f"Unexpected error: {str(e)}", "provider": ClarifaiModel.BASE.provider}

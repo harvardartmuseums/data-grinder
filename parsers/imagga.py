@@ -19,7 +19,8 @@ class ImaggaModel(Enum):
 			{
 				"name": model.name,
 				"model_id": model.model_id,
-				"functions": model.functions
+				"functions": model.functions,
+				"provider": model.provider
 			}
 			for model in ImaggaModel
 		]
@@ -35,6 +36,10 @@ class ImaggaModel(Enum):
 	@property
 	def functions(self):
 		return self._functions
+
+	@property
+	def provider(self):
+		return "Imagga"
 
 class Imagga(object):
 
@@ -53,6 +58,7 @@ class Imagga(object):
 		response = response.json()
 
 		response['model'] = 'unknown'
+		response['provider'] = ImaggaModel.BASE.provider
 
 		return response
 
@@ -61,6 +67,7 @@ class Imagga(object):
 		response = response.json()
 		
 		response['model'] = 'personal_photos'
+		response['provider'] = ImaggaModel.BASE.provider
 
 		return response
 
@@ -69,6 +76,7 @@ class Imagga(object):
 		response = response.json()
 		
 		response['model'] = 'unknown'
+		response['provider'] = ImaggaModel.BASE.provider
 
 		return response
 	
@@ -77,5 +85,6 @@ class Imagga(object):
 		response = response.json()
 		
 		response['model'] = 'unknown'
+		response['provider'] = ImaggaModel.BASE.provider
 		
 		return response	

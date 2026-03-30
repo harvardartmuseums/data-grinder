@@ -28,7 +28,8 @@ class QwenModel(Enum):
 			{
 				"name": model.name,
 				"model_id": model.model_id,
-				"eol_date": model.eol_date
+				"eol_date": model.eol_date,
+				"provider": model.provider
 			}
 			for model in QwenModel
 		]
@@ -47,6 +48,10 @@ class QwenModel(Enum):
 	@property
 	def eol_date(self):
 		return self._eol_date
+
+	@property
+	def provider(self):
+		return "Qwen"
 
 class Qwen(object):
 
@@ -87,7 +92,8 @@ class Qwen(object):
 			result = {
 				"description": response.model_dump(),
 				"prompt": "",
-				"status": 200
+				"status": 200,
+				"provider": model.provider
 			}
 
 			return result
@@ -96,5 +102,6 @@ class Qwen(object):
 			return {
 				"status": 500,
 				"prompt": prompt,
-				"description": str(e)
+				"description": str(e),
+				"provider": model.provider
 			}

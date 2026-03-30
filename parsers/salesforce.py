@@ -35,7 +35,8 @@ class SalesForceModel(Enum):
 			{
 				"name": model.name,
 				"model_id": model.model_id,
-				"eol_date": model.eol_date
+				"eol_date": model.eol_date,
+				"provider": model.provider
 			}
 			for model in SalesForceModel
 		]
@@ -55,7 +56,11 @@ class SalesForceModel(Enum):
 	@property
 	def eol_date(self):
 		return self._eol_date
-	
+
+	@property
+	def provider(self):
+		return "Salesforce"
+
 class SalesForce(object):
 
 	def __init__(self):
@@ -86,14 +91,17 @@ class SalesForce(object):
 	def fetch(self, photo_file, model: SalesForceModel = SalesForceModel.BLIP_2):	
 		try:
 			url = f"https://api.clarifai.com/v2/users/salesforce/apps/blip/models/{model.model_id}/outputs"
-			response = requests.post(url, 
-							headers=self.__make_headers(), 
+			response = requests.post(url,
+							headers=self.__make_headers(),
 							data=json.dumps(self.__make_params(photo_file)))
-			return response.json()
+			result = response.json()
+			result['provider'] = model.provider
+			return result
 
 		except Exception as e:
 			return {
 				"model": model.model_id,
-				"status": 500, 
-				"description": str(e)
+				"status": 500,
+				"description": str(e),
+				"provider": model.provider
 			}

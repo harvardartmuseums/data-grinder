@@ -19,7 +19,8 @@ class MCSVisionModel(Enum):
 			{
 				"name": model.name,
 				"model_id": model.model_id,
-				"functions": model.functions
+				"functions": model.functions,
+				"provider": model.provider
 			}
 			for model in MCSVisionModel
 		]
@@ -35,7 +36,11 @@ class MCSVisionModel(Enum):
 	@property
 	def functions(self):
 		return self._functions
-	
+
+	@property
+	def provider(self):
+		return "Microsoft Cognitive Services"
+
 class MCSVision(object):
 
 	def __init__(self):
@@ -57,7 +62,9 @@ class MCSVision(object):
 		with open(photo_file, 'rb') as image:
 			image_content = image.read()
 			response = requests.post(url, data=image_content, params=params, headers=headers)
-			return response.json()				
+			result = response.json()
+			result['provider'] = MCSVisionModel.BASE.provider
+			return result
 
 	def fetch_description(self, photo_file):
 		url = self.base_url + 'describe'
@@ -71,4 +78,6 @@ class MCSVision(object):
 		with open(photo_file, 'rb') as image:
 			image_content = image.read()
 			response = requests.post(url, data=image_content, params=params, headers=headers)
-			return response.json()				
+			result = response.json()
+			result['provider'] = MCSVisionModel.BASE.provider
+			return result

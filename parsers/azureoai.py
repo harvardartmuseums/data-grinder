@@ -40,7 +40,8 @@ class OpenAIModel(Enum):
 			{
 				"name": model.name,
 				"model_id": model.model_id,
-				"eol_date": model.eol_date
+				"eol_date": model.eol_date,
+				"provider": model.provider
 			}
 			for model in OpenAIModel
 		]
@@ -59,6 +60,10 @@ class OpenAIModel(Enum):
 	@property
 	def eol_date(self):
 		return self._eol_date
+
+	@property
+	def provider(self):
+		return "Azure OpenAI Service"
 
 class AzureOAI(object):
 
@@ -102,7 +107,8 @@ class AzureOAI(object):
 			result = {
 				"description": response.model_dump(),
 				"prompt": "",
-				"status": 200
+				"status": 200,
+				"provider": model.provider
 			}
 
 			return result
@@ -112,7 +118,8 @@ class AzureOAI(object):
 				"model": model.model_id,
 				"status": e.status_code,
 				"description": str(e),
-				"prompt": prompt
+				"prompt": prompt,
+				"provider": model.provider
 			}	
 
 		except RateLimitError as e:
@@ -121,7 +128,8 @@ class AzureOAI(object):
 				"model": model.model_id,
 				"status": e.status_code,
 				"description": str(e),
-				"prompt": prompt
+				"prompt": prompt,
+				"provider": model.provider
 			}					
 
 		except ContentFilterFinishReasonError as e:
@@ -129,7 +137,8 @@ class AzureOAI(object):
 				"model": model.model_id,
 				"status": e.status_code,
 				"description": "Content filter triggered: " + str(e),
-				"prompt": prompt
+				"prompt": prompt,
+				"provider": model.provider
 			}
 			return response
 
@@ -154,20 +163,23 @@ class AzureOAI(object):
 			return {
 				"status": e.status_code,
 				"description": description,
-				"prompt": prompt
+				"prompt": prompt,
+				"provider": model.provider
 			}		
 
 		except APIStatusError as e:
 			result = {
 				"status": e.status_code,
 				"description": str(e),
-				"prompt": prompt
+				"prompt": prompt,
+				"provider": model.provider
 			}
 			return result
 		
 		except Exception as e:
 			response = {
 				"status": 500,
-				"description": str(e)
+				"description": str(e),
+				"provider": model.provider
 			}
 			return response
