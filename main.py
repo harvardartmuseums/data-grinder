@@ -99,21 +99,29 @@ def home():
 
 @app.route("/list/services", methods=['GET'])
 def list_services():
-	return {"services": azureoai.OpenAIModel.list_models() + \
-			awsanthropic.AnthropicModel.list_models() + \
-			awsmeta.MetaModel.list_models() + \
-			awsnova.NovaModel.list_models() + \
-			googlegemini.GoogleGeminiModel.list_models() + \
-			awsmistral.MistralModel.list_models() + \
-			qwen.QwenModel.list_models() + \
-			aws.AWSModel.list_models() + \
-			clarifai.ClarifaiModel.list_models() + \
-			imagga.ImaggaModel.list_models() + \
-			mcsvision.MCSVisionModel.list_models() + \
-			vision.GVisionModel.list_models() + \
-			salesforce.SalesForceModel.list_models() + \
-			[{"name":"hash", "model_id":""}] +\
-			[{"name":"color", "model_id":""}]}
+	return {"services": 
+		{
+			"computer vision": 
+				aws.AWSModel.list_models() + \
+				clarifai.ClarifaiModel.list_models() + \
+				imagga.ImaggaModel.list_models() + \
+				mcsvision.MCSVisionModel.list_models() + \
+				vision.GVisionModel.list_models(), 
+			"large language models": 
+				azureoai.OpenAIModel.list_models() + \
+				awsanthropic.AnthropicModel.list_models() + \
+				awsmeta.MetaModel.list_models() + \
+				awsnova.NovaModel.list_models() + \
+				googlegemini.GoogleGeminiModel.list_models() + \
+				awsmistral.MistralModel.list_models() + \
+				qwen.QwenModel.list_models() + \
+				salesforce.SalesForceModel.list_models(),
+			"other": [
+				{"name":"hash", "model_id":""}, 
+				{"name":"color", "model_id":""}
+			]
+		}
+	}
 
 @app.route("/extract", methods=['GET'])
 def extract():
