@@ -106,28 +106,33 @@ class AWSNova(object):
 				inferenceConfig=model.inference_config
 			)
 
-			# Process and print the response
-			response = awsresponse
-			response['model'] = model.model_id
-			response['status'] = 200
-			response['provider'] = model.provider
-			return response
+			return {
+				"body": awsresponse["output"]["message"]["content"][0]["text"],
+				"model": model.model_id,
+				"provider": model.provider,
+				"status": 200,
+				"full": awsresponse
+			}
 		
 		except ( client.exceptions.AccessDeniedException, client.exceptions.ResourceNotFoundException, client.exceptions.ThrottlingException, client.exceptions.ModelTimeoutException, client.exceptions.InternalServerException, client.exceptions.ValidationException, client.exceptions.ModelNotReadyException, client.exceptions.ServiceQuotaExceededException) as e:
 			response = {
+				"body": None,
 				"model": model.model_id,
+				"provider": model.provider,
 				"status": 400,
 				"description": str(e),
-				"provider": model.provider
+				"full": None
 			}
 			return response
 			
 		except client.exceptions.ModelErrorException as e:
 			response = {
+				"body": None,
 				"model": model.model_id,
+				"provider": model.provider,
 				"status": 500,
 				"description": str(e),
-				"provider": model.provider
+				"full": None
 			}
 			return response
 

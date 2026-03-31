@@ -95,13 +95,22 @@ class SalesForce(object):
 							headers=self.__make_headers(),
 							data=json.dumps(self.__make_params(photo_file)))
 			result = response.json()
-			result['provider'] = model.provider
-			return result
+
+			return {
+				"body": result["outputs"][0]["data"]["text"]["raw"],
+				"model": result["outputs"][0]["model"]["id"],
+				"provider": model.provider,
+				"status": 200,
+				"full": result
+			}
 
 		except Exception as e:
-			return {
+			response = {
+				"body": None,
 				"model": model.model_id,
+				"provider": model.provider,
 				"status": 500,
 				"description": str(e),
-				"provider": model.provider
-			}
+				"full": None
+			}			
+			return response

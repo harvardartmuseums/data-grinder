@@ -105,17 +105,21 @@ class GoogleGemini(object):
 			response = requests.post(url, headers=headers, json=params)
 
 			result = response.json()
-			response = result
-			response['model'] = model_id
-			response['status'] = 200			
-			response['provider'] = model.provider
-			return response
+			return {
+				"body": result["candidates"][0]["content"]["parts"][0]["text"],
+				"model": model_id,
+				"provider": model.provider,
+				"status": 200,
+				"full": result
+			}
 
 		except Exception as e:
 			response = {
+				"body": None,
 				"model": model.model_id,
+				"provider": model.provider,
 				"status": 500,
 				"description": str(e),
-				"provider": model.provider
+				"full": None
 			}
 			return response

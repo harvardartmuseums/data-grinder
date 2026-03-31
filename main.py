@@ -85,6 +85,10 @@ GENERIC_MODELS = [
 	# Qwen on Hyperbolic
 	(qwen.QwenModel.QWEN_2_5_VL_7B,  qwen.Qwen, "full"),
 	(qwen.QwenModel.QWEN_2_5_VL_72B, qwen.Qwen, "full"),
+	# Salesforce BLIP on Clarifai
+	(salesforce.SalesForceModel.BLIP,           salesforce.SalesForce, "full"),
+	(salesforce.SalesForceModel.BLIP_2,         salesforce.SalesForce, "full"),
+	(salesforce.SalesForceModel.BLIP_2_6_7B,   	salesforce.SalesForce, "full"),
 ]
 
 app = Flask(__name__)
@@ -456,20 +460,6 @@ def _run_aws_rekognition(image, image_local_path, features, image_width, image_h
 					text["annotationFragment"] = _make_annotation_fragment(x, y, w, h)
 		image["aws"]["text"] = result
 
-def _run_salesforce(image, image_local_path, services, annotation_fragment):
-	"""Run Salesforce/BLIP models via Clarifai."""
-	blip_models = [
-		salesforce.SalesForceModel.BLIP,
-		salesforce.SalesForceModel.BLIP_2,
-		salesforce.SalesForceModel.BLIP_2_6_7B,
-	]
-	for model in blip_models:
-		if model.name in services:
-			result = salesforce.SalesForce().fetch(image_local_path, model)
-			if "data" in result["outputs"][0]:
-				result["outputs"][0]["data"]["annotationFragment"] = annotation_fragment
-			image[model.name] = result
-
 # ── Main orchestrator ─────────────────────────────────────────────────────────
 
 def process_image(URL, services):
@@ -569,9 +559,6 @@ def process_image(URL, services):
 				result = cls().fetch(path_map[img_size], model)
 				result["annotationFragment"] = annotation_fragment_full
 				image[model.name] = result
-
-		# ── Salesforce / BLIP ────────────────────────────────────────────────
-		_run_salesforce(image, image_local_path, services, annotation_fragment_full)
 
 	image["runtime"] = time.time() - start
 	return image

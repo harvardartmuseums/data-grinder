@@ -89,19 +89,20 @@ class Qwen(object):
 				max_tokens = model.inference_config["maxTokens"]
 			)
 			
-			result = {
-				"description": response.model_dump(),
-				"prompt": "",
+			return {
+				"body": response.choices[0].message.content,
+				"model": response.model,
+				"provider": model.provider,
 				"status": 200,
-				"provider": model.provider
+				"full": response.model_dump()
 			}
-
-			return result
 
 		except Exception as e:
 			return {
+				"body": None,
+				"model": model.model_id,
+				"provider": model.provider,
 				"status": 500,
-				"prompt": prompt,
 				"description": str(e),
-				"provider": model.provider
+				"full": None
 			}

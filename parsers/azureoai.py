@@ -104,43 +104,54 @@ class AzureOAI(object):
 				max_tokens = model.inference_config["maxTokens"]
 			)
 			
-			result = {
-				"description": response.model_dump(),
-				"prompt": "",
-				"status": 200,
-				"provider": model.provider
-			}
+			if response.choices[0].finish_reason == "content_filter": 
+				cfr = response.choices[0].content_filter_results
+				body = f"<p>The response was filtered due to the prompt triggering Azure OpenAI's content management policy. The content filter results follow.</p><p>" + \
+						f"hate: {cfr['hate']['severity']}<br/>" + \
+						f"self-harm: {cfr['self_harm']['severity']}<br/>" + \
+						f"sexual: {cfr['sexual']['severity']}<br/>" + \
+						f"violence: {cfr['violence']['severity']}<br/></p>"
+			else:
+				body = response.choices[0].message.content
 
-			return result
+			return {
+				"body": body,
+				"model": response.model,
+				"provider": model.provider,
+				"status": 200,
+				"full": response.model_dump()
+			}
 
 		except APIConnectionError as e:
 			return {
+				"body": None,
 				"model": model.model_id,
+				"provider": model.provider,
 				"status": e.status_code,
 				"description": str(e),
-				"prompt": prompt,
-				"provider": model.provider
+				"full": None
 			}	
 
 		except RateLimitError as e:
 			# A 429 status code was received; we should back off a bit
 			return {
+				"body": None,
 				"model": model.model_id,
+				"provider": model.provider,
 				"status": e.status_code,
 				"description": str(e),
-				"prompt": prompt,
-				"provider": model.provider
+				"full": None
 			}					
 
 		except ContentFilterFinishReasonError as e:
-			response = {
+			return {
+				"body": None,
 				"model": model.model_id,
+				"provider": model.provider,
 				"status": e.status_code,
 				"description": "Content filter triggered: " + str(e),
-				"prompt": prompt,
-				"provider": model.provider
+				"full": None
 			}
-			return response
 
 		except BadRequestError as e:
 			if "content_filter" in str(e) or "ResponsibleAIPolicyViolation" in str(e):
@@ -161,25 +172,30 @@ class AzureOAI(object):
 				description = str(e)
 
 			return {
+				"body": None,
+				"model": model.model_id,
+				"provider": model.provider,
 				"status": e.status_code,
 				"description": description,
-				"prompt": prompt,
-				"provider": model.provider
+				"full": None
 			}		
 
 		except APIStatusError as e:
-			result = {
+			return {
+				"body": None,
+				"model": model.model_id,
+				"provider": model.provider,
 				"status": e.status_code,
 				"description": str(e),
-				"prompt": prompt,
-				"provider": model.provider
+				"full": None
 			}
-			return result
 		
 		except Exception as e:
-			response = {
+			return {
+				"body": None,
+				"model": model.model_id,
+				"provider": model.provider,
 				"status": 500,
 				"description": str(e),
-				"provider": model.provider
+				"full": None
 			}
-			return response
