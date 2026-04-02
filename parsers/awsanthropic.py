@@ -5,13 +5,6 @@ from enum import Enum
 from PIL import Image
 
 class AnthropicModel(Enum):
-	CLAUDE = (
-		"claude",
-		"anthropic.claude-3-haiku-20240307-v1:0",
-		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
-		"2026-09-10",
-		None
-	)    
 	CLAUDE_3_HAIKU = (
 		"claude-3-haiku",
 		"anthropic.claude-3-haiku-20240307-v1:0",

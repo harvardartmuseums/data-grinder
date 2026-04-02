@@ -4,12 +4,6 @@ import base64
 from enum import Enum
 
 class OpenAIModel(Enum):
-	OPENAI = (
-		"openai",
-		"HAM-GPT-4-V-D1",
-		{"maxTokens": 2000, "temperature": 1.0, "topP": 1.0},
-		None
-	)        
 	GPT_4 = (
 		"gpt-4",
 		"HAM-GPT-4-V-D1",

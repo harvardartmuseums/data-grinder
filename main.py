@@ -45,12 +45,10 @@ CACHE_DAYS = int(os.getenv("IMAGE_CACHE_DAYS", "30"))
 # image_size is "full" for full-resolution or "scaled" for the 1110px version
 GENERIC_MODELS = [
 	# Azure / OpenAI
-	(azureoai.OpenAIModel.OPENAI,               azureoai.AzureOAI,           "full"),
 	(azureoai.OpenAIModel.GPT_4,                azureoai.AzureOAI,           "full"),
 	(azureoai.OpenAIModel.GPT_4O,               azureoai.AzureOAI,           "full"),
 	(azureoai.OpenAIModel.GPT_4_1_MINI,         azureoai.AzureOAI,           "full"),
 	# Anthropic / Claude on AWS Bedrock
-	(awsanthropic.AnthropicModel.CLAUDE,            awsanthropic.AWSAnthropic, "full"),
 	(awsanthropic.AnthropicModel.CLAUDE_3_HAIKU,    awsanthropic.AWSAnthropic, "full"),
 	(awsanthropic.AnthropicModel.CLAUDE_4_5_HAIKU,  awsanthropic.AWSAnthropic, "full"),
 	(awsanthropic.AnthropicModel.CLAUDE_3_OPUS,     awsanthropic.AWSAnthropic, "full"),
