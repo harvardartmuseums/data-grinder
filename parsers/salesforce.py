@@ -21,7 +21,7 @@ class SalesForceModel(Enum):
 		"blip-2-6-7B",
 		"general-english-image-caption-blip-2-6_7B",
 		{},
-		None
+		"2025-12-31"
 	)
 
 	def __init__(self, name: str, model_id: str, inference_config: dict, eol_date: str):
