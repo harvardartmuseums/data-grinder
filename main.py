@@ -48,6 +48,7 @@ GENERIC_MODELS = [
 	(azureoai.OpenAIModel.GPT_4,                azureoai.AzureOAI,           "full"),
 	(azureoai.OpenAIModel.GPT_4O,               azureoai.AzureOAI,           "full"),
 	(azureoai.OpenAIModel.GPT_4_1_MINI,         azureoai.AzureOAI,           "full"),
+	(azureoai.OpenAIModel.GPT_5_NANO,          	azureoai.AzureOAI,           "full"),
 	# Anthropic / Claude on AWS Bedrock
 	(awsanthropic.AnthropicModel.CLAUDE_3_HAIKU,    awsanthropic.AWSAnthropic, "full"),
 	(awsanthropic.AnthropicModel.CLAUDE_4_5_HAIKU,  awsanthropic.AWSAnthropic, "full"),

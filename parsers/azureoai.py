@@ -6,20 +6,26 @@ from enum import Enum
 class OpenAIModel(Enum):
 	GPT_4 = (
 		"gpt-4",
-		"HAM-GPT-4-V-D1",
+		"gpt-4-turbo-2024-04-09",
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 1.0},
-		None
+		"2025-11-14"
 	)    
 	GPT_4O = (
 		"gpt-4o",
-		"HAM-GPT-4o-V-D1",
+		"gpt-4o-2024-11-20",
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 1.0},
 		None
 	)
 	GPT_4_1_MINI = (
 		"gpt-4-1-mini",
-		"HAM-GPT-4-1-MINI-D1",
+		"gpt-4.1-mini-2025-04-14",
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 1.0},
+		None
+	)
+	GPT_5_NANO = (
+		"gpt-5-nano",
+		"gpt-5-nano-2025-08-07",
+		{"maxCompletionTokens": 2000, "temperature": 1.0, "topP": 1.0},
 		None
 	)
 
@@ -92,11 +98,18 @@ class AzureOAI(object):
 				] } 
 			]
 		try: 
-			response = client.chat.completions.create(
-				model = model.model_id,
-				messages = prompt,
-				max_tokens = model.inference_config["maxTokens"]
-			)
+			if ("maxTokens" in model.inference_config):
+				response = client.chat.completions.create(
+					model = model.model_id,
+					messages = prompt,
+					max_tokens = model.inference_config["maxTokens"]
+				)
+			elif ("maxCompletionTokens" in model.inference_config):
+				response = client.chat.completions.create(
+					model = model.model_id,
+					messages = prompt,
+					max_completion_tokens = model.inference_config["maxCompletionTokens"]
+				)
 			
 			if response.choices[0].finish_reason == "content_filter": 
 				cfr = response.choices[0].content_filter_results
