@@ -125,7 +125,7 @@ Example response:
 ```json
 {
     "lastupdated": "2018-02-07 21:58:28",
-    "drsstatus": "ok",
+    "status": "ok",
     "width": 581,
     "height": 768,
     "widthFull": 775,
@@ -215,7 +215,7 @@ Example response:
 
 Data in the response:  
 `url`: The original image URL passed in to this script. This must be in the form of a NRS URL for an image in the Harvard DRS.  
-`drsstatus`: The response from the DRS. The value will be "ok" or "bad".  
+`status`: The response from the image service. The value will be "ok" or "bad".  
 `width`: The width in pixels of the image supplied on the command line.  
 `height`: The height in pixels of the image supplied on the command line.  
 `widthFull`: The width in pixels of the full image file in the DRS.  

@@ -478,7 +478,7 @@ def process_image(URL, services):
 	start = time.time()
 
 	iiif_image = iiif.IIIFImage(URL)
-	image["drsstatus"] = iiif_image.status
+	image["status"] = iiif_image.status
 
 	if not iiif_image.is_valid():
 		time.sleep(1)
@@ -574,7 +574,7 @@ def process_image(URL, services):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-url', nargs='?', default=None, required=True)
-	parser.add_argument('-services', nargs='+', choices=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash', 'openai', 'claude'], default=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash'])
+	parser.add_argument('-services', nargs='+', choices=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash'], default=['imagga', 'gv', 'mcs', 'clarifai', 'color', 'aws', 'hash'])
 	args = parser.parse_args()
 	main(args.url, args.services)
 # [END run_application]
