@@ -1,18 +1,22 @@
 import requests
 import os
+import io
 from enum import Enum
+from PIL import Image
 
 class MCSVisionModel(Enum):
 	BASE = (
 		"mcs",
 		"",
-		["analyze", "describe"]
+		["analyze", "describe"],
+		4194304
 	)
 
-	def __init__(self, name: str, model_id: str, functions: list):
+	def __init__(self, name: str, model_id: str, functions: list, image_size_limit: int):
 		self._model_id = model_id
 		self._name = name
 		self._functions = functions
+		self._image_size_limit = image_size_limit
 
 	def list_models():
 		return [
@@ -20,6 +24,7 @@ class MCSVisionModel(Enum):
 				"name": model.name,
 				"model_id": model.model_id,
 				"functions": model.functions,
+				"image_size_limit": model.image_size_limit,
 				"provider": model.provider
 			}
 			for model in MCSVisionModel
@@ -38,6 +43,10 @@ class MCSVisionModel(Enum):
 		return self._functions
 
 	@property
+	def image_size_limit(self):
+		return self._image_size_limit
+	
+	@property
 	def provider(self):
 		return "Microsoft Cognitive Services"
 
@@ -50,6 +59,54 @@ class MCSVision(object):
 
 		self.base_url = self.endpoint + 'vision/' + self.api_version + '/'
 
+	def _read_image_bytes(self, photo_file):
+		"""Read image file, resampling if necessary to fit within the model's image size limit.
+
+		If the model has no image size limit or the raw bytes are already within the limit,
+		returns raw bytes unchanged. Otherwise, iteratively reduces JPEG quality and then
+		pixel dimensions until the encoded size is strictly under the limit.
+
+		Raises:
+			ValueError: If unable to resample image below the model's limit.
+		"""
+		limit = MCSVisionModel.BASE.image_size_limit
+
+		with open(photo_file, 'rb') as image:
+			raw_bytes = image.read()
+
+		if limit is None or len(raw_bytes) < limit:
+			return raw_bytes
+
+		# Raw bytes exceed the model's image size limit — resample
+		img = Image.open(io.BytesIO(raw_bytes))
+		quality = 95
+
+		while True:
+			buf = io.BytesIO()
+			img.save(buf, format="JPEG", quality=quality, optimize=True)
+			data = buf.getvalue()
+
+			if len(data) < limit:
+				return data
+
+			# Reduce quality first
+			if quality > 20:
+				quality -= 5
+				continue
+
+			# Quality floor reached — shrink pixel dimensions by 10%
+			width, height = img.size
+			new_width = int(width * 0.9)
+			new_height = int(height * 0.9)
+
+			if new_width < 10 or new_height < 10:
+				raise ValueError(
+					f"Unable to resample image '{photo_file}' below {limit} bytes. "
+					f"Original size: {len(raw_bytes)} bytes."
+				)
+
+			img = img.resize((new_width, new_height), Image.LANCZOS)
+
 	def fetch_analyze(self, photo_file):
 		url = self.base_url + 'analyze'
 
@@ -59,13 +116,12 @@ class MCSVision(object):
 			'Content-Type': 'application/octet-stream'
 		}
 
-		with open(photo_file, 'rb') as image:
-			image_content = image.read()
-			response = requests.post(url, data=image_content, params=params, headers=headers)
-			result = response.json()
-			result['provider'] = MCSVisionModel.BASE.provider
-			return result
-
+		image_content = self._read_image_bytes(photo_file)
+		response = requests.post(url, data=image_content, params=params, headers=headers)
+		result = response.json()
+		result['provider'] = MCSVisionModel.BASE.provider
+		return result
+	
 	def fetch_description(self, photo_file):
 		url = self.base_url + 'describe'
 
@@ -75,9 +131,8 @@ class MCSVision(object):
 			'Content-Type': 'application/octet-stream'
 		}
 
-		with open(photo_file, 'rb') as image:
-			image_content = image.read()
-			response = requests.post(url, data=image_content, params=params, headers=headers)
-			result = response.json()
-			result['provider'] = MCSVisionModel.BASE.provider
-			return result
+		image_content = self._read_image_bytes(photo_file)
+		response = requests.post(url, data=image_content, params=params, headers=headers)
+		result = response.json()
+		result['provider'] = MCSVisionModel.BASE.provider
+		return result
