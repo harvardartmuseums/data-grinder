@@ -53,7 +53,6 @@ GENERIC_MODELS = [
 	(awsanthropic.AnthropicModel.CLAUDE_3_HAIKU,    awsanthropic.AWSAnthropic, "full"),
 	(awsanthropic.AnthropicModel.CLAUDE_4_5_HAIKU,  awsanthropic.AWSAnthropic, "full"),
 	(awsanthropic.AnthropicModel.CLAUDE_3_OPUS,     awsanthropic.AWSAnthropic, "full"),
-	(awsanthropic.AnthropicModel.CLAUDE_4_1_OPUS,   awsanthropic.AWSAnthropic, "full"),
 	(awsanthropic.AnthropicModel.CLAUDE_4_5_OPUS,   awsanthropic.AWSAnthropic, "full"),
 	(awsanthropic.AnthropicModel.CLAUDE_3_5_SONNET,   awsanthropic.AWSAnthropic, "full"),
 	(awsanthropic.AnthropicModel.CLAUDE_3_5_SONNET_2, awsanthropic.AWSAnthropic, "full"),

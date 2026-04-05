@@ -10,14 +10,14 @@ class AnthropicModel(Enum):
 		"anthropic.claude-3-haiku-20240307-v1:0",
 		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
 		"2026-09-10",
-		None
+		3800000
 	)
 	CLAUDE_4_5_HAIKU = (
 		"claude-4-5-haiku",
 		"us.anthropic.claude-haiku-4-5-20251001-v1:0",
 		{"maxTokens": 2048, "temperature": 0.5},
 		None,
-		4042880
+		3800000
 	)
 	CLAUDE_3_OPUS = (
 		"claude-3-opus",
@@ -26,19 +26,12 @@ class AnthropicModel(Enum):
 		"2026-01-30",
 		None
 	)
-	CLAUDE_4_1_OPUS = (
-		"claude-4-1-opus",
-		"us.anthropic.claude-opus-4-1-20250805-v1:0",
-		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
-		None,
-		None
-	)
 	CLAUDE_4_5_OPUS = (
 		"claude-4-5-opus",
 		"us.anthropic.claude-opus-4-5-20251101-v1:0",
 		{"maxTokens": 2048, "temperature": 0.5},
 		None,
-		4042880
+		3800000
 	)
 	CLAUDE_3_5_SONNET = (
 		"claude-3-5-sonnet",
@@ -59,21 +52,21 @@ class AnthropicModel(Enum):
 		"us.anthropic.claude-3-7-sonnet-20250219-v1:0",
 		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
 		"2026-04-28",
-		None
+		3800000
 	)
 	CLAUDE_4_SONNET = (
 		"claude-4-sonnet",
 		"global.anthropic.claude-sonnet-4-20250514-v1:0",
 		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
 		None,
-		None
+		3800000
 	)
 	CLAUDE_4_5_SONNET = (
 		"claude-4-5-sonnet",
 		"global.anthropic.claude-sonnet-4-5-20250929-v1:0",
 		{"maxTokens": 2048, "temperature": 0.5},
 		None,
-		4042880
+		3800000
 	)
 
 	def __init__(self, name: str, model_id: str, inference_config: dict, eol_date: str, image_size_limit: int):
