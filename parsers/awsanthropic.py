@@ -58,7 +58,7 @@ class AnthropicModel(Enum):
 		"claude-4-sonnet",
 		"global.anthropic.claude-sonnet-4-20250514-v1:0",
 		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
-		None,
+		"2026-10-14",
 		3800000
 	)
 	CLAUDE_4_5_SONNET = (
