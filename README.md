@@ -132,8 +132,7 @@ Example response:
     "heightFull": 1024,
     "scalefactor": 1.333907056798623,    
     "url": "https://nrs.harvard.edu/urn-3:huam:75033B_dynmc",    
-    "iiifbaseuri": "https://ids.lib.harvard.edu/mps/14178676",
-    "idsid": "14178676",
+    "iiifbaseuri": "https://nrs.harvard.edu/urn-3:huam:75033B_dynmc",
     "colors": [],
     "hashes": {},
     "clarifai": {
@@ -222,7 +221,6 @@ Data in the response:
 `heightFull`: The height in pixels of the full image file in the DRS.  
 `scalefactor`: The propotional difference between teh supplied image and the full image. In the example response, the full image is 1.334 times larger than the supplied image.  
 `iiifbaseuri`: A fully formed IIIF URI for the image in the DRS.  
-`idsid`: The image file ID in the DRS returned when requesting the original image URL.  
 `colors`:  
 `hashes`:  
 `clarifai`:   

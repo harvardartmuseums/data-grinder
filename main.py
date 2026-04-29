@@ -485,7 +485,6 @@ def process_image(URL, services):
 	else:
 		image_url = iiif_image.get_full_image_url()
 
-		image["idsid"]         = int(iiif_image.id)
 		image["iiifbaseuri"]   = iiif_image.get_base_uri()
 		image["iiifFullImageURL"] = image_url
 
