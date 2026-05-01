@@ -111,7 +111,7 @@ http://127.0.0.1:5000/extract
 
 Parameters |  | Values
 ------------ | ------------- | -------------
-url | Any Harvard NRS URL that resolves to a IIIF compatible image
+url | Any URL that resolves to a IIIF compatible image
 services | (optional, default uses all services) One or more from the list of valid services separated by commas | `imagga, gv, mcs, clarifai, color, aws, hash, gpt-4, gpt-4o, gpt-4-1-mini, claude-3-haiku, claude-4-5-haiku, claude-3-opus, claude-4-1-opus, claude-4-5-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, claude-3-7-sonnet, claude-4-sonnet, claude-4-5-sonnet, llama-3-2-11b, llama-3-2-90b, llama-4-maverick-17b, llama-4-scout-17b, nova-lite-1-0, nova-pro-1-0, nova-lite-2-0, gemini-2-0-flash-lite, gemini-2-5-flash-lite, gemini-2-0-flash, gemini-2-5-flash, pixtral-large-2502, magistral-small-2509, ministral-3-3b, ministral-3-8b, ministral-3-14b, mistral-large-3-675b, qwen-2-5-vl-7b, qwen-2-5-vl-72b, blip-2, blip-2-6-7B`
 
 
@@ -124,15 +124,18 @@ http://127.0.0.1:5000/extract?url=https://nrs.harvard.edu/urn-3:HUAM:DDC251942_d
 Example response:
 ```json
 {
-    "lastupdated": "2018-02-07 21:58:28",
+    "height": 4749,
+    "heightFull": 5313,
+    "idsid": 505401002,
+    "iiifFullImageURL": "https://nrs.harvard.edu/urn-3:HUAM:819780/full/full/0/default.jpg",
+    "iiifbaseuri": "https://nrs.harvard.edu/urn-3:HUAM:819780",
+    "lastupdated": "2026-05-01 14:12:48",
+    "runtime": 21.511509656906128,
+    "scalefactor": 1.1188,
     "status": "ok",
-    "width": 581,
-    "height": 768,
-    "widthFull": 775,
-    "heightFull": 1024,
-    "scalefactor": 1.333907056798623,    
-    "url": "https://nrs.harvard.edu/urn-3:huam:75033B_dynmc",    
-    "iiifbaseuri": "https://nrs.harvard.edu/urn-3:huam:75033B_dynmc",
+    "url": "https://nrs.harvard.edu/urn-3:HUAM:819780",
+    "width": 5000,
+    "widthFull": 5594,  
     "colors": [],
     "hashes": {},
     "clarifai": {
@@ -213,14 +216,16 @@ Example response:
 ```
 
 Data in the response:  
-`url`: The original image URL passed in to this script. This must be in the form of a NRS URL for an image in the Harvard DRS.  
+`url`: The original image URL passed in to this script.    
 `status`: The response from the image service. The value will be "ok" or "bad".  
-`width`: The width in pixels of the image supplied on the command line.  
-`height`: The height in pixels of the image supplied on the command line.  
-`widthFull`: The width in pixels of the full image file in the DRS.  
-`heightFull`: The height in pixels of the full image file in the DRS.  
+`width`: The width in pixels of the image supplied to the service.  
+`height`: The height in pixels of the image supplied to the service.  
+`widthFull`: The width in pixels of the full image as read from /info.json.  
+`heightFull`: The height in pixels of the full image as read from /info.json.  
 `scalefactor`: The propotional difference between teh supplied image and the full image. In the example response, the full image is 1.334 times larger than the supplied image.  
-`iiifbaseuri`: A fully formed IIIF URI for the image in the DRS.  
+`runtime`: The amount of time it took to run the entire request, in seconds.  
+`iiifFullImageURL`: A fully formed IIIF URI for delivering the full image (e.g. /full/full/0/default.jpg).  
+`iiifbaseuri`: A base URI for the IIIF image.  
 `colors`:  
 `hashes`:  
 `clarifai`:   
