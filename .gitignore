@@ -13,3 +13,4 @@ vision-credentials.json
 data-lists.txt
 
 .vscode
+.claude/settings.local.json
