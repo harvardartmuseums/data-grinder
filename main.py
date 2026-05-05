@@ -5,9 +5,10 @@ import datetime
 import time
 import requests
 import imagehash
+from PIL import Image
 from flask import Flask, request
 from dotenv import  load_dotenv
-from PIL import Image
+import cache
 from parsers import (
 	azureoai, 
 	clarifai, 
@@ -30,19 +31,11 @@ load_dotenv()
 
 USER_AGENT = os.getenv("USER_AGENT", "data-grinder/1.0")
 
-temp_folder = os.path.dirname(os.path.realpath(__file__)) + "/temp"
-if not os.path.exists(temp_folder): 
-	os.mkdir(temp_folder)
-
-# number of days to keep a downloaded image before refreshing it; configurable via
-# environment variable to ease testing
-CACHE_DAYS = int(os.getenv("IMAGE_CACHE_DAYS", "30"))
-
 # Registry of LLM-style models that follow the simple pattern:
 #   result = ModelClass().fetch(image_path, model_enum)
 #   result["annotationFragment"] = annotationFragmentFullImage
 # Each entry is (model_enum, model_class, image_size)
-# image_size is "full" for full-resolution or "scaled" for the 1110px version
+# image_size is "full" for full-resolution or "1110" for the 1110px version or "512" for the 512px version
 GENERIC_MODELS = [
 	# Azure / OpenAI
 	(azureoai.OpenAIModel.GPT_4,                azureoai.AzureOAI,           "full"),
@@ -60,26 +53,26 @@ GENERIC_MODELS = [
 	(awsanthropic.AnthropicModel.CLAUDE_4_SONNET,     awsanthropic.AWSAnthropic, "full"),
 	(awsanthropic.AnthropicModel.CLAUDE_4_5_SONNET,   awsanthropic.AWSAnthropic, "full"),
 	# Meta / Llama on AWS Bedrock (scaled image)
-	(awsmeta.MetaModel.LLAMA_3_2_11B,       awsmeta.AWSMeta,   "scaled"),
-	(awsmeta.MetaModel.LLAMA_3_2_90B,       awsmeta.AWSMeta,   "scaled"),
-	(awsmeta.MetaModel.LLAMA_4_MAVERICK_17B, awsmeta.AWSMeta,  "scaled"),
-	(awsmeta.MetaModel.LLAMA_4_SCOUT_17B,    awsmeta.AWSMeta,  "scaled"),
+	(awsmeta.MetaModel.LLAMA_3_2_11B,       awsmeta.AWSMeta,   "1110"),
+	(awsmeta.MetaModel.LLAMA_3_2_90B,       awsmeta.AWSMeta,   "1110"),
+	(awsmeta.MetaModel.LLAMA_4_MAVERICK_17B, awsmeta.AWSMeta,  "1110"),
+	(awsmeta.MetaModel.LLAMA_4_SCOUT_17B,    awsmeta.AWSMeta,  "1110"),
 	# Nova on AWS Bedrock (scaled image)
-	(awsnova.NovaModel.NOVA_LITE_1_0, awsnova.AWSNova, "scaled"),
-	(awsnova.NovaModel.NOVA_PRO_1_0,  awsnova.AWSNova, "scaled"),
-	(awsnova.NovaModel.NOVA_LITE_2_0, awsnova.AWSNova, "scaled"),
+	(awsnova.NovaModel.NOVA_LITE_1_0, awsnova.AWSNova, "1110"),
+	(awsnova.NovaModel.NOVA_PRO_1_0,  awsnova.AWSNova, "1110"),
+	(awsnova.NovaModel.NOVA_LITE_2_0, awsnova.AWSNova, "1110"),
 	# Google Gemini (scaled image)
-	(googlegemini.GoogleGeminiModel.FLASH_2_0,      googlegemini.GoogleGemini, "scaled"),
-	(googlegemini.GoogleGeminiModel.FLASH_2_5,      googlegemini.GoogleGemini, "scaled"),
-	(googlegemini.GoogleGeminiModel.FLASH_LITE_2_0, googlegemini.GoogleGemini, "scaled"),
-	(googlegemini.GoogleGeminiModel.FLASH_LITE_2_5, googlegemini.GoogleGemini, "scaled"),
+	(googlegemini.GoogleGeminiModel.FLASH_2_0,      googlegemini.GoogleGemini, "1110"),
+	(googlegemini.GoogleGeminiModel.FLASH_2_5,      googlegemini.GoogleGemini, "1110"),
+	(googlegemini.GoogleGeminiModel.FLASH_LITE_2_0, googlegemini.GoogleGemini, "1110"),
+	(googlegemini.GoogleGeminiModel.FLASH_LITE_2_5, googlegemini.GoogleGemini, "1110"),
 	# Mistral on AWS Bedrock (scaled image)
-	(awsmistral.MistralModel.PIXTRAL_LARGE_2502,   awsmistral.AWSMistral, "scaled"),
-	(awsmistral.MistralModel.MAGISTRAL_SMALL_2509, awsmistral.AWSMistral, "scaled"),
-	(awsmistral.MistralModel.MINISTRAL_3_3B,       awsmistral.AWSMistral, "scaled"),
-	(awsmistral.MistralModel.MINISTRAL_3_8B,       awsmistral.AWSMistral, "scaled"),
-	(awsmistral.MistralModel.MINISTRAL_3_14B,      awsmistral.AWSMistral, "scaled"),
-	(awsmistral.MistralModel.MISTRAL_LARGE_3_675B, awsmistral.AWSMistral, "scaled"),
+	(awsmistral.MistralModel.PIXTRAL_LARGE_2502,   awsmistral.AWSMistral, "1110"),
+	(awsmistral.MistralModel.MAGISTRAL_SMALL_2509, awsmistral.AWSMistral, "1110"),
+	(awsmistral.MistralModel.MINISTRAL_3_3B,       awsmistral.AWSMistral, "1110"),
+	(awsmistral.MistralModel.MINISTRAL_3_8B,       awsmistral.AWSMistral, "1110"),
+	(awsmistral.MistralModel.MINISTRAL_3_14B,      awsmistral.AWSMistral, "1110"),
+	(awsmistral.MistralModel.MISTRAL_LARGE_3_675B, awsmistral.AWSMistral, "1110"),
 	# Qwen on Hyperbolic
 	(qwen.QwenModel.QWEN_2_5_VL_7B,  qwen.Qwen, "full"),
 	(qwen.QwenModel.QWEN_2_5_VL_72B, qwen.Qwen, "full"),
@@ -169,41 +162,6 @@ def parse_service_features(query: str, default_value: str = "all"):
 
 	return result
 
-def download_image(URL,filename="temp.jpg"):
-	# create a subfolder using the first four characters of the filename 
-	# to avoid having too many files in a single folder which can cause performance issues on some file systems
-	# this also makes it easier to manage and clean up cached images if needed
-	subfolder_name = filename[:4]
-	subfolder_path = os.path.join(temp_folder, subfolder_name)
-	
-	# Create subfolder if it doesn't exist
-	if not os.path.exists(subfolder_path):
-		os.makedirs(subfolder_path)
-	
-	path = os.path.join(subfolder_path, filename)
-
-	# try to reuse a recently downloaded copy in the temp folder 
-	# to avoid unnecessary downloads and speed up processing
-	# check file modified time to ensure it's not too old
-	if os.path.exists(path):
-		age = time.time() - os.path.getmtime(path)
-		# check against configurable cache lifetime
-		if age < CACHE_DAYS * 24 * 3600:
-			return ("ok", path)
-		# otherwise fall through and re-download a fresh copy
-
-	r = requests.get(URL, headers={"User-Agent": USER_AGENT}, timeout=21)
-	
-	if r.status_code == 200:
-		status = "ok"
-		with open(path, 'wb') as out:
-			for chunk in r.iter_content(chunk_size=128):
-				out.write(chunk)
-	else:
-		status = "bad"
-		path = ""
-
-	return (status, path)
 
 # ── Bounding-box helpers ──────────────────────────────────────────────────────
 
@@ -488,80 +446,66 @@ def process_image(URL, services):
 		image["iiifbaseuri"]   = iiif_image.get_base_uri()
 		image["iiifFullImageURL"] = image_url
 
-		# Download the full image
-		_, image_local_path = download_image(image_url, f"{iiif_image.id}.jpg")
+		cached = cache.get_image(image_url, URL, cache.CACHE_DAYS)
+		if cached["status"] != "ok":
+			image["status"] = "bad"
+			image["runtime"] = time.time() - start
+			return image
 
-		# Image metadata
-		im = Image.open(image_local_path)
-		image["width"], image["height"] = im.size
+		image["width"]   = cached["full"]["width"]
+		image["height"]  = cached["full"]["height"]
 
-		# Create a locally-scaled copy (fit within 1110×1110) without a second HTTP request.
-		# Regenerate if it doesn't exist or is older than CACHE_DAYS.
-		image_local_path_scaled = os.path.join(
-			os.path.dirname(image_local_path),
-			f"{iiif_image.id}_1110.jpg"
-		)
-		scaled_needs_refresh = (
-			not os.path.exists(image_local_path_scaled)
-			or (time.time() - os.path.getmtime(image_local_path_scaled)) >= CACHE_DAYS * 24 * 3600
-		)
-		if scaled_needs_refresh:
-			im_scaled = im.copy()
-			im_scaled.thumbnail((1110, 1110), Image.LANCZOS)
-			im_scaled.save(image_local_path_scaled)
-			
 		image["widthFull"]  = iiif_image.info["width"]
 		image["heightFull"] = iiif_image.info["height"]
 
-		image_scale      = iiif_image.info["width"] / image["width"]
+		image_scale          = iiif_image.info["width"] / image["width"]
 		image["scalefactor"] = image_scale
 
 		annotation_fragment_full = _make_annotation_fragment(0, 0, image["width"], image["height"])
 
 		# ── Simple / hash / color services ──────────────────────────────────
 		if "hash" in services:
-			_run_hash(image, image_local_path)
+			_run_hash(image, cached["full"]["path"])
 
 		if "color" in services:
-			_run_color(image, image_local_path)
+			_run_color(image, cached["full"]["path"])
 
 		# ── Structured vision services ───────────────────────────────────────
 		if clarifai.ClarifaiModel.BASE.name in services:
-			_run_clarifai(image, image_local_path,
+			_run_clarifai(image, cached["full"]["path"],
 						  services[clarifai.ClarifaiModel.BASE.name],
 						  annotation_fragment_full,
 						  image["width"], image["height"], image_scale)
 
 		if mcsvision.MCSVisionModel.BASE.name in services:
-			_run_microsoftvision(image, image_local_path,
+			_run_microsoftvision(image, cached["full"]["path"],
 								 services[mcsvision.MCSVisionModel.BASE.name],
 								 annotation_fragment_full,
 								 image_scale, iiif_image)
 
 		if vision.GVisionModel.BASE.name in services:
-			_run_googlevision(image, image_local_path,
+			_run_googlevision(image, cached["full"]["path"],
 							  image["width"], image["height"],
 							  image_scale, iiif_image)
 
 		if imagga.ImaggaModel.BASE.name in services:
-			_run_imagga(image, image_local_path,
+			_run_imagga(image, cached["full"]["path"],
 						services[imagga.ImaggaModel.BASE.name],
 						annotation_fragment_full,
 						image["width"], image["height"],
 						image_scale, iiif_image)
 
 		if aws.AWSModel.BASE.name in services:
-			_run_aws_rekognition(image, image_local_path,
+			_run_aws_rekognition(image, cached["full"]["path"],
 								 services[aws.AWSModel.BASE.name],
 								 image["width"], image["height"],
 								 image_scale, iiif_image,
 								 annotation_fragment_full)
 
 		# ── Generic LLM / vision model dispatch ─────────────────────────────
-		path_map = {"full": image_local_path, "scaled": image_local_path_scaled}
 		for model, cls, img_size in GENERIC_MODELS:
 			if model.name in services:
-				result = cls().fetch(path_map[img_size], model)
+				result = cls().fetch(cached[img_size]["path"], model)
 				result["annotationFragment"] = annotation_fragment_full
 				image[model.name] = result
 
