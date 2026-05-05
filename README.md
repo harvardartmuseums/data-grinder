@@ -36,7 +36,48 @@ We recommend creating a virtual environment with [Virtualenv](https://pypi.org/p
 ### Set configuration values
 * Clone .env-template to .env
 * Open .env in a text editor.
-* Enter API keys and credentials for the services you want to use.  
+* Enter API keys and credentials for the services you want to use.
+
+## Image Cache
+
+Downloaded images are cached to avoid redundant HTTP requests on repeat calls. Each image is stored in multiple size tiers in a single pass. The full-size image is always cached; additional scaled variants are generated from it locally without a second HTTP request.
+
+Files are organized as `<cache_root>/<tier>/<domain>/<filename>.jpg`, where the domain and filename are derived from the original IIIF input URL. For example:
+
+```
+temp/
+  full/
+    nrs.harvard.edu/
+      urn-3_HUAM_DDC250728_dynmc.jpg
+  1110/
+    nrs.harvard.edu/
+      urn-3_HUAM_DDC250728_dynmc.jpg
+  512/
+    www.artic.edu/
+      e966799b-97ee-1cc6-bd2f-a94b4b8bb8f9.jpg
+```
+
+### Cache configuration
+
+Set these in `.env`:
+
+| Variable | Default | Description |
+|---|---|---|
+| `IMAGE_CACHE_DAYS` | `30` | Number of days before a cached file is considered stale |
+| `IMAGE_CACHE_SIZES` | `full,1110` | Comma-separated list of size tiers to cache. `full` is always included. Scaled values are the max pixel dimension for a proportional fit |
+| `IMAGE_CACHE_DIR` | `./temp` | Local directory for the cache. Defaults to a `temp` folder next to `main.py` |
+| `IMAGE_CACHE_S3_BUCKET` | _(empty)_ | S3 bucket name. When set, S3 is used as a shared cache backend |
+| `IMAGE_CACHE_S3_PREFIX` | _(empty)_ | Optional key prefix within the bucket, e.g. `image-cache/` |
+
+### S3 cache mode
+
+When `IMAGE_CACHE_S3_BUCKET` is set, the cache uses S3 as a shared backend alongside the local directory. The lookup order for each size tier is:
+
+1. **Local** — return immediately if a fresh local copy exists
+2. **S3** — download from the bucket to local if a fresh object exists there
+3. **Origin / generate** — for `full`, fetch from the source URL; for scaled tiers, resize from the full image. Write locally then upload to S3
+
+S3 reuses the existing `AWS_ACCESS_KEY`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION` credentials. S3 errors are logged as warnings and fall through gracefully — a misconfigured bucket will not break a request.
 
 ## Services Implemented
 
