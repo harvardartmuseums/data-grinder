@@ -8,13 +8,13 @@ class QwenModel(Enum):
 		"qwen-2-5-vl-7b",
 		"Qwen/Qwen2.5-VL-7B-Instruct",
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 1.0},
-		None
+		"2026-03-01"
 	)
 	QWEN_2_5_VL_72B = (
 		"qwen-2-5-vl-72b",
 		"Qwen/Qwen2.5-VL-72B-Instruct",
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 1.0},
-		None
+		"2026-03-01"
 	)
 
 	def __init__(self, name: str, model_id: str, inference_config: dict, eol_date: str):
