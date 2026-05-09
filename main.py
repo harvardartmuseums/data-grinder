@@ -24,7 +24,10 @@ from parsers import (
 	googlegemini,
 	awsmistral,
 	qwen,
-	salesforce
+	salesforce,
+	awsqwen,
+	awsmoonshot,
+	awswriter
 )
 
 load_dotenv()
@@ -76,6 +79,12 @@ GENERIC_MODELS = [
 	# Qwen on Hyperbolic
 	(qwen.QwenModel.QWEN_2_5_VL_7B,  qwen.Qwen, "full"),
 	(qwen.QwenModel.QWEN_2_5_VL_72B, qwen.Qwen, "full"),
+	# Qwen on AWS Bedrock
+	(awsqwen.QwenModel.QWEN_3_VL_235B, awsqwen.AWSQwen, "1110"),
+	# Moonshot on AWS Bedrock 
+	(awsmoonshot.MoonshotModel.KIMI_K_2_5, awsmoonshot.AWSMoonshot, "1110"),
+	# Writer on AWS Bedrock
+	(awswriter.WriterModel.PALMYRA_VISION_7B, awswriter.AWSWriter, "1110"),
 	# Salesforce BLIP on Clarifai
 	(salesforce.SalesForceModel.BLIP,           salesforce.SalesForce, "full"),
 	(salesforce.SalesForceModel.BLIP_2,         salesforce.SalesForce, "full"),
@@ -106,7 +115,10 @@ def list_services():
 				googlegemini.GoogleGeminiModel.list_models() + \
 				awsmistral.MistralModel.list_models() + \
 				qwen.QwenModel.list_models() + \
-				salesforce.SalesForceModel.list_models(),
+				awsqwen.QwenModel.list_models() + \
+				salesforce.SalesForceModel.list_models() + \
+				awsmoonshot.MoonshotModel.list_models() + \
+				awswriter.WriterModel.list_models(),	
 			"other": [
 				{"name":"hash", "model_id":""}, 
 				{"name":"color", "model_id":""}
