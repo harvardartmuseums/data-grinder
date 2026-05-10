@@ -60,7 +60,7 @@ class AWSMoonshot(object):
 							aws_access_key_id=self.aws_key, 
 							aws_secret_access_key=self.aws_secret)
 
-	def fetch(self, photo_file, model: MoonshotModel = MoonshotModel.KIMI_K_2_5):
+	def fetch(self, photo_file, model: MoonshotModel = MoonshotModel.KIMI_K_2_5, prompt=None):
 		response = ""
 		client = self.get_client()
 
@@ -73,7 +73,7 @@ class AWSMoonshot(object):
 				"role": "user",
 				"content": [
 					{
-						"text": "Describe this image:",
+						"text": prompt or "Describe this image:",
 					},
 					{
 						"image": {

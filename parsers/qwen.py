@@ -58,7 +58,7 @@ class Qwen(object):
 	def __init__(self):
 		self.api_key = os.getenv("HYPERBOLIC_API_KEY")
 
-	def fetch(self, photo_file, model: QwenModel = QwenModel.QWEN_2_5_VL_7B):
+	def fetch(self, photo_file, model: QwenModel = QwenModel.QWEN_2_5_VL_7B, prompt=None):
 		client = openai.OpenAI(
 			api_key = self.api_key,
 			base_url="https://api.hyperbolic.xyz/v1"
@@ -72,7 +72,7 @@ class Qwen(object):
 				{ "role": "user", "content": [  
 					{ 
 						"type": "text", 
-						"text": "Describe this image:" 
+						"text": prompt or "Describe this image:"
 					},
 					{ 
 						"type": "image_url",

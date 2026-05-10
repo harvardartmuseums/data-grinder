@@ -72,7 +72,7 @@ class AzureOAI(object):
 		self.endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
 		self.api_version = os.getenv("AZURE_OPENAI_API_VERSION")
 
-	def fetch(self, photo_file, model: OpenAIModel = OpenAIModel.GPT_4):
+	def fetch(self, photo_file, model: OpenAIModel = OpenAIModel.GPT_4, prompt=None):
 		client = AzureOpenAI(
 			api_version = self.api_version,
 			api_key = self.api_key,
@@ -87,7 +87,7 @@ class AzureOAI(object):
 				{ "role": "user", "content": [  
 					{ 
 						"type": "text", 
-						"text": "Describe this image:" 
+						"text": prompt or "Describe this image:"
 					},
 					{ 
 						"type": "image_url",

@@ -3,6 +3,7 @@ import json
 import argparse
 import datetime
 import time
+import unicodedata
 import requests
 import imagehash
 from PIL import Image
@@ -33,6 +34,7 @@ from parsers import (
 load_dotenv()
 
 USER_AGENT = os.getenv("USER_AGENT", "data-grinder/1.0")
+MAX_PROMPT_LEN = 500
 
 # Registry of LLM-style models that follow the simple pattern:
 #   result = ModelClass().fetch(image_path, model_enum)
@@ -132,11 +134,18 @@ def extract():
 
 	url = request.args.get('url')
 	services = request.args.get('services')
+	prompt = request.args.get('prompt')
+
+	if prompt is not None:
+		prompt, err = _validate_prompt(prompt)
+		if err:
+			return {"status": err}, 400
+		
 	if services is not None:
 		services = parse_service_features(services)
 
-	if url and services: 
-		response = process_image(url, services)
+	if url and services:
+		response = process_image(url, services, prompt=prompt)
 
 	return response
 
@@ -174,6 +183,16 @@ def parse_service_features(query: str, default_value: str = "all"):
 
 	return result
 
+def _validate_prompt(raw: str):
+    if len(raw) > MAX_PROMPT_LEN:
+        return "", f"prompt exceeds {MAX_PROMPT_LEN} character limit"
+	
+    sanitized = "".join(
+        c for c in raw
+        if not unicodedata.category(c).startswith("C") or c in " \t\n\r"
+    )
+
+    return sanitized, None
 
 # ── Bounding-box helpers ──────────────────────────────────────────────────────
 
@@ -438,7 +457,7 @@ def _run_aws_rekognition(image, image_local_path, features, image_width, image_h
 
 # ── Main orchestrator ─────────────────────────────────────────────────────────
 
-def process_image(URL, services):
+def process_image(URL, services, prompt=None):
 	image = {
 		"url": URL,
 		"lastupdated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -517,7 +536,7 @@ def process_image(URL, services):
 		# ── Generic LLM / vision model dispatch ─────────────────────────────
 		for model, cls, img_size in GENERIC_MODELS:
 			if model.name in services:
-				result = cls().fetch(cached[img_size]["path"], model)
+				result = cls().fetch(cached[img_size]["path"], model, prompt=prompt)
 				result["annotationFragment"] = annotation_fragment_full
 				image[model.name] = result
 

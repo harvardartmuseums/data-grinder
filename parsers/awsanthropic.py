@@ -173,7 +173,7 @@ class AWSAnthropic(object):
 
 			img = img.resize((new_width, new_height), Image.LANCZOS)
 
-	def fetch(self, photo_file, model: AnthropicModel = AnthropicModel.CLAUDE_3_HAIKU):
+	def fetch(self, photo_file, model: AnthropicModel = AnthropicModel.CLAUDE_3_HAIKU, prompt=None):
 		response = ""
 		client = self.get_client()
 
@@ -185,7 +185,7 @@ class AWSAnthropic(object):
 				"role": "user",
 				"content": [
 					{
-						"text": "Describe this image:",
+						"text": prompt or "Describe this image:",
 					},
 					{
 						"image": {

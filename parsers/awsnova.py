@@ -72,7 +72,7 @@ class AWSNova(object):
 							aws_access_key_id=self.aws_key, 
 							aws_secret_access_key=self.aws_secret)
 
-	def fetch(self, photo_file, model: NovaModel = NovaModel.NOVA_LITE_1_0):
+	def fetch(self, photo_file, model: NovaModel = NovaModel.NOVA_LITE_1_0, prompt=None):
 		response = ""
 		client = self.get_client()
 
@@ -85,7 +85,7 @@ class AWSNova(object):
 				"role": "user",
 				"content": [
 					{
-						"text": "Describe this image:",
+						"text": prompt or "Describe this image:",
 					},
 					{
 						"image": {

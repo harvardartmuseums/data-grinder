@@ -154,6 +154,7 @@ Parameters |  | Values
 ------------ | ------------- | -------------
 url | Any URL that resolves to a IIIF compatible image
 services | (optional, default uses all services) One or more from the list of valid services separated by commas | `imagga, gv, mcs, clarifai, color, aws, hash, gpt-4, gpt-4o, gpt-4-1-mini, claude-3-haiku, claude-4-5-haiku, claude-3-opus, claude-4-1-opus, claude-4-5-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, claude-3-7-sonnet, claude-4-sonnet, claude-4-5-sonnet, llama-3-2-11b, llama-3-2-90b, llama-4-maverick-17b, llama-4-scout-17b, nova-lite-1-0, nova-pro-1-0, nova-lite-2-0, gemini-2-0-flash-lite, gemini-2-5-flash-lite, gemini-2-0-flash, gemini-2-5-flash, pixtral-large-2502, magistral-small-2509, ministral-3-3b, ministral-3-8b, ministral-3-14b, mistral-large-3-675b, qwen-2-5-vl-7b, qwen-2-5-vl-72b, blip-2, blip-2-6-7B`
+prompt | (optional) Custom text prompt sent to all LLM/vision model calls. When omitted, defaults to `"Describe this image:"`. Max 500 characters; control characters are stripped. | Any plain text string
 
 
 Example request:  

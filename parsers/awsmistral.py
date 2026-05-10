@@ -90,7 +90,7 @@ class AWSMistral(object):
 							aws_access_key_id=self.aws_key, 
 							aws_secret_access_key=self.aws_secret)
 
-	def fetch(self, photo_file, model: MistralModel = MistralModel.PIXTRAL_LARGE_2502):
+	def fetch(self, photo_file, model: MistralModel = MistralModel.PIXTRAL_LARGE_2502, prompt=None):
 		response = ""
 		client = self.get_client()
 
@@ -103,7 +103,7 @@ class AWSMistral(object):
 				"role": "user",
 				"content": [
 					{
-						"text": "Describe this image:",
+						"text": prompt or "Describe this image:",
 					},
 					{
 						"image": {

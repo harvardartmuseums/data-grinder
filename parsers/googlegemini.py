@@ -71,7 +71,7 @@ class GoogleGemini(object):
 	def __init__(self):
 		self.api_key = os.getenv("GOOGLE_API_KEY")
 			  			  
-	def fetch(self, photo_file, model: GoogleGeminiModel = GoogleGeminiModel.FLASH_LITE_2_0):
+	def fetch(self, photo_file, model: GoogleGeminiModel = GoogleGeminiModel.FLASH_LITE_2_0, prompt=None):
 		# Fetch the image data from the local copy
 		with open(photo_file, 'rb') as image:
 			image_content = base64.b64encode(image.read()).decode('utf-8')
@@ -87,7 +87,7 @@ class GoogleGemini(object):
 					{
 						"parts": [
 							{
-								"text": "Describe this image"
+								"text": prompt or "Describe this image"
 							},
 							{
 								"inline_data": {
