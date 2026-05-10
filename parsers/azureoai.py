@@ -7,25 +7,25 @@ class OpenAIModel(Enum):
 	GPT_4 = (
 		"gpt-4",
 		"gpt-4-turbo-2024-04-09",
-		{"maxTokens": 2000, "temperature": 1.0, "topP": 1.0},
+		{"maxTokens": 4096, "temperature": 1.0, "topP": 1.0},
 		"2025-11-14"
-	)    
+	)
 	GPT_4O = (
 		"gpt-4o",
 		"gpt-4o-2024-11-20",
-		{"maxTokens": 2000, "temperature": 1.0, "topP": 1.0},
+		{"maxTokens": 4096, "temperature": 1.0, "topP": 1.0},
 		None
 	)
 	GPT_4_1_MINI = (
 		"gpt-4-1-mini",
 		"gpt-4.1-mini-2025-04-14",
-		{"maxTokens": 2000, "temperature": 1.0, "topP": 1.0},
+		{"maxTokens": 4096, "temperature": 1.0, "topP": 1.0},
 		None
 	)
 	GPT_5_NANO = (
 		"gpt-5-nano",
 		"gpt-5-nano-2025-08-07",
-		{"maxCompletionTokens": 2000, "temperature": 1.0, "topP": 1.0},
+		{"maxCompletionTokens": 4096, "temperature": 1.0, "topP": 1.0},
 		None
 	)
 
@@ -110,24 +110,32 @@ class AzureOAI(object):
 					messages = prompt,
 					max_completion_tokens = model.inference_config["maxCompletionTokens"]
 				)
-			
-			if response.choices[0].finish_reason == "content_filter": 
-				cfr = response.choices[0].content_filter_results
-				body = f"<p>The response was filtered due to the prompt triggering Azure OpenAI's content management policy. The content filter results follow.</p><p>" + \
-						f"hate: {cfr['hate']['severity']}<br/>" + \
-						f"self-harm: {cfr['self_harm']['severity']}<br/>" + \
-						f"sexual: {cfr['sexual']['severity']}<br/>" + \
-						f"violence: {cfr['violence']['severity']}<br/></p>"
-			else:
-				body = response.choices[0].message.content
 
-			return {
-				"body": body,
+			result = {
+				"body": None,
 				"model": response.model,
 				"provider": model.provider,
 				"status": 200,
 				"full": response.model_dump()
 			}
+
+			finish_reason = response.choices[0].finish_reason
+			if finish_reason == "content_filter":
+				cfr = response.choices[0].content_filter_results
+				result["body"] = f"<p>The response was filtered due to the prompt triggering Azure OpenAI's content management policy. The content filter results follow.</p><p>" + \
+						f"hate: {cfr['hate']['severity']}<br/>" + \
+						f"self-harm: {cfr['self_harm']['severity']}<br/>" + \
+						f"sexual: {cfr['sexual']['severity']}<br/>" + \
+						f"violence: {cfr['violence']['severity']}<br/></p>"
+				result["filtered"] = True
+
+			else:
+				result["body"] = response.choices[0].message.content
+
+			if finish_reason == "length":
+				result["truncated"] = True
+				
+			return result
 
 		except APIConnectionError as e:
 			return {
