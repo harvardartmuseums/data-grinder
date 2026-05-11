@@ -127,6 +127,29 @@ Writer Palmyra Vision 7B on AWS Bedrock: description
 
 <img width="600" alt="API Tools-Data-Process Diagrams" src="https://github.com/user-attachments/assets/d6ae133b-f8ab-4df5-b890-67ba72fb3049" />
 
+## LLM Dispatch
+
+All LLM/vision model calls run in parallel using `ThreadPoolExecutor`. When multiple models are requested, the total response time is approximately the slowest individual model rather than the sum of all models.
+
+### Timeout configuration
+
+Two constants in `main.py` control SDK-level timeouts:
+
+| Constant | Default | Description |
+|---|---|---|
+| `LLM_CONNECT_TIMEOUT` | `10` | Seconds to wait for a connection to be established |
+| `LLM_READ_TIMEOUT` | `60` | Seconds to wait for a response from the model |
+
+If a model exceeds `LLM_READ_TIMEOUT`, its SDK raises a timeout exception which is caught and returned as an error dict — other models in the request are unaffected.
+
+### Gunicorn
+
+Set `--timeout` higher than `LLM_READ_TIMEOUT` so gunicorn does not kill workers before the SDK timeouts fire:
+
+```sh
+gunicorn wsgi:app --timeout 100 --workers 3
+```
+
 ## Usage
 
 Run as a script from the command line:
@@ -269,7 +292,7 @@ Data in the response:
 `widthFull`: The width in pixels of the full image as read from /info.json.  
 `heightFull`: The height in pixels of the full image as read from /info.json.  
 `scalefactor`: The propotional difference between teh supplied image and the full image. In the example response, the full image is 1.334 times larger than the supplied image.  
-`runtime`: The amount of time it took to run the entire request, in seconds.  
+`runtime`: The amount of time it took to run the entire request, in seconds. Each LLM model result object also contains a `runtime` field recording how long that individual model call took.  
 `iiifFullImageURL`: A fully formed IIIF URI for delivering the full image (e.g. /full/full/0/default.jpg).  
 `iiifbaseuri`: A base URI for the IIIF image.  
 `colors`:  

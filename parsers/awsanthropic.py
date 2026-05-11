@@ -1,6 +1,7 @@
 import os
 import io
 import boto3
+from botocore.config import Config
 from enum import Enum
 from PIL import Image
 
@@ -119,11 +120,12 @@ class AWSAnthropic(object):
 		self.aws_secret = os.getenv("AWS_SECRET_ACCESS_KEY")
 		self.aws_region = os.getenv("AWS_REGION")
 	
-	def get_client(self):
-		return boto3.client('bedrock-runtime', 
-							region_name=self.aws_region, 
-							aws_access_key_id=self.aws_key, 
-							aws_secret_access_key=self.aws_secret)
+	def get_client(self, connect_timeout=10, read_timeout=60):
+		return boto3.client('bedrock-runtime',
+							region_name=self.aws_region,
+							aws_access_key_id=self.aws_key,
+							aws_secret_access_key=self.aws_secret,
+							config=Config(connect_timeout=connect_timeout, read_timeout=read_timeout))
 
 	def _read_image_bytes(self, photo_file, model: AnthropicModel):
 		"""Read image file, resampling if necessary to fit within the model's image size limit.
@@ -173,9 +175,9 @@ class AWSAnthropic(object):
 
 			img = img.resize((new_width, new_height), Image.LANCZOS)
 
-	def fetch(self, photo_file, model: AnthropicModel = AnthropicModel.CLAUDE_3_HAIKU, prompt=None):
+	def fetch(self, photo_file, model: AnthropicModel = AnthropicModel.CLAUDE_3_HAIKU, prompt=None, connect_timeout=10, read_timeout=60):
 		response = ""
-		client = self.get_client()
+		client = self.get_client(connect_timeout, read_timeout)
 
 		image_content = self._read_image_bytes(photo_file, model)
 

@@ -1,6 +1,7 @@
-import openai 
+import openai
 import os
 import base64
+import httpx
 from enum import Enum
 
 class QwenModel(Enum):
@@ -58,10 +59,11 @@ class Qwen(object):
 	def __init__(self):
 		self.api_key = os.getenv("HYPERBOLIC_API_KEY")
 
-	def fetch(self, photo_file, model: QwenModel = QwenModel.QWEN_2_5_VL_7B, prompt=None):
+	def fetch(self, photo_file, model: QwenModel = QwenModel.QWEN_2_5_VL_7B, prompt=None, connect_timeout=10, read_timeout=60):
 		client = openai.OpenAI(
 			api_key = self.api_key,
-			base_url="https://api.hyperbolic.xyz/v1"
+			base_url="https://api.hyperbolic.xyz/v1",
+			timeout=httpx.Timeout(read_timeout, connect=connect_timeout)
 		)
 
 		with open(photo_file, 'rb') as image:

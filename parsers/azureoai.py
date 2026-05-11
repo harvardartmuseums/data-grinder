@@ -1,6 +1,7 @@
 from openai import AzureOpenAI, BadRequestError, APIConnectionError, RateLimitError, APIStatusError, ContentFilterFinishReasonError
 import os
 import base64
+import httpx
 from enum import Enum
 
 class OpenAIModel(Enum):
@@ -72,11 +73,12 @@ class AzureOAI(object):
 		self.endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
 		self.api_version = os.getenv("AZURE_OPENAI_API_VERSION")
 
-	def fetch(self, photo_file, model: OpenAIModel = OpenAIModel.GPT_4, prompt=None):
+	def fetch(self, photo_file, model: OpenAIModel = OpenAIModel.GPT_4, prompt=None, connect_timeout=10, read_timeout=60):
 		client = AzureOpenAI(
 			api_version = self.api_version,
 			api_key = self.api_key,
-			azure_endpoint = self.endpoint
+			azure_endpoint = self.endpoint,
+			timeout = httpx.Timeout(read_timeout, connect=connect_timeout)
 		)
 
 		with open(photo_file, 'rb') as image:

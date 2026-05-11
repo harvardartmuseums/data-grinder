@@ -71,7 +71,7 @@ class GoogleGemini(object):
 	def __init__(self):
 		self.api_key = os.getenv("GOOGLE_API_KEY")
 			  			  
-	def fetch(self, photo_file, model: GoogleGeminiModel = GoogleGeminiModel.FLASH_LITE_2_0, prompt=None):
+	def fetch(self, photo_file, model: GoogleGeminiModel = GoogleGeminiModel.FLASH_LITE_2_0, prompt=None, connect_timeout=10, read_timeout=60):
 		# Fetch the image data from the local copy
 		with open(photo_file, 'rb') as image:
 			image_content = base64.b64encode(image.read()).decode('utf-8')
@@ -102,7 +102,7 @@ class GoogleGemini(object):
 			headers = {
 				'Content-Type': 'application/json'
 			}
-			response = requests.post(url, headers=headers, json=params)
+			response = requests.post(url, headers=headers, json=params, timeout=(connect_timeout, read_timeout))
 
 			result = response.json()
 			return {

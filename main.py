@@ -5,6 +5,7 @@ import datetime
 import time
 import unicodedata
 import requests
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import imagehash
 from PIL import Image
 from flask import Flask, request
@@ -35,6 +36,8 @@ load_dotenv()
 
 USER_AGENT = os.getenv("USER_AGENT", "data-grinder/1.0")
 MAX_PROMPT_LEN = 500
+LLM_CONNECT_TIMEOUT = 10
+LLM_READ_TIMEOUT = 60
 
 # Registry of LLM-style models that follow the simple pattern:
 #   result = ModelClass().fetch(image_path, model_enum)
@@ -455,6 +458,15 @@ def _run_aws_rekognition(image, image_local_path, features, image_width, image_h
 					text["annotationFragment"] = _make_annotation_fragment(x, y, w, h)
 		image["aws"]["text"] = result
 
+def _fetch_model(model, cls, img_size, cached, prompt, annotation_fragment):
+	t0 = time.time()
+	result = cls().fetch(cached[img_size]["path"], model, prompt=prompt,
+						 connect_timeout=LLM_CONNECT_TIMEOUT,
+						 read_timeout=LLM_READ_TIMEOUT)
+	result["runtime"] = time.time() - t0
+	result["annotationFragment"] = annotation_fragment
+	return model.name, result
+
 # ── Main orchestrator ─────────────────────────────────────────────────────────
 
 def process_image(URL, services, prompt=None):
@@ -533,12 +545,18 @@ def process_image(URL, services, prompt=None):
 								 image_scale, iiif_image,
 								 annotation_fragment_full)
 
-		# ── Generic LLM / vision model dispatch ─────────────────────────────
-		for model, cls, img_size in GENERIC_MODELS:
-			if model.name in services:
-				result = cls().fetch(cached[img_size]["path"], model, prompt=prompt)
-				result["annotationFragment"] = annotation_fragment_full
-				image[model.name] = result
+		# ── Generic LLM / vision model dispatch (parallel) ──────────────────
+		active_models = [(m, c, s) for m, c, s in GENERIC_MODELS if m.name in services]
+		with ThreadPoolExecutor() as executor:
+			futures = {
+				executor.submit(
+					_fetch_model, m, c, s, cached, prompt, annotation_fragment_full
+				): m
+				for m, c, s in active_models
+			}
+			for future in as_completed(futures):
+				name, result = future.result()
+				image[name] = result
 
 	image["runtime"] = time.time() - start
 	return image

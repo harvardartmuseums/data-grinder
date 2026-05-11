@@ -1,5 +1,6 @@
 import os
 import boto3
+from botocore.config import Config
 from enum import Enum
 
 class MoonshotModel(Enum):
@@ -54,15 +55,16 @@ class AWSMoonshot(object):
 		self.aws_secret = os.getenv("AWS_SECRET_ACCESS_KEY")
 		self.aws_region = os.getenv("AWS_REGION")
 	
-	def get_client(self):
-		return boto3.client('bedrock-runtime', 
-							region_name=self.aws_region, 
-							aws_access_key_id=self.aws_key, 
-							aws_secret_access_key=self.aws_secret)
+	def get_client(self, connect_timeout=10, read_timeout=60):
+		return boto3.client('bedrock-runtime',
+							region_name=self.aws_region,
+							aws_access_key_id=self.aws_key,
+							aws_secret_access_key=self.aws_secret,
+							config=Config(connect_timeout=connect_timeout, read_timeout=read_timeout))
 
-	def fetch(self, photo_file, model: MoonshotModel = MoonshotModel.KIMI_K_2_5, prompt=None):
+	def fetch(self, photo_file, model: MoonshotModel = MoonshotModel.KIMI_K_2_5, prompt=None, connect_timeout=10, read_timeout=60):
 		response = ""
-		client = self.get_client()
+		client = self.get_client(connect_timeout, read_timeout)
 
 		with open(photo_file, 'rb') as image:
 			image_content = image.read()
