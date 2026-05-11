@@ -88,12 +88,13 @@ class SalesForce(object):
 				'Content-Type': 'application/json'
 			}
 	
-	def fetch(self, photo_file, model: SalesForceModel = SalesForceModel.BLIP_2):	
+	def fetch(self, photo_file, model: SalesForceModel = SalesForceModel.BLIP_2, prompt=None, connect_timeout=10, read_timeout=60):
 		try:
 			url = f"https://api.clarifai.com/v2/users/salesforce/apps/blip/models/{model.model_id}/outputs"
 			response = requests.post(url,
 							headers=self.__make_headers(),
-							data=json.dumps(self.__make_params(photo_file)))
+							data=json.dumps(self.__make_params(photo_file)),
+							timeout=(connect_timeout, read_timeout))
 			result = response.json()
 
 			return {
