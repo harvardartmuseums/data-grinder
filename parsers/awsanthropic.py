@@ -2,6 +2,7 @@ import os
 import io
 import boto3
 from botocore.config import Config
+import botocore.exceptions
 from enum import Enum
 from PIL import Image
 
@@ -238,3 +239,13 @@ class AWSAnthropic(object):
 				"full": None
 			}
 			return response
+
+		except botocore.exceptions.BotoCoreError as e:
+			return {
+				"body": None,
+				"model": model.model_id,
+				"provider": model.provider,
+				"status": 500,
+				"description": str(e),
+				"full": None
+			}

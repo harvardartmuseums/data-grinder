@@ -1,6 +1,7 @@
 import os
 import boto3
 from botocore.config import Config
+import botocore.exceptions
 from enum import Enum
 
 class NovaModel(Enum):
@@ -137,5 +138,15 @@ class AWSNova(object):
 				"full": None
 			}
 			return response
+
+		except botocore.exceptions.BotoCoreError as e:
+			return {
+				"body": None,
+				"model": model.model_id,
+				"provider": model.provider,
+				"status": 500,
+				"description": str(e),
+				"full": None
+			}
 
 
