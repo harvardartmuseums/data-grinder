@@ -54,17 +54,25 @@ class QwenModel(Enum):
 	def provider(self):
 		return "Qwen"
 
+_client = None
+
 class Qwen(object):
 
 	def __init__(self):
 		self.api_key = os.getenv("HYPERBOLIC_API_KEY")
 
+	def get_client(self, connect_timeout=10, read_timeout=60):
+		global _client
+		if _client is None:
+			_client = openai.OpenAI(
+				api_key=self.api_key,
+				base_url="https://api.hyperbolic.xyz/v1",
+				timeout=httpx.Timeout(read_timeout, connect=connect_timeout),
+			)
+		return _client
+
 	def fetch(self, photo_file, model: QwenModel = QwenModel.QWEN_2_5_VL_7B, prompt=None, connect_timeout=10, read_timeout=60):
-		client = openai.OpenAI(
-			api_key = self.api_key,
-			base_url="https://api.hyperbolic.xyz/v1",
-			timeout=httpx.Timeout(read_timeout, connect=connect_timeout)
-		)
+		client = self.get_client(connect_timeout, read_timeout)
 
 		with open(photo_file, 'rb') as image:
 			image_content = base64.b64encode(image.read()).decode('utf-8')

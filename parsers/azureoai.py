@@ -66,6 +66,8 @@ class OpenAIModel(Enum):
 	def provider(self):
 		return "Azure OpenAI Service"
 
+_client = None
+
 class AzureOAI(object):
 
 	def __init__(self):
@@ -73,13 +75,19 @@ class AzureOAI(object):
 		self.endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
 		self.api_version = os.getenv("AZURE_OPENAI_API_VERSION")
 
+	def get_client(self, connect_timeout=10, read_timeout=60):
+		global _client
+		if _client is None:
+			_client = AzureOpenAI(
+				api_version=self.api_version,
+				api_key=self.api_key,
+				azure_endpoint=self.endpoint,
+				timeout=httpx.Timeout(read_timeout, connect=connect_timeout),
+			)
+		return _client
+
 	def fetch(self, photo_file, model: OpenAIModel = OpenAIModel.GPT_4, prompt=None, connect_timeout=10, read_timeout=60):
-		client = AzureOpenAI(
-			api_version = self.api_version,
-			api_key = self.api_key,
-			azure_endpoint = self.endpoint,
-			timeout = httpx.Timeout(read_timeout, connect=connect_timeout)
-		)
+		client = self.get_client(connect_timeout, read_timeout)
 
 		with open(photo_file, 'rb') as image:
 			image_content = base64.b64encode(image.read()).decode('utf-8')

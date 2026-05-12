@@ -114,19 +114,24 @@ class AnthropicModel(Enum):
 	def provider(self):
 		return "Anthropic"
 
+_client = None
+
 class AWSAnthropic(object):
 
 	def __init__(self):
 		self.aws_key = os.getenv("AWS_ACCESS_KEY")
 		self.aws_secret = os.getenv("AWS_SECRET_ACCESS_KEY")
 		self.aws_region = os.getenv("AWS_REGION")
-	
+
 	def get_client(self, connect_timeout=10, read_timeout=60):
-		return boto3.client('bedrock-runtime',
-							region_name=self.aws_region,
-							aws_access_key_id=self.aws_key,
-							aws_secret_access_key=self.aws_secret,
-							config=Config(connect_timeout=connect_timeout, read_timeout=read_timeout))
+		global _client
+		if _client is None:
+			_client = boto3.client('bedrock-runtime',
+								region_name=self.aws_region,
+								aws_access_key_id=self.aws_key,
+								aws_secret_access_key=self.aws_secret,
+								config=Config(connect_timeout=connect_timeout, read_timeout=read_timeout))
+		return _client
 
 	def _read_image_bytes(self, photo_file, model: AnthropicModel):
 		"""Read image file, resampling if necessary to fit within the model's image size limit.
