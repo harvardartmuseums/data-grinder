@@ -142,31 +142,32 @@ def get_image(download_url, input_url, cache_days):
             if _s3_bucket:
                 _s3_upload(_s3_client(), _s3_key("full", domain, basename), full_path)
 
-    im = Image.open(full_path)
-    result["status"] = "ok"
-    result["full"] = {"path": full_path, "width": im.width, "height": im.height}
+    with Image.open(full_path) as im:
+        result["status"] = "ok"
+        result["full"] = {"path": full_path, "width": im.width, "height": im.height}
 
-    # ── Scaled variants ──────────────────────────────────────────────────────
-    for size_str in CACHE_SIZES:
-        if size_str == "full":
-            continue
-        size = int(size_str)
-        path = _local_path(size_str, domain, basename)
+        # ── Scaled variants ──────────────────────────────────────────────────────
+        for size_str in CACHE_SIZES:
+            if size_str == "full":
+                continue
+            size = int(size_str)
+            path = _local_path(size_str, domain, basename)
 
-        if not _is_fresh(path, cache_days):
-            restored = False
-            if _s3_bucket:
-                client = _s3_client()
-                if _s3_age_seconds(client, _s3_key(size_str, domain, basename)) < cache_days * 86400:
-                    restored = _s3_download(client, _s3_key(size_str, domain, basename), path)
-            if not restored:
-                scaled = im.copy()
-                scaled.thumbnail((size, size), Image.LANCZOS)
-                scaled.save(path)
+            if not _is_fresh(path, cache_days):
+                restored = False
                 if _s3_bucket:
-                    _s3_upload(_s3_client(), _s3_key(size_str, domain, basename), path)
+                    client = _s3_client()
+                    if _s3_age_seconds(client, _s3_key(size_str, domain, basename)) < cache_days * 86400:
+                        restored = _s3_download(client, _s3_key(size_str, domain, basename), path)
+                if not restored:
+                    scaled = im.copy()
+                    scaled.thumbnail((size, size), Image.LANCZOS)
+                    scaled.save(path)
+                    scaled.close()
+                    if _s3_bucket:
+                        _s3_upload(_s3_client(), _s3_key(size_str, domain, basename), path)
 
-        scaled_im = Image.open(path)
-        result[size_str] = {"path": path, "width": scaled_im.width, "height": scaled_im.height}
+            with Image.open(path) as scaled_im:
+                result[size_str] = {"path": path, "width": scaled_im.width, "height": scaled_im.height}
 
     return result
