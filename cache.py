@@ -3,6 +3,8 @@ import re
 import time
 import logging
 import datetime
+
+logger = logging.getLogger(__name__)
 import requests
 from urllib.parse import urlparse
 from PIL import Image
@@ -76,7 +78,7 @@ def _s3_age_seconds(client, key):
     except ClientError as e:
         if e.response["Error"]["Code"] in ("404", "NoSuchKey"):
             return float("inf")
-        logging.warning("S3 head_object failed for %s: %s", key, e)
+        logger.warning("S3 head_object failed for %s: %s", key, e)
         return float("inf")
 
 
@@ -88,7 +90,7 @@ def _s3_download(client, key, local_path):
             f.write(response["Body"].read())
         return True
     except ClientError as e:
-        logging.warning("S3 get_object failed for %s: %s", key, e)
+        logger.warning("S3 get_object failed for %s: %s", key, e)
         return False
 
 
@@ -98,7 +100,7 @@ def _s3_upload(client, key, local_path):
         with open(local_path, "rb") as f:
             client.put_object(Bucket=_s3_bucket, Key=key, Body=f)
     except ClientError as e:
-        logging.warning("S3 put_object failed for %s: %s", key, e)
+        logger.warning("S3 put_object failed for %s: %s", key, e)
 
 
 def _is_fresh(path, cache_days):

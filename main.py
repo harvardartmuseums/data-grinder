@@ -1,5 +1,6 @@
 import os
 import json
+import logging
 import argparse
 import datetime
 import time
@@ -10,6 +11,7 @@ import imagehash
 from PIL import Image
 from flask import Flask, request
 from dotenv import  load_dotenv
+import log
 import cache
 from parsers import (
 	azureoai, 
@@ -31,6 +33,9 @@ from parsers import (
 	awsmoonshot,
 	awswriter
 )
+
+log.configure()
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -148,6 +153,7 @@ def extract():
 		services = parse_service_features(services)
 
 	if url and services:
+		logger.info("request", extra={"url": url, "services": list(services.keys()), "prompt": prompt})
 		response = process_image(url, services, prompt=prompt)
 
 	return response
@@ -465,6 +471,7 @@ def _fetch_model(model, cls, img_size, cached, prompt, annotation_fragment):
 						 read_timeout=LLM_READ_TIMEOUT)
 	result["runtime"] = time.time() - t0
 	result["annotationFragment"] = annotation_fragment
+	logger.info("model_result", extra={"model": model.name, "status": result["status"], "runtime_s": round(result["runtime"], 3)})
 	return model.name, result
 
 # ── Main orchestrator ─────────────────────────────────────────────────────────
@@ -490,7 +497,9 @@ def process_image(URL, services, prompt=None):
 		image["iiifFullImageURL"] = image_url
 
 		cached = cache.get_image(image_url, URL, cache.CACHE_DAYS)
+		logger.info("cache", extra={"status": cached["status"], "url": URL})
 		if cached["status"] != "ok":
+			logger.warning("cache_failed", extra={"url": URL})
 			image["status"] = "bad"
 			image["runtime"] = time.time() - start
 			return image
@@ -508,42 +517,77 @@ def process_image(URL, services, prompt=None):
 
 		# ── Simple / hash / color services ──────────────────────────────────
 		if "hash" in services:
-			_run_hash(image, cached["full"]["path"])
+			_t = time.time()
+			try:
+				_run_hash(image, cached["full"]["path"])
+				logger.info("service_result", extra={"service": "hash", "runtime_s": round(time.time() - _t, 3)})
+			except Exception:
+				logger.error("service_failed", extra={"service": "hash"}, exc_info=True)
 
 		if "color" in services:
-			_run_color(image, cached["full"]["path"])
+			_t = time.time()
+			try:
+				_run_color(image, cached["full"]["path"])
+				logger.info("service_result", extra={"service": "color", "runtime_s": round(time.time() - _t, 3)})
+			except Exception:
+				logger.error("service_failed", extra={"service": "color"}, exc_info=True)
 
 		# ── Structured vision services ───────────────────────────────────────
 		if clarifai.ClarifaiModel.BASE.name in services:
-			_run_clarifai(image, cached["full"]["path"],
-						  services[clarifai.ClarifaiModel.BASE.name],
-						  annotation_fragment_full,
-						  image["width"], image["height"], image_scale)
+			_t = time.time()
+			try:
+				_run_clarifai(image, cached["full"]["path"],
+							  services[clarifai.ClarifaiModel.BASE.name],
+							  annotation_fragment_full,
+							  image["width"], image["height"], image_scale)
+				logger.info("service_result", extra={"service": "clarifai", "runtime_s": round(time.time() - _t, 3)})
+			except Exception:
+				logger.error("service_failed", extra={"service": "clarifai"}, exc_info=True)
 
 		if mcsvision.MCSVisionModel.BASE.name in services:
-			_run_microsoftvision(image, cached["full"]["path"],
-								 services[mcsvision.MCSVisionModel.BASE.name],
-								 annotation_fragment_full,
-								 image_scale, iiif_image)
+			_t = time.time()
+			try:
+				_run_microsoftvision(image, cached["full"]["path"],
+									 services[mcsvision.MCSVisionModel.BASE.name],
+									 annotation_fragment_full,
+									 image_scale, iiif_image)
+				logger.info("service_result", extra={"service": "microsoftvision", "runtime_s": round(time.time() - _t, 3)})
+			except Exception:
+				logger.error("service_failed", extra={"service": "microsoftvision"}, exc_info=True)
 
 		if vision.GVisionModel.BASE.name in services:
-			_run_googlevision(image, cached["full"]["path"],
-							  image["width"], image["height"],
-							  image_scale, iiif_image)
+			_t = time.time()
+			try:
+				_run_googlevision(image, cached["full"]["path"],
+								  image["width"], image["height"],
+								  image_scale, iiif_image)
+				logger.info("service_result", extra={"service": "googlevision", "runtime_s": round(time.time() - _t, 3)})
+			except Exception:
+				logger.error("service_failed", extra={"service": "googlevision"}, exc_info=True)
 
 		if imagga.ImaggaModel.BASE.name in services:
-			_run_imagga(image, cached["full"]["path"],
-						services[imagga.ImaggaModel.BASE.name],
-						annotation_fragment_full,
-						image["width"], image["height"],
-						image_scale, iiif_image)
+			_t = time.time()
+			try:
+				_run_imagga(image, cached["full"]["path"],
+							services[imagga.ImaggaModel.BASE.name],
+							annotation_fragment_full,
+							image["width"], image["height"],
+							image_scale, iiif_image)
+				logger.info("service_result", extra={"service": "imagga", "runtime_s": round(time.time() - _t, 3)})
+			except Exception:
+				logger.error("service_failed", extra={"service": "imagga"}, exc_info=True)
 
 		if aws.AWSModel.BASE.name in services:
-			_run_aws_rekognition(image, cached["full"]["path"],
-								 services[aws.AWSModel.BASE.name],
-								 image["width"], image["height"],
-								 image_scale, iiif_image,
-								 annotation_fragment_full)
+			_t = time.time()
+			try:
+				_run_aws_rekognition(image, cached["full"]["path"],
+									 services[aws.AWSModel.BASE.name],
+									 image["width"], image["height"],
+									 image_scale, iiif_image,
+									 annotation_fragment_full)
+				logger.info("service_result", extra={"service": "aws", "runtime_s": round(time.time() - _t, 3)})
+			except Exception:
+				logger.error("service_failed", extra={"service": "aws"}, exc_info=True)
 
 		# ── Generic LLM / vision model dispatch (parallel) ──────────────────
 		active_models = [(m, c, s) for m, c, s in GENERIC_MODELS if m.name in services]
@@ -555,8 +599,12 @@ def process_image(URL, services, prompt=None):
 				for m, c, s in active_models
 			}
 			for future in as_completed(futures):
-				name, result = future.result()
-				image[name] = result
+				try:
+					name, result = future.result()
+					image[name] = result
+				except Exception:
+					model = futures[future]
+					logger.error("model_failed", extra={"model": model.name}, exc_info=True)
 
 	image["runtime"] = time.time() - start
 	return image

@@ -1,6 +1,8 @@
 import requests
 import os
 import logging
+
+logger = logging.getLogger(__name__)
 from typing import Optional, Dict, Any
 from urllib.parse import urlparse
 from dotenv import load_dotenv
@@ -124,11 +126,11 @@ class IIIFImage(object):
 			self.id = self.__extract_id_from_url(response.url.rstrip('/info.json'))
 			self.info = response.json()
 		except requests.exceptions.RequestException as e:
-			logging.error(f"Failed to fetch info.json from {self.info_url}: {e}")
+			logger.error(f"Failed to fetch info.json from {self.info_url}: {e}")
 			self.status = self.STATUS_BAD
 			self.info = {}
 		except ValueError as e:  # JSON decode error
-			logging.error(f"Invalid JSON in info.json from {self.info_url}: {e}")
+			logger.error(f"Invalid JSON in info.json from {self.info_url}: {e}")
 			self.status = self.STATUS_BAD
 			self.info = {}
 	
