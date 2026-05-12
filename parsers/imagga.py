@@ -6,7 +6,7 @@ class ImaggaModel(Enum):
 	BASE = (
 		"imagga",
 		"",
-		["colors", "categories", "faces", "tags"]
+		["colors", "categories", "faces", "tags", "structured-tags"]
 	)
 
 	def __init__(self, name: str, model_id: str, functions: list):
@@ -58,6 +58,19 @@ class Imagga(object):
 		response = response.json()
 
 		response['model'] = 'unknown'
+		response['provider'] = ImaggaModel.BASE.provider
+
+		return response
+	
+	def fetch_structured_tags(self, photo_file):
+		params = {
+			"model": "light",
+			"include_caption": True
+		}
+		response = requests.post('https://api.imagga.com/v3/tags', params=params, files=self.__make_files(photo_file), auth=(self.api_key, self.api_secret))
+		response = response.json()
+		
+		response['model'] = 'pro'
 		response['provider'] = ImaggaModel.BASE.provider
 
 		return response

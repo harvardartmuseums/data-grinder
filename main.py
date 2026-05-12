@@ -382,6 +382,15 @@ def _run_imagga(image, image_local_path, features, annotation_fragment, image_wi
 				tag["annotationFragment"] = annotation_fragment
 		image["imagga"]["tags"] = result
 
+	if any(v in ["all", "structured-tags"] for v in features):
+		result = imagga.Imagga().fetch_structured_tags(image_local_path)
+		if "caption" in result.get("result", {}):
+			image["imagga"]["caption"] = result["result"]["caption"]
+
+		if "tags" in result.get("result", {}):
+			result["result"]["tags"]["annotationFragment"] = annotation_fragment
+		image["imagga"]["structuredTags"] = result
+
 	if any(v in ["all", "categories"] for v in features):
 		result = imagga.Imagga().fetch_categories(image_local_path)
 		if "categories" in result.get("result", {}):
