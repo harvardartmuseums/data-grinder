@@ -84,7 +84,7 @@ S3 reuses the existing `AWS_ACCESS_KEY`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGIO
 HAM Color Service: extract colors  
 Hashing: compute average, color, perceptual, difference, wavelet hashes  
 Clarifai: tag features, tag objects, write captions  
-Imagga: tag features, extract colors, categorize, faces  
+Imagga: tag features, extract colors, categorize, faces, write caption, structured tags
 Google Vision: tag features, find faces, find text  
 Microsoft Cognitive Services: categories, tags, description, faces, color, objects  
 AWS Rekognition: labels, faces, text  
@@ -241,7 +241,9 @@ Example response:
         "categories": {},
         "colors": {},
         "faces": {},
-        "tags": {}
+        "tags": {},
+        "structuredTags": {},
+        "caption": {}
     },
     "aws": {
         "faces": {},
