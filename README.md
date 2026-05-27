@@ -150,6 +150,24 @@ Set `--timeout` higher than `LLM_READ_TIMEOUT` so gunicorn does not kill workers
 gunicorn wsgi:app --timeout 100 --workers 3
 ```
 
+## Testing
+
+Run the test suite with pytest:
+
+```sh
+pytest
+```
+
+The suite covers parsing logic, cache tier decisions, IIIF URL construction, and Flask endpoint routing. All external API and S3 calls are mocked — no credentials or network access required.
+
+```sh
+# Unit tests only (fastest, no I/O)
+pytest tests/test_main_unit.py
+
+# With coverage report
+pytest --cov=. --cov-report=term-missing --cov-omit="venv/*,tests/*,parsers/colors.py"
+```
+
 ## Usage
 
 Run as a script from the command line:
