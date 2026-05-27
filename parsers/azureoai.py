@@ -175,11 +175,12 @@ class AzureOAI(object):
 				"provider": model.provider,
 				"status": e.status_code,
 				"description": "Content filter triggered: " + str(e),
-				"full": None
+				"full": None,
+				"filtered": True
 			}
 
 		except BadRequestError as e:
-			if "content_filter" in str(e) or "ResponsibleAIPolicyViolation" in str(e):
+			if "content_filter" in str(e) or "ResponsibleAIPolicyViolation" in str(e) or "content_policy_violation" in str(e):
 				description = {
 					"choices": [
 						{
@@ -187,23 +188,30 @@ class AzureOAI(object):
 							"message": {
 								"content": e.body["message"]
 							},
-							**e.body["inner_error"]
+							**e.body.get("inner_error", {})
 						}
 					],
 					"model": "unknown",
 					"error": e.body
 				}
+				return {
+					"body": None,
+					"model": model.model_id,
+					"provider": model.provider,
+					"status": e.status_code,
+					"description": description,
+					"full": None,
+					"content_policy_violation": True
+				}
 			else:
-				description = str(e)
-
-			return {
-				"body": None,
-				"model": model.model_id,
-				"provider": model.provider,
-				"status": e.status_code,
-				"description": description,
-				"full": None
-			}		
+				return {
+					"body": None,
+					"model": model.model_id,
+					"provider": model.provider,
+					"status": e.status_code,
+					"description": str(e),
+					"full": None
+				}
 
 		except APIStatusError as e:
 			return {
