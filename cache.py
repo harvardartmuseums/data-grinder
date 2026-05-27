@@ -139,8 +139,17 @@ def get_image(download_url, input_url, cache_days):
             with open(full_path, "wb") as f:
                 for chunk in r.iter_content(chunk_size=128):
                     f.write(chunk)
+            try:
+                with Image.open(full_path) as _check:
+                    _check.verify()
+            except Exception:
+                os.remove(full_path)
+                return result
             if _s3_bucket:
                 _s3_upload(_s3_client(), _s3_key("full", domain, basename), full_path)
+
+    if not os.path.exists(full_path):
+        return result
 
     with Image.open(full_path) as im:
         result["status"] = "ok"
