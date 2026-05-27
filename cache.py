@@ -151,7 +151,14 @@ def get_image(download_url, input_url, cache_days):
     if not os.path.exists(full_path):
         return result
 
-    with Image.open(full_path) as im:
+    try:
+        full_im = Image.open(full_path)
+    except Exception:
+        logger.warning("Corrupt cached image, removing: %s", full_path)
+        os.remove(full_path)
+        return result
+
+    with full_im as im:
         result["status"] = "ok"
         result["full"] = {"path": full_path, "width": im.width, "height": im.height}
 
@@ -176,7 +183,11 @@ def get_image(download_url, input_url, cache_days):
                     if _s3_bucket:
                         _s3_upload(_s3_client(), _s3_key(size_str, domain, basename), path)
 
-            with Image.open(path) as scaled_im:
-                result[size_str] = {"path": path, "width": scaled_im.width, "height": scaled_im.height}
+            try:
+                with Image.open(path) as scaled_im:
+                    result[size_str] = {"path": path, "width": scaled_im.width, "height": scaled_im.height}
+            except Exception:
+                logger.warning("Corrupt cached scaled image, removing: %s", path)
+                os.remove(path)
 
     return result
