@@ -311,7 +311,7 @@ Data in the response:
 `height`: The height in pixels of the image supplied to the service.  
 `widthFull`: The width in pixels of the full image as read from /info.json.  
 `heightFull`: The height in pixels of the full image as read from /info.json.  
-`scalefactor`: The propotional difference between teh supplied image and the full image. In the example response, the full image is 1.334 times larger than the supplied image.  
+`scalefactor`: The proportional difference between the supplied image and the full image. In the example response, the full image is 1.334 times larger than the supplied image.  
 `runtime`: The amount of time it took to run the entire request, in seconds. Each LLM model result object also contains a `runtime` field recording how long that individual model call took.  
 `iiifFullImageURL`: A fully formed IIIF URI for delivering the full image (e.g. /full/full/0/default.jpg).  
 `iiifbaseuri`: A base URI for the IIIF image.  
@@ -355,3 +355,45 @@ Data in the response:
 `qwen-3-vl-235b-a22b`:  
 `kimi-k2-5`:  
 `palmyra-vision-7b`:  
+
+### LLM model response structure
+
+Each LLM/vision model key in the response (e.g. `gpt-4o`, `claude-4-5-sonnet`, `gemini-2-5-flash`) contains an object with the following fields:
+
+| Field | Type | Description |
+|---|---|---|
+| `body` | string or null | The model's text response. `null` on error or when the response was blocked |
+| `model` | string | The exact model version ID used (e.g. `gpt-4o-2024-11-20`) |
+| `provider` | string | The provider name (e.g. `Azure OpenAI Service`, `Anthropic`, `Google Gemini`) |
+| `status` | integer | HTTP-style status code. `200` on success; `400`, `429`, `500`, etc. on error |
+| `runtime` | float | Seconds elapsed for this individual model call |
+| `full` | object or null | The complete raw response object from the provider SDK. `null` on error |
+| `description` | string or object | Present on error. A human-readable description of the error, or a structured error object for content policy violations |
+| `filtered` | boolean | Present and `true` when the response was blocked by the provider's content filter (Azure OpenAI only). `body` contains a human-readable summary of which content categories were flagged |
+| `content_policy_violation` | boolean | Present and `true` when the request itself was rejected before a response was generated due to a content policy violation (Azure OpenAI only). Distinct from `filtered`: `filtered` means a response was generated but withheld; `content_policy_violation` means the request was refused outright |
+| `truncated` | boolean | Present and `true` when the model stopped because it hit the token limit rather than reaching a natural end |
+
+**Normal success example:**
+```json
+"gpt-4o": {
+    "body": "This painting depicts...",
+    "model": "gpt-4o-2024-11-20",
+    "provider": "Azure OpenAI Service",
+    "status": 200,
+    "runtime": 4.231,
+    "full": { ... }
+}
+```
+
+**Error example:**
+```json
+"gpt-4o": {
+    "body": null,
+    "model": "gpt-4o-2024-11-20",
+    "provider": "Azure OpenAI Service",
+    "status": 429,
+    "runtime": 1.04,
+    "description": "Rate limit exceeded. Please retry after 60 seconds.",
+    "full": null
+}
+```
