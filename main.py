@@ -193,15 +193,15 @@ def parse_service_features(query: str, default_value: str = "all"):
 	return result
 
 def _validate_prompt(raw: str):
-    if len(raw) > MAX_PROMPT_LEN:
-        return "", f"prompt exceeds {MAX_PROMPT_LEN} character limit"
+	if len(raw) > MAX_PROMPT_LEN:
+		return "", f"prompt exceeds {MAX_PROMPT_LEN} character limit"
 	
-    sanitized = "".join(
-        c for c in raw
-        if not unicodedata.category(c).startswith("C") or c in " \t\n\r"
-    )
+	sanitized = "".join(
+		c for c in raw
+		if not unicodedata.category(c).startswith("C") or c in " \t\n\r"
+	)
 
-    return sanitized, None
+	return sanitized, None
 
 # ── Bounding-box helpers ──────────────────────────────────────────────────────
 
