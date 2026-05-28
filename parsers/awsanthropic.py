@@ -155,31 +155,36 @@ class AWSAnthropic(object):
 		img = Image.open(io.BytesIO(raw_bytes))
 		quality = 95
 
-		while True:
-			buf = io.BytesIO()
-			img.save(buf, format="JPEG", quality=quality, optimize=True)
-			data = buf.getvalue()
+		try:
+			while True:
+				buf = io.BytesIO()
+				img.save(buf, format="JPEG", quality=quality, optimize=True)
+				data = buf.getvalue()
 
-			if len(data) < limit:
-				return data
+				if len(data) < limit:
+					return data
 
-			# Reduce quality first
-			if quality > 20:
-				quality -= 5
-				continue
+				# Reduce quality first
+				if quality > 20:
+					quality -= 5
+					continue
 
-			# Quality floor reached — shrink pixel dimensions by 10%
-			width, height = img.size
-			new_width = int(width * 0.9)
-			new_height = int(height * 0.9)
+				# Quality floor reached — shrink pixel dimensions by 10%
+				width, height = img.size
+				new_width = int(width * 0.9)
+				new_height = int(height * 0.9)
 
-			if new_width < 10 or new_height < 10:
-				raise ValueError(
-					f"Unable to resample image '{photo_file}' below {limit} bytes. "
-					f"Original size: {len(raw_bytes)} bytes."
-				)
+				if new_width < 10 or new_height < 10:
+					raise ValueError(
+						f"Unable to resample image '{photo_file}' below {limit} bytes. "
+						f"Original size: {len(raw_bytes)} bytes."
+					)
 
-			img = img.resize((new_width, new_height), Image.LANCZOS)
+				new_img = img.resize((new_width, new_height), Image.LANCZOS)
+				img.close()
+				img = new_img
+		finally:
+			img.close()
 
 	def fetch(self, photo_file, model: AnthropicModel = AnthropicModel.CLAUDE_3_HAIKU, prompt=None, connect_timeout=10, read_timeout=60):
 		response = ""

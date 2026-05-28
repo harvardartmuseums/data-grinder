@@ -1,3 +1,4 @@
+import gc
 import os
 import json
 import logging
@@ -14,14 +15,14 @@ from dotenv import  load_dotenv
 import log
 import cache
 from parsers import (
-	azureoai, 
-	clarifai, 
-	vision, 
-	imagga, 
-	iiif, 
-	mcsvision, 
-	colors, 
-	aws, 
+	azureoai,
+	clarifai,
+	vision,
+	imagga,
+	iiif,
+	mcsvision,
+	colors,
+	aws,
 	awsanthropic,
 	awsmeta,
 	awsnova,
@@ -40,9 +41,11 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 USER_AGENT = os.getenv("USER_AGENT", "data-grinder/1.0")
-MAX_PROMPT_LEN = 500
-LLM_CONNECT_TIMEOUT = 10
-LLM_READ_TIMEOUT = 60
+MAX_PROMPT_LEN = int(os.getenv("MAX_PROMPT_LEN", "500"))
+LLM_CONNECT_TIMEOUT = int(os.getenv("LLM_CONNECT_TIMEOUT", "10"))
+LLM_READ_TIMEOUT = int(os.getenv("LLM_READ_TIMEOUT", "60"))
+
+_executor = ThreadPoolExecutor(max_workers=int(os.getenv("LLM_WORKERS", "10")))
 
 # Registry of LLM-style models that follow the simple pattern:
 #   result = ModelClass().fetch(image_path, model_enum)
@@ -136,6 +139,11 @@ def list_services():
 		}
 	}
 
+@app.after_request
+def _force_gc(response):
+	gc.collect()
+	return response
+
 @app.route("/extract", methods=['GET'])
 def extract():
 	response = {"status": "missing parameters url, services"}
@@ -148,7 +156,7 @@ def extract():
 		prompt, err = _validate_prompt(prompt)
 		if err:
 			return {"status": err}, 400
-		
+
 	if services is not None:
 		services = parse_service_features(services)
 
@@ -217,14 +225,14 @@ def _scale_bbox(x, y, w, h, scale):
 
 def _run_hash(image, image_local_path):
 	"""Compute multiple image hashes and store them in image["hashes"]."""
-	i = Image.open(image_local_path)
-	image["hashes"] = {
-		"average":    str(imagehash.average_hash(i)),
-		"color":      str(imagehash.colorhash(i)),
-		"perceptual": str(imagehash.phash(i)),
-		"difference": str(imagehash.dhash(i)),
-		"wavelet":    str(imagehash.whash(i)),
-	}
+	with Image.open(image_local_path) as i:
+		image["hashes"] = {
+			"average":    str(imagehash.average_hash(i)),
+			"color":      str(imagehash.colorhash(i)),
+			"perceptual": str(imagehash.phash(i)),
+			"difference": str(imagehash.dhash(i)),
+			"wavelet":    str(imagehash.whash(i)),
+		}
 
 def _run_color(image, image_local_path):
 	"""Run the HAM color service and store results in image["colors"]."""
@@ -600,20 +608,19 @@ def process_image(URL, services, prompt=None):
 
 		# ── Generic LLM / vision model dispatch (parallel) ──────────────────
 		active_models = [(m, c, s) for m, c, s in GENERIC_MODELS if m.name in services]
-		with ThreadPoolExecutor() as executor:
-			futures = {
-				executor.submit(
-					_fetch_model, m, c, s, cached, prompt, annotation_fragment_full
-				): m
-				for m, c, s in active_models
-			}
-			for future in as_completed(futures):
-				try:
-					name, result = future.result()
-					image[name] = result
-				except Exception:
-					model = futures[future]
-					logger.error("model_failed", extra={"model": model.name}, exc_info=True)
+		futures = {
+			_executor.submit(
+				_fetch_model, m, c, s, cached, prompt, annotation_fragment_full
+			): m
+			for m, c, s in active_models
+		}
+		for future in as_completed(futures):
+			try:
+				name, result = future.result()
+				image[name] = result
+			except Exception:
+				model = futures[future]
+				logger.error("model_failed", extra={"model": model.name}, exc_info=True)
 
 	image["runtime"] = time.time() - start
 	return image

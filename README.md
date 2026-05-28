@@ -131,24 +131,28 @@ Writer Palmyra Vision 7B on AWS Bedrock: description
 
 All LLM/vision model calls run in parallel using `ThreadPoolExecutor`. When multiple models are requested, the total response time is approximately the slowest individual model rather than the sum of all models.
 
-### Timeout configuration
+### Configuration
 
-Two constants in `main.py` control SDK-level timeouts:
+Set these in `.env`:
 
-| Constant | Default | Description |
+| Variable | Default | Description |
 |---|---|---|
 | `LLM_CONNECT_TIMEOUT` | `10` | Seconds to wait for a connection to be established |
 | `LLM_READ_TIMEOUT` | `60` | Seconds to wait for a response from the model |
+| `LLM_WORKERS` | `10` | Max parallel threads for concurrent model calls. Lower values reduce peak memory usage |
+| `MAX_PROMPT_LEN` | `500` | Maximum allowed characters in the `prompt` query parameter |
 
 If a model exceeds `LLM_READ_TIMEOUT`, its SDK raises a timeout exception which is caught and returned as an error dict — other models in the request are unaffected.
 
 ### Gunicorn
 
-Set `--timeout` higher than `LLM_READ_TIMEOUT` so gunicorn does not kill workers before the SDK timeouts fire:
+Set `--timeout` higher than `LLM_READ_TIMEOUT` so gunicorn does not kill workers before the SDK timeouts fire. Use `--max-requests` to recycle workers and reclaim memory:
 
 ```sh
-gunicorn wsgi:app --timeout 100 --workers 3
+gunicorn wsgi:app --timeout 100 --workers 2 --max-requests 500 --max-requests-jitter 50
 ```
+
+On memory-constrained hosts (e.g. Digital Ocean), lower `--workers` and `LLM_WORKERS` to reduce peak RSS. Each concurrent model call holds a copy of the image bytes in memory, so `LLM_WORKERS` directly controls the memory spike during parallel dispatch.
 
 ## Testing
 
