@@ -391,7 +391,7 @@ Each LLM/vision model key in the response (e.g. `gpt-4o`, `claude-4-5-sonnet`, `
 "gpt-4o": {
     "body": "This painting depicts...",
     "model": "gpt-4o-2024-11-20",
-    "provider": "Azure OpenAI Service",
+    "provider": "OpenAI",
     "status": 200,
     "runtime": 4.231,
     "full": { ... }
@@ -403,7 +403,7 @@ Each LLM/vision model key in the response (e.g. `gpt-4o`, `claude-4-5-sonnet`, `
 "gpt-4o": {
     "body": null,
     "model": "gpt-4o-2024-11-20",
-    "provider": "Azure OpenAI Service",
+    "provider": "OpenAI",
     "status": 429,
     "runtime": 1.04,
     "description": "Rate limit exceeded. Please retry after 60 seconds.",

@@ -64,7 +64,7 @@ class OpenAIModel(Enum):
 
 	@property
 	def provider(self):
-		return "Azure OpenAI Service"
+		return "OpenAI"
 
 _client = None
 

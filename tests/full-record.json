@@ -1171,7 +1171,7 @@
       }
     }, 
     "model": "gpt-5-nano-2025-08-07", 
-    "provider": "Azure OpenAI Service", 
+    "provider": "OpenAI", 
     "status": 200
   }, 
   "hashes": {
