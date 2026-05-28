@@ -168,6 +168,15 @@ pytest tests/test_main_unit.py
 pytest --cov=. --cov-report=term-missing --cov-omit="venv/*,tests/*,parsers/colors.py"
 ```
 
+Integration tests hit live APIs with real credentials and known images. They are skipped by default and must be opted into explicitly:
+
+```sh
+# Run integration tests (requires credentials in .env)
+RUN_INTEGRATION=1 pytest tests/test_integration.py -v -s
+```
+
+The `-s` flag allows print output to show which content-blocking flag (`filtered` vs `content_policy_violation`) each model returns for the flagged image.
+
 ## Usage
 
 Run as a script from the command line:
@@ -369,8 +378,8 @@ Each LLM/vision model key in the response (e.g. `gpt-4o`, `claude-4-5-sonnet`, `
 | `runtime` | float | Seconds elapsed for this individual model call |
 | `full` | object or null | The complete raw response object from the provider SDK. `null` on error |
 | `description` | string or object | Present on error. A human-readable description of the error, or a structured error object for content policy violations |
-| `filtered` | boolean | Present and `true` when the response was blocked by the provider's content filter (Azure OpenAI only). `body` contains a human-readable summary of which content categories were flagged |
-| `content_policy_violation` | boolean | Present and `true` when the request itself was rejected before a response was generated due to a content policy violation (Azure OpenAI only). Distinct from `filtered`: `filtered` means a response was generated but withheld; `content_policy_violation` means the request was refused outright |
+| `filtered` | boolean | Present and `true` when the response was blocked by the provider's content filter. `body` is `null`. For Azure OpenAI, `body` contains a human-readable summary of which content categories were flagged |
+| `content_policy_violation` | boolean | Present and `true` when the request itself was rejected before a response was generated due to a content policy violation. Distinct from `filtered`: `filtered` means a response was generated but withheld; `content_policy_violation` means the request was refused outright |
 | `truncated` | boolean | Present and `true` when the model stopped because it hit the token limit rather than reaching a natural end |
 
 **Normal success example:**

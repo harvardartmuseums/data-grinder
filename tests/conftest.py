@@ -7,6 +7,13 @@ from PIL import Image
 
 @pytest.fixture(scope="session")
 def app():
+    import main as m
+    m.app.config["TESTING"] = True
+    return m.app
+
+
+@pytest.fixture()
+def client(app):
     env = {
         "IMAGE_CACHE_DIR": "/tmp/dg_test_cache",
         "IMAGE_CACHE_S3_BUCKET": "",
@@ -20,14 +27,7 @@ def app():
         "GOOGLE_API_KEY": "g",
     }
     with patch.dict(os.environ, env):
-        import main as m
-        m.app.config["TESTING"] = True
-        yield m.app
-
-
-@pytest.fixture()
-def client(app):
-    return app.test_client()
+        yield app.test_client()
 
 
 @pytest.fixture(scope="session")

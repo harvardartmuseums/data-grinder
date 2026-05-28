@@ -120,13 +120,28 @@ class AWSMeta(object):
 				inferenceConfig=model.inference_config
 			)
 
-			return {
+			stop_reason = awsresponse.get("stopReason")
+
+			if stop_reason == "content_filtered":
+				return {
+					"body": None,
+					"model": model.model_id,
+					"provider": model.provider,
+					"status": 200,
+					"full": awsresponse,
+					"filtered": True
+				}
+
+			result = {
 				"body": awsresponse["output"]["message"]["content"][0]["text"],
 				"model": model.model_id,
 				"provider": model.provider,
 				"status": 200,
 				"full": awsresponse
 			}
+			if stop_reason == "max_tokens":
+				result["truncated"] = True
+			return result
 		
 		except ( client.exceptions.AccessDeniedException, client.exceptions.ResourceNotFoundException, client.exceptions.ThrottlingException, client.exceptions.ModelTimeoutException, client.exceptions.InternalServerException, client.exceptions.ValidationException, client.exceptions.ModelNotReadyException, client.exceptions.ServiceQuotaExceededException) as e:
 			response = {

@@ -104,17 +104,68 @@ class GoogleGemini(object):
 			}
 			response = requests.post(url, headers=headers, json=params, timeout=(connect_timeout, read_timeout))
 
+			if response.status_code != 200:
+				return {
+					"body": None,
+					"model": model_id,
+					"provider": model.provider,
+					"status": response.status_code,
+					"description": response.text,
+					"full": None
+				}
+
 			result = response.json()
-			return {
-				"body": result["candidates"][0]["content"]["parts"][0]["text"],
+
+			# Prompt blocked before generation (content policy violation)
+			prompt_feedback = result.get("promptFeedback", {})
+			if prompt_feedback.get("blockReason"):
+				return {
+					"body": None,
+					"model": model_id,
+					"provider": model.provider,
+					"status": 200,
+					"full": result,
+					"content_policy_violation": True
+				}
+
+			candidates = result.get("candidates", [])
+			if not candidates:
+				return {
+					"body": None,
+					"model": model_id,
+					"provider": model.provider,
+					"status": 200,
+					"description": "No candidates returned",
+					"full": result
+				}
+
+			finish_reason = candidates[0].get("finishReason")
+
+			# Response generated but withheld by safety filter
+			if finish_reason == "SAFETY":
+				return {
+					"body": None,
+					"model": model_id,
+					"provider": model.provider,
+					"status": 200,
+					"full": result,
+					"filtered": True
+				}
+
+			body = candidates[0]["content"]["parts"][0]["text"]
+			out = {
+				"body": body,
 				"model": model_id,
 				"provider": model.provider,
 				"status": 200,
 				"full": result
 			}
+			if finish_reason == "MAX_TOKENS":
+				out["truncated"] = True
+			return out
 
 		except Exception as e:
-			response = {
+			return {
 				"body": None,
 				"model": model.model_id,
 				"provider": model.provider,
@@ -122,4 +173,3 @@ class GoogleGemini(object):
 				"description": str(e),
 				"full": None
 			}
-			return response

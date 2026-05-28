@@ -28,3 +28,5 @@ IMAGE_CACHE_S3_PREFIX = ""
 FLASK_APP = "main"
 
 USER_AGENT = "data-grinder/1.0"
+
+RUN_INTEGRATION = 0
