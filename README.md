@@ -377,7 +377,7 @@ Each LLM/vision model key in the response (e.g. `gpt-4o`, `claude-4-5-sonnet`, `
 |---|---|---|
 | `body` | string or null | The model's text response. `null` on error or when the response was blocked |
 | `model` | string | The exact model version ID used (e.g. `gpt-4o-2024-11-20`) |
-| `provider` | string | The provider name (e.g. `Azure OpenAI Service`, `Anthropic`, `Google Gemini`) |
+| `provider` | string | The provider name (e.g. `OpenAI`, `Anthropic`, `Google Gemini`) |
 | `status` | integer | HTTP-style status code. `200` on success; `400`, `429`, `500`, etc. on error |
 | `runtime` | float | Seconds elapsed for this individual model call |
 | `full` | object or null | The complete raw response object from the provider SDK. `null` on error |
