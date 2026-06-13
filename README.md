@@ -123,9 +123,11 @@ Qwen 2.5 VL 72B Instruct on Hyperbolic: description (deprecated)
 Qwen 3 VL 235B on AWS Bedrock: description  
 Moonshot Kimi K2.5 on AWS Bedrock: description  
 Writer Palmyra Vision 7B on AWS Bedrock: description  
+Google Gemma 4 on local Ollama: description  
+Google Gemma 4 26B on local Ollama: description  
 
 
-<img width="600" alt="API Tools-Data-Process Diagrams" src="https://github.com/user-attachments/assets/d6ae133b-f8ab-4df5-b890-67ba72fb3049" />
+See the [services & features diagram](docs/architecture.md) for a visual map of every service and the features it returns.
 
 ## LLM Dispatch
 
@@ -141,8 +143,20 @@ Set these in `.env`:
 | `LLM_READ_TIMEOUT` | `60` | Seconds to wait for a response from the model |
 | `LLM_WORKERS` | `10` | Max parallel threads for concurrent model calls. Lower values reduce peak memory usage |
 | `MAX_PROMPT_LEN` | `500` | Maximum allowed characters in the `prompt` query parameter |
+| `OLLAMA_BASE_URL` | `http://localhost:11434/v1` | Base URL of the local Ollama server's OpenAI-compatible endpoint, used by the `gemma4` models |
 
 If a model exceeds `LLM_READ_TIMEOUT`, its SDK raises a timeout exception which is caught and returned as an error dict — other models in the request are unaffected.
+
+### Local Ollama models (Gemma)
+
+The `gemma4` and `gemma4-26b` services run against a local [Ollama](https://ollama.com) server rather than a cloud API, so they need no API key. To use them, install Ollama, ensure the server is running, and pull the models:
+
+```sh
+ollama pull gemma4
+ollama pull gemma4:26b
+```
+
+Gemma reasons before answering, so a single local call typically takes ~40–50s (longer for `gemma4-26b` and under parallel load). The default `LLM_READ_TIMEOUT` of `60` is tight for these — raise it (e.g. `LLM_READ_TIMEOUT=180`) when requesting Ollama models, since the dispatcher passes this value to the parser and it overrides the parser's own default.
 
 ### Gunicorn
 
@@ -210,7 +224,7 @@ http://127.0.0.1:5000/extract
 Parameters |  | Values
 ------------ | ------------- | -------------
 url | Any URL that resolves to a IIIF compatible image
-services | (optional, default uses all services) One or more from the list of valid services separated by commas | `imagga, gv, mcs, clarifai, color, aws, hash, gpt-4, gpt-4o, gpt-4-1-mini, claude-3-haiku, claude-4-5-haiku, claude-3-opus, claude-4-1-opus, claude-4-5-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, claude-3-7-sonnet, claude-4-sonnet, claude-4-5-sonnet, llama-3-2-11b, llama-3-2-90b, llama-4-maverick-17b, llama-4-scout-17b, nova-lite-1-0, nova-pro-1-0, nova-lite-2-0, gemini-2-0-flash-lite, gemini-2-5-flash-lite, gemini-2-0-flash, gemini-2-5-flash, pixtral-large-2502, magistral-small-2509, ministral-3-3b, ministral-3-8b, ministral-3-14b, mistral-large-3-675b, qwen-3-vl-235b-a22b, kimi-k2-5, palmyra-vision-7b, blip-2, blip-2-6-7B`
+services | (optional, default uses all services) One or more from the list of valid services separated by commas | `imagga, gv, mcs, clarifai, color, aws, hash, gpt-4, gpt-4o, gpt-4-1-mini, claude-3-haiku, claude-4-5-haiku, claude-3-opus, claude-4-1-opus, claude-4-5-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, claude-3-7-sonnet, claude-4-sonnet, claude-4-5-sonnet, llama-3-2-11b, llama-3-2-90b, llama-4-maverick-17b, llama-4-scout-17b, nova-lite-1-0, nova-pro-1-0, nova-lite-2-0, gemini-2-0-flash-lite, gemini-2-5-flash-lite, gemini-2-0-flash, gemini-2-5-flash, pixtral-large-2502, magistral-small-2509, ministral-3-3b, ministral-3-8b, ministral-3-14b, mistral-large-3-675b, qwen-3-vl-235b-a22b, kimi-k2-5, palmyra-vision-7b, gemma4, gemma4-26b, blip-2, blip-2-6-7B`
 prompt | (optional) Custom text prompt sent to all LLM/vision model calls. When omitted, defaults to `"Describe this image:"`. Max 500 characters; control characters are stripped. | Any plain text string
 
 
@@ -313,7 +327,9 @@ Example response:
     "pixtral-large-2502": {},
     "qwen-3-vl-235b-a22b": {},
     "kimi-k2-5": {},
-    "palmyra-vision-7b": {}
+    "palmyra-vision-7b": {},
+    "gemma4": {},
+    "gemma4-26b": {}
 }
 ```
 
@@ -377,7 +393,7 @@ Each LLM/vision model key in the response (e.g. `gpt-4o`, `claude-4-5-sonnet`, `
 |---|---|---|
 | `body` | string or null | The model's text response. `null` on error or when the response was blocked |
 | `model` | string | The exact model version ID used (e.g. `gpt-4o-2024-11-20`) |
-| `provider` | string | The provider name (e.g. `OpenAI`, `Anthropic`, `Google Gemini`) |
+| `provider` | string | The provider name (e.g. `OpenAI`, `Anthropic`, `Google Gemini`, `Ollama`) |
 | `status` | integer | HTTP-style status code. `200` on success; `400`, `429`, `500`, etc. on error |
 | `runtime` | float | Seconds elapsed for this individual model call |
 | `full` | object or null | The complete raw response object from the provider SDK. `null` on error |
