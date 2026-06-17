@@ -94,6 +94,11 @@ class TestGeminiContentBlock:
         result = GoogleGemini().fetch(flagged_image_file, model=GoogleGeminiModel.FLASH_LITE_2_5)
         _assert_content_blocked(result, "gemini-2-5-flash-lite")
 
+    def test_flash_lite_3_1(self, flagged_image_file):
+        from parsers.googlegemini import GoogleGemini, GoogleGeminiModel
+        result = GoogleGemini().fetch(flagged_image_file, model=GoogleGeminiModel.FLASH_LITE_3_1)
+        _assert_content_blocked(result, "gemini-3-1-flash-lite")
+
 
 @skip_unless_integration
 @pytest.mark.skipif(not os.getenv("GOOGLE_API_KEY"), reason="GOOGLE_API_KEY not set")
@@ -118,3 +123,8 @@ class TestGeminiSafeImage:
         from parsers.googlegemini import GoogleGemini, GoogleGeminiModel
         result = GoogleGemini().fetch(safe_image_file, model=GoogleGeminiModel.FLASH_LITE_2_5)
         _assert_clean_response(result, "gemini-2-5-flash-lite")
+
+    def test_flash_lite_3_1(self, safe_image_file):
+        from parsers.googlegemini import GoogleGemini, GoogleGeminiModel
+        result = GoogleGemini().fetch(safe_image_file, model=GoogleGeminiModel.FLASH_LITE_3_1)
+        _assert_clean_response(result, "gemini-3-1-flash-lite")
