@@ -82,6 +82,7 @@ GENERIC_MODELS = [
 	(googlegemini.GoogleGeminiModel.FLASH_2_5,      googlegemini.GoogleGemini, "1110"),
 	(googlegemini.GoogleGeminiModel.FLASH_LITE_2_0, googlegemini.GoogleGemini, "1110"),
 	(googlegemini.GoogleGeminiModel.FLASH_LITE_2_5, googlegemini.GoogleGemini, "1110"),
+	(googlegemini.GoogleGeminiModel.FLASH_LITE_3_1, googlegemini.GoogleGemini, "1110"),
 	# Mistral on AWS Bedrock (scaled image)
 	(awsmistral.MistralModel.PIXTRAL_LARGE_2502,   awsmistral.AWSMistral, "1110"),
 	(awsmistral.MistralModel.MAGISTRAL_SMALL_2509, awsmistral.AWSMistral, "1110"),
