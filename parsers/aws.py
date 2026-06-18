@@ -12,13 +12,15 @@ class AWSModel(Enum):
 	BASE = (
 		"aws",
 		"",
-		["faces", "labels", "text"]
+		["faces", "labels", "text"],
+        None
 	)
 
-	def __init__(self, name: str, model_id: str, functions: list):
+	def __init__(self, name: str, model_id: str, functions: list, eol_date: str):
 		self._model_id = model_id
 		self._name = name
 		self._functions = functions
+		self._eol_date = eol_date
 
 	def list_models():
 		return [
@@ -26,7 +28,8 @@ class AWSModel(Enum):
 				"name": model.name,
 				"model_id": model.model_id,
 				"functions": model.functions,
-				"provider": model.provider
+				"provider": model.provider,
+				"eol_date": model.eol_date
 			}
 			for model in AWSModel
 		]
@@ -46,6 +49,10 @@ class AWSModel(Enum):
 	@property
 	def provider(self):
 		return "AWS Rekognition"
+
+	@property
+	def eol_date(self):
+		return self._eol_date
 
 class AWS(object):
 

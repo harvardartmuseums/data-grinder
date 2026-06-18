@@ -134,8 +134,8 @@ def list_services():
 				awsmoonshot.MoonshotModel.list_models() + \
 				awswriter.WriterModel.list_models(),	
 			"other": [
-				{"name":"hash", "model_id":""}, 
-				{"name":"color", "model_id":""}
+				{"name":"hash", "model_id":"", "eol_date": None}, 
+				{"name":"color", "model_id":"", "eol_date": None}
 			]
 		}
 	}

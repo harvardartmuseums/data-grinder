@@ -9,13 +9,15 @@ class ClarifaiModel(Enum):
 	BASE = (
 		"clarifai",
 		"",
-		["classification", "colors", "objects"]
+		["classification", "colors", "objects"],
+		"2026-07-16"
 	)
 
-	def __init__(self, name: str, model_id: str, functions: list):
+	def __init__(self, name: str, model_id: str, functions: list, eol_date: str):
 		self._model_id = model_id
 		self._name = name
 		self._functions = functions
+		self._eol_date = eol_date
 
 	def list_models():
 		return [
@@ -23,7 +25,8 @@ class ClarifaiModel(Enum):
 				"name": model.name,
 				"model_id": model.model_id,
 				"functions": model.functions,
-				"provider": model.provider
+				"provider": model.provider,
+				"eol_date": model.eol_date
 			}
 			for model in ClarifaiModel
 		]
@@ -43,6 +46,10 @@ class ClarifaiModel(Enum):
 	@property
 	def provider(self):
 		return "Clarifai"
+
+	@property
+	def eol_date(self):
+		return self._eol_date
 
 class Clarifai(object):
 
