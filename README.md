@@ -141,6 +141,7 @@ Set these in `.env`:
 | `LLM_CONNECT_TIMEOUT` | `10` | Seconds to wait for a connection to be established |
 | `LLM_READ_TIMEOUT` | `60` | Seconds to wait for a response from the model |
 | `LLM_WORKERS` | `10` | Max parallel threads for concurrent model calls. Lower values reduce peak memory usage |
+| `REQUEST_BUDGET` | `90` | Max seconds the request may spend in the parallel LLM phase. Models still running when the budget expires are skipped and logged |
 | `MAX_PROMPT_LEN` | `500` | Maximum allowed characters in the `prompt` query parameter |
 
 If a model exceeds `LLM_READ_TIMEOUT`, its SDK raises a timeout exception which is caught and returned as an error dict — other models in the request are unaffected.

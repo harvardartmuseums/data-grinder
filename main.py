@@ -44,6 +44,7 @@ USER_AGENT = os.getenv("USER_AGENT", "data-grinder/1.0")
 MAX_PROMPT_LEN = int(os.getenv("MAX_PROMPT_LEN", "500"))
 LLM_CONNECT_TIMEOUT = int(os.getenv("LLM_CONNECT_TIMEOUT", "10"))
 LLM_READ_TIMEOUT = int(os.getenv("LLM_READ_TIMEOUT", "60"))
+REQUEST_BUDGET = int(os.getenv("REQUEST_BUDGET", "90"))
 
 _executor = ThreadPoolExecutor(max_workers=int(os.getenv("LLM_WORKERS", "10")))
 
@@ -615,13 +616,21 @@ def process_image(URL, services, prompt=None):
 			): m
 			for m, c, s in active_models
 		}
-		for future in as_completed(futures):
-			try:
-				name, result = future.result()
-				image[name] = result
-			except Exception:
-				model = futures[future]
-				logger.error("model_failed", extra={"model": model.name}, exc_info=True)
+		remaining = max(0, REQUEST_BUDGET - (time.time() - start))
+		done_iter = as_completed(futures, timeout=remaining)
+		try:
+			for future in done_iter:
+				try:
+					name, result = future.result()
+					image[name] = result
+				except Exception:
+					model = futures[future]
+					logger.error("model_failed", extra={"model": model.name}, exc_info=True)
+		except TimeoutError:
+			timed_out = [m.name for f, m in futures.items() if not f.done()]
+			logger.warning("models_timed_out", extra={"models": timed_out, "budget_s": REQUEST_BUDGET})
+			for f in futures:
+				f.cancel()
 
 	image["runtime"] = time.time() - start
 	return image
