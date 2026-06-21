@@ -133,7 +133,11 @@ def get_image(download_url, input_url, cache_days):
                 _s3_download(client, _s3_key("full", domain, basename), full_path)
 
         if not _is_fresh(full_path, cache_days):
-            r = requests.get(download_url, headers={"User-Agent": USER_AGENT}, timeout=21)
+            try:
+                r = requests.get(download_url, headers={"User-Agent": USER_AGENT}, timeout=21)
+            except requests.exceptions.RequestException as e:
+                logger.warning("origin_download_failed", extra={"url": download_url, "error": str(e)})
+                return result
             if r.status_code != 200:
                 return result
             with open(full_path, "wb") as f:

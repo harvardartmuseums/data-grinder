@@ -9,14 +9,16 @@ class MCSVisionModel(Enum):
 		"mcs",
 		"",
 		["analyze", "describe"],
-		4194304
+		4194304,
+		None
 	)
 
-	def __init__(self, name: str, model_id: str, functions: list, image_size_limit: int):
+	def __init__(self, name: str, model_id: str, functions: list, image_size_limit: int, eol_date: str):
 		self._model_id = model_id
 		self._name = name
 		self._functions = functions
 		self._image_size_limit = image_size_limit
+		self._eol_date = eol_date
 
 	def list_models():
 		return [
@@ -25,7 +27,8 @@ class MCSVisionModel(Enum):
 				"model_id": model.model_id,
 				"functions": model.functions,
 				"image_size_limit": model.image_size_limit,
-				"provider": model.provider
+				"provider": model.provider,
+				"eol_date": model.eol_date
 			}
 			for model in MCSVisionModel
 		]
@@ -49,6 +52,10 @@ class MCSVisionModel(Enum):
 	@property
 	def provider(self):
 		return "Microsoft Cognitive Services"
+
+	@property
+	def eol_date(self):
+		return self._eol_date
 
 class MCSVision(object):
 

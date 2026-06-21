@@ -8,7 +8,7 @@ class GoogleGeminiModel(Enum):
 		"gemini-2-0-flash-lite",
 		"gemini-2.0-flash-lite",
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 0.5},
-		None
+		"2026-06-01"
 	)
 	FLASH_LITE_2_5 = (
 		"gemini-2-5-flash-lite",
@@ -16,11 +16,17 @@ class GoogleGeminiModel(Enum):
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 0.5},
 		None
 	)
+	FLASH_LITE_3_1 = (
+		"gemini-3-1-flash-lite",
+		"gemini-3.1-flash-lite",
+		{"maxTokens": 2000, "temperature": 1.0, "topP": 0.5},
+		None
+	)	
 	FLASH_2_0 = (
 		"gemini-2-0-flash",
 		"gemini-2.0-flash",
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 0.5},
-		None
+		"2026-06-01"
 	)
 	FLASH_2_5 = (
 		"gemini-2-5-flash",

@@ -15,7 +15,7 @@ class SalesForceModel(Enum):
 		"blip-2",
 		"general-english-image-caption-blip-2",
 		{},
-		None
+		"2026-07-16"
 	)
 	BLIP_2_6_7B = (
 		"blip-2-6-7B",

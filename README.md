@@ -112,6 +112,7 @@ Google Gemini 2.0 Flash: description
 Google Gemini 2.5 Flash: description  
 Google Gemini 2.0 Flash-Lite: description  
 Google Gemini 2.5 Flash-Lite: description  
+Google Gemini 3.1 Flash-Lite: description  
 Mistral Pixtral Large 25.02: description  
 Mistral Magistral Small 2509: description  
 Mistral Ministral 3 3B: description  
@@ -142,6 +143,7 @@ Set these in `.env`:
 | `LLM_CONNECT_TIMEOUT` | `10` | Seconds to wait for a connection to be established |
 | `LLM_READ_TIMEOUT` | `60` | Seconds to wait for a response from the model |
 | `LLM_WORKERS` | `10` | Max parallel threads for concurrent model calls. Lower values reduce peak memory usage |
+| `REQUEST_BUDGET` | `90` | Max seconds the request may spend in the parallel LLM phase. Models still running when the budget expires are skipped and logged |
 | `MAX_PROMPT_LEN` | `500` | Maximum allowed characters in the `prompt` query parameter |
 | `OLLAMA_BASE_URL` | `http://localhost:11434/v1` | Base URL of the local Ollama server's OpenAI-compatible endpoint, used by the `gemma4` models |
 
@@ -224,7 +226,7 @@ http://127.0.0.1:5000/extract
 Parameters |  | Values
 ------------ | ------------- | -------------
 url | Any URL that resolves to a IIIF compatible image
-services | (optional, default uses all services) One or more from the list of valid services separated by commas | `imagga, gv, mcs, clarifai, color, aws, hash, gpt-4, gpt-4o, gpt-4-1-mini, claude-3-haiku, claude-4-5-haiku, claude-3-opus, claude-4-1-opus, claude-4-5-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, claude-3-7-sonnet, claude-4-sonnet, claude-4-5-sonnet, llama-3-2-11b, llama-3-2-90b, llama-4-maverick-17b, llama-4-scout-17b, nova-lite-1-0, nova-pro-1-0, nova-lite-2-0, gemini-2-0-flash-lite, gemini-2-5-flash-lite, gemini-2-0-flash, gemini-2-5-flash, pixtral-large-2502, magistral-small-2509, ministral-3-3b, ministral-3-8b, ministral-3-14b, mistral-large-3-675b, qwen-3-vl-235b-a22b, kimi-k2-5, palmyra-vision-7b, gemma4, gemma4-26b, blip-2, blip-2-6-7B`
+services | (optional, default uses all services) One or more from the list of valid services separated by commas | `imagga, gv, mcs, clarifai, color, aws, hash, gpt-4, gpt-4o, gpt-4-1-mini, claude-3-haiku, claude-4-5-haiku, claude-3-opus, claude-4-1-opus, claude-4-5-opus, claude-3-5-sonnet, claude-3-5-sonnet-v-2, claude-3-7-sonnet, claude-4-sonnet, claude-4-5-sonnet, llama-3-2-11b, llama-3-2-90b, llama-4-maverick-17b, llama-4-scout-17b, nova-lite-1-0, nova-pro-1-0, nova-lite-2-0, gemini-2-0-flash-lite, gemini-2-5-flash-lite, gemini-2-0-flash, gemini-2-5-flash, gemini-3-1-flash-lite, pixtral-large-2502, magistral-small-2509, ministral-3-3b, ministral-3-8b, ministral-3-14b, mistral-large-3-675b, qwen-3-vl-235b-a22b, kimi-k2-5, palmyra-vision-7b, blip-2, blip-2-6-7B`
 prompt | (optional) Custom text prompt sent to all LLM/vision model calls. When omitted, defaults to `"Describe this image:"`. Max 500 characters; control characters are stripped. | Any plain text string
 
 
@@ -312,6 +314,7 @@ Example response:
     "gemini-2-5-flash": {}, 
     "gemini-2-0-flash-lite": {},
     "gemini-2-5-flash-lite": {},
+    "gemini-3-1-flash-lite": {},
     "llama-3-2-11b": {},
     "llama-3-2-90b": {},
     "llama-4-maverick-17b": {}, 
@@ -368,6 +371,7 @@ Data in the response:
 `gemini-2-5-flash`:   
 `gemini-2-0-flash-lite`:  
 `gemini-2-5-flash-lite`:  
+`gemini-3-1-flash-lite`:  
 `llama-3-2-11b`:  
 `llama-3-2-90b`:  
 `llama-4-maverick-17b`:   

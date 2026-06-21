@@ -113,6 +113,24 @@ def test_scaled_variants_generated(tmp_path, monkeypatch, requests_mock):
     assert os.path.exists(result["1110"]["path"])
 
 
+def test_origin_timeout_returns_bad(tmp_path, monkeypatch, requests_mock):
+    import requests as _requests
+    cache = _reload_cache(monkeypatch, tmp_path)
+    requests_mock.get(DOWNLOAD_URL, exc=_requests.exceptions.ReadTimeout("Read timed out"))
+
+    result = cache.get_image(DOWNLOAD_URL, INPUT_URL, cache_days=30)
+    assert result == {"status": "bad"}
+
+
+def test_origin_connection_error_returns_bad(tmp_path, monkeypatch, requests_mock):
+    import requests as _requests
+    cache = _reload_cache(monkeypatch, tmp_path)
+    requests_mock.get(DOWNLOAD_URL, exc=_requests.exceptions.ConnectionError("Connection refused"))
+
+    result = cache.get_image(DOWNLOAD_URL, INPUT_URL, cache_days=30)
+    assert result == {"status": "bad"}
+
+
 def test_s3_fresh_skips_origin(tmp_path, monkeypatch, requests_mock):
     from unittest.mock import MagicMock, patch
     import io as _io
