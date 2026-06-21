@@ -124,9 +124,11 @@ Qwen 2.5 VL 72B Instruct on Hyperbolic: description (deprecated)
 Qwen 3 VL 235B on AWS Bedrock: description  
 Moonshot Kimi K2.5 on AWS Bedrock: description  
 Writer Palmyra Vision 7B on AWS Bedrock: description  
+Google Gemma 4 on local Ollama: description  
+Google Gemma 4 26B on local Ollama: description  
 
 
-<img width="600" alt="API Tools-Data-Process Diagrams" src="https://github.com/user-attachments/assets/d6ae133b-f8ab-4df5-b890-67ba72fb3049" />
+See the [services & features diagram](docs/architecture.md) for a visual map of every service and the features it returns.
 
 ## LLM Dispatch
 
@@ -143,8 +145,20 @@ Set these in `.env`:
 | `LLM_WORKERS` | `10` | Max parallel threads for concurrent model calls. Lower values reduce peak memory usage |
 | `REQUEST_BUDGET` | `90` | Max seconds the request may spend in the parallel LLM phase. Models still running when the budget expires are skipped and logged |
 | `MAX_PROMPT_LEN` | `500` | Maximum allowed characters in the `prompt` query parameter |
+| `OLLAMA_BASE_URL` | `http://localhost:11434/v1` | Base URL of the local Ollama server's OpenAI-compatible endpoint, used by the `gemma4` models |
 
 If a model exceeds `LLM_READ_TIMEOUT`, its SDK raises a timeout exception which is caught and returned as an error dict — other models in the request are unaffected.
+
+### Local Ollama models (Gemma)
+
+The `gemma4` and `gemma4-26b` services run against a local [Ollama](https://ollama.com) server rather than a cloud API, so they need no API key. To use them, install Ollama, ensure the server is running, and pull the models:
+
+```sh
+ollama pull gemma4
+ollama pull gemma4:26b
+```
+
+Gemma reasons before answering, so a single local call typically takes ~40–50s (longer for `gemma4-26b` and under parallel load). The default `LLM_READ_TIMEOUT` of `60` is tight for these — raise it (e.g. `LLM_READ_TIMEOUT=180`) when requesting Ollama models, since the dispatcher passes this value to the parser and it overrides the parser's own default.
 
 ### Gunicorn
 
@@ -316,7 +330,9 @@ Example response:
     "pixtral-large-2502": {},
     "qwen-3-vl-235b-a22b": {},
     "kimi-k2-5": {},
-    "palmyra-vision-7b": {}
+    "palmyra-vision-7b": {},
+    "gemma4": {},
+    "gemma4-26b": {}
 }
 ```
 
@@ -381,7 +397,7 @@ Each LLM/vision model key in the response (e.g. `gpt-4o`, `claude-4-5-sonnet`, `
 |---|---|---|
 | `body` | string or null | The model's text response. `null` on error or when the response was blocked |
 | `model` | string | The exact model version ID used (e.g. `gpt-4o-2024-11-20`) |
-| `provider` | string | The provider name (e.g. `OpenAI`, `Anthropic`, `Google Gemini`) |
+| `provider` | string | The provider name (e.g. `OpenAI`, `Anthropic`, `Google Gemini`, `Ollama`) |
 | `status` | integer | HTTP-style status code. `200` on success; `400`, `429`, `500`, etc. on error |
 | `runtime` | float | Seconds elapsed for this individual model call |
 | `full` | object or null | The complete raw response object from the provider SDK. `null` on error |
