@@ -534,6 +534,15 @@ def process_image(URL, services, prompt=None):
 
 		annotation_fragment_full = _make_annotation_fragment(0, 0, image["width"], image["height"])
 
+		today = datetime.date.today().isoformat()
+
+		def _is_eol(model):
+			if model.eol_date and model.eol_date < today:
+				logger.warning("model_eol", extra={"model": model.name, "eol_date": model.eol_date})
+				image[model.name] = {"error": f"model {model.name} reached end-of-life on {model.eol_date}"}
+				return True
+			return False
+
 		# ── Simple / hash / color services ──────────────────────────────────
 		if "hash" in services:
 			_t = time.time()
@@ -552,7 +561,7 @@ def process_image(URL, services, prompt=None):
 				logger.error("service_failed", extra={"service": "color"}, exc_info=True)
 
 		# ── Structured vision services ───────────────────────────────────────
-		if clarifai.ClarifaiModel.BASE.name in services:
+		if clarifai.ClarifaiModel.BASE.name in services and not _is_eol(clarifai.ClarifaiModel.BASE):
 			_t = time.time()
 			try:
 				_run_clarifai(image, cached["full"]["path"],
@@ -563,7 +572,7 @@ def process_image(URL, services, prompt=None):
 			except Exception:
 				logger.error("service_failed", extra={"service": "clarifai"}, exc_info=True)
 
-		if mcsvision.MCSVisionModel.BASE.name in services:
+		if mcsvision.MCSVisionModel.BASE.name in services and not _is_eol(mcsvision.MCSVisionModel.BASE):
 			_t = time.time()
 			try:
 				_run_microsoftvision(image, cached["full"]["path"],
@@ -574,7 +583,7 @@ def process_image(URL, services, prompt=None):
 			except Exception:
 				logger.error("service_failed", extra={"service": "microsoftvision"}, exc_info=True)
 
-		if vision.GVisionModel.BASE.name in services:
+		if vision.GVisionModel.BASE.name in services and not _is_eol(vision.GVisionModel.BASE):
 			_t = time.time()
 			try:
 				_run_googlevision(image, cached["full"]["path"],
@@ -584,7 +593,7 @@ def process_image(URL, services, prompt=None):
 			except Exception:
 				logger.error("service_failed", extra={"service": "googlevision"}, exc_info=True)
 
-		if imagga.ImaggaModel.BASE.name in services:
+		if imagga.ImaggaModel.BASE.name in services and not _is_eol(imagga.ImaggaModel.BASE):
 			_t = time.time()
 			try:
 				_run_imagga(image, cached["full"]["path"],
@@ -596,7 +605,7 @@ def process_image(URL, services, prompt=None):
 			except Exception:
 				logger.error("service_failed", extra={"service": "imagga"}, exc_info=True)
 
-		if aws.AWSModel.BASE.name in services:
+		if aws.AWSModel.BASE.name in services and not _is_eol(aws.AWSModel.BASE):
 			_t = time.time()
 			try:
 				_run_aws_rekognition(image, cached["full"]["path"],
@@ -609,7 +618,10 @@ def process_image(URL, services, prompt=None):
 				logger.error("service_failed", extra={"service": "aws"}, exc_info=True)
 
 		# ── Generic LLM / vision model dispatch (parallel) ──────────────────
-		active_models = [(m, c, s) for m, c, s in GENERIC_MODELS if m.name in services]
+		active_models = [
+			(m, c, s) for m, c, s in GENERIC_MODELS
+			if m.name in services and not _is_eol(m)
+		]
 		futures = {
 			_executor.submit(
 				_fetch_model, m, c, s, cached, prompt, annotation_fragment_full
