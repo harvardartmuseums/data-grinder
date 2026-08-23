@@ -16,3 +16,5 @@ data-lists.txt
 .claude/settings.local.json
 
 plans/
+
+*DS_Store

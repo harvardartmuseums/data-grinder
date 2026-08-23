@@ -32,7 +32,8 @@ from parsers import (
 	salesforce,
 	awsqwen,
 	awsmoonshot,
-	awswriter
+	awswriter,
+	ollama
 )
 
 log.configure()
@@ -104,6 +105,9 @@ GENERIC_MODELS = [
 	(salesforce.SalesForceModel.BLIP,           salesforce.SalesForce, "full"),
 	(salesforce.SalesForceModel.BLIP_2,         salesforce.SalesForce, "full"),
 	(salesforce.SalesForceModel.BLIP_2_6_7B,   	salesforce.SalesForce, "full"),
+	# Gemma on local Ollama (scaled image)
+	(ollama.OllamaModel.GEMMA_4,     ollama.Ollama, "1110"),
+	(ollama.OllamaModel.GEMMA_4_26B, ollama.Ollama, "1110"),
 ]
 
 app = Flask(__name__)
@@ -133,7 +137,8 @@ def list_services():
 				awsqwen.QwenModel.list_models() + \
 				salesforce.SalesForceModel.list_models() + \
 				awsmoonshot.MoonshotModel.list_models() + \
-				awswriter.WriterModel.list_models(),	
+				awswriter.WriterModel.list_models() + \
+				ollama.OllamaModel.list_models(),
 			"other": [
 				{"name":"hash", "model_id":"", "eol_date": None}, 
 				{"name":"color", "model_id":"", "eol_date": None}

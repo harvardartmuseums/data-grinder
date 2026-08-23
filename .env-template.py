@@ -19,6 +19,9 @@ AZURE_OPENAI_API_VERSION = ""
 
 HYPERBOLIC_API_KEY = ""
 
+# Local Ollama server (Ollama's default port).
+OLLAMA_BASE_URL = "http://localhost:11434/v1"
+
 IMAGE_CACHE_DAYS = 30
 IMAGE_CACHE_SIZES = "full,1110,512"
 IMAGE_CACHE_DIR = ""
