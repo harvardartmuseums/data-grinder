@@ -10,7 +10,7 @@ class MCSVisionModel(Enum):
 		"",
 		["analyze", "describe"],
 		4194304,
-		None
+		"2028-09-25"
 	)
 
 	def __init__(self, name: str, model_id: str, functions: list, image_size_limit: int, eol_date: str):
