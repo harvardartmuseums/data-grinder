@@ -134,6 +134,46 @@ def test_anthropic_reasoning_block_before_text(sample_jpeg):
     assert "description" not in result
 
 
+def test_anthropic_reasoning_disabled_is_sent(sample_jpeg):
+    """Models carrying a passthrough send it; Sonnet 5.5 turns reasoning off."""
+    import parsers.awsanthropic as mod
+
+    mock_client = MagicMock()
+    mock_client.converse.return_value = {
+        "stopReason": "end_turn",
+        "output": {"message": {"content": [{"text": "A portrait."}]}},
+    }
+
+    with patch.dict(os.environ, AWS_ENV):
+        mod._client = mock_client
+        mod.AWSAnthropic().fetch(sample_jpeg, model=mod.AnthropicModel.CLAUDE_5_5_SONNET)
+
+    sent = mock_client.converse.call_args.kwargs
+    assert sent["additionalModelRequestFields"] == {"thinking": {"type": "between_tools"}}
+
+
+def test_anthropic_no_passthrough_by_default(sample_jpeg):
+    """Models without a passthrough send no additionalModelRequestFields at all.
+
+    An empty dict is not equivalent - Bedrock validates what it receives, and the
+    value valid for one model is rejected by another.
+    """
+    import parsers.awsanthropic as mod
+
+    mock_client = MagicMock()
+    mock_client.converse.return_value = {
+        "stopReason": "end_turn",
+        "output": {"message": {"content": [{"text": "A portrait."}]}},
+    }
+
+    with patch.dict(os.environ, AWS_ENV):
+        mod._client = mock_client
+        mod.AWSAnthropic().fetch(sample_jpeg, model=mod.AnthropicModel.CLAUDE_4_5_SONNET)
+
+    assert "additionalModelRequestFields" not in mock_client.converse.call_args.kwargs
+    assert mod.AnthropicModel.CLAUDE_4_5_SONNET.additional_request_fields is None
+
+
 def test_anthropic_no_text_block(sample_jpeg):
     """A response truncated mid-reasoning carries no text block at all."""
     result = _anthropic_fetch(

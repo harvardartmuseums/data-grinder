@@ -66,7 +66,7 @@ class AnthropicModel(Enum):
 	CLAUDE_4_5_SONNET = (
 		"claude-4-5-sonnet",
 		"global.anthropic.claude-sonnet-4-5-20250929-v1:0",
-		{"maxTokens": 4048, "temperature": 0.5},
+		{"maxTokens": 2048, "temperature": 0.5},
 		None,
 		3800000
 	)
@@ -75,15 +75,17 @@ class AnthropicModel(Enum):
 		"global.anthropic.claude-sonnet-5-5",
 		{"maxTokens": 2048},
 		None,
-		3800000
+		3800000,
+		{"thinking": {"type": "between_tools"}}
 	)
 
-	def __init__(self, name: str, model_id: str, inference_config: dict, eol_date: str, image_size_limit: int):
+	def __init__(self, name: str, model_id: str, inference_config: dict, eol_date: str, image_size_limit: int, additional_request_fields: dict = None):
 		self._model_id = model_id
 		self._name = name
 		self._inference_config = inference_config
 		self._eol_date = eol_date
 		self._image_size_limit = image_size_limit
+		self._additional_request_fields = additional_request_fields
 
 	def list_models():
 		return [
@@ -116,6 +118,18 @@ class AnthropicModel(Enum):
 	@property
 	def image_size_limit(self):
 		return self._image_size_limit
+
+	@property
+	def additional_request_fields(self):
+		"""Model-specific Converse passthrough, or None to send nothing.
+
+		Used to turn reasoning off so the response is a plain text block. The
+		accepted value differs by model: Sonnet 5.5 requires
+		{"thinking": {"type": "between_tools"}} and rejects {"type": "disabled"},
+		while the 4.5 family accepts {"type": "disabled"} and rejects
+		"between_tools". There is no value that is valid across all of them.
+		"""
+		return self._additional_request_fields
 
 	@property
 	def provider(self):
@@ -229,12 +243,16 @@ class AWSAnthropic(object):
 			}
 		]
 		
-		try: 
-			awsresponse = client.converse(
-				modelId=model.model_id,
-				messages=messages,
-				inferenceConfig=model.inference_config
-			)
+		converse_args = {
+			"modelId": model.model_id,
+			"messages": messages,
+			"inferenceConfig": model.inference_config
+		}
+		if model.additional_request_fields:
+			converse_args["additionalModelRequestFields"] = model.additional_request_fields
+
+		try:
+			awsresponse = client.converse(**converse_args)
 
 			stop_reason = awsresponse.get("stopReason")
 
