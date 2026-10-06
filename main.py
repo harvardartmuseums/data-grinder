@@ -69,6 +69,7 @@ GENERIC_MODELS = [
 	(awsanthropic.AnthropicModel.CLAUDE_3_7_SONNET,   awsanthropic.AWSAnthropic, "full"),
 	(awsanthropic.AnthropicModel.CLAUDE_4_SONNET,     awsanthropic.AWSAnthropic, "full"),
 	(awsanthropic.AnthropicModel.CLAUDE_4_5_SONNET,   awsanthropic.AWSAnthropic, "full"),
+	(awsanthropic.AnthropicModel.CLAUDE_5_5_SONNET,   awsanthropic.AWSAnthropic, "full"),
 	# Meta / Llama on AWS Bedrock (scaled image)
 	(awsmeta.MetaModel.LLAMA_3_2_11B,       awsmeta.AWSMeta,   "1110"),
 	(awsmeta.MetaModel.LLAMA_3_2_90B,       awsmeta.AWSMeta,   "1110"),

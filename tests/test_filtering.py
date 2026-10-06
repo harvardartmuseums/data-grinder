@@ -101,6 +101,53 @@ def test_bedrock_normal_success(module, cls, model_cls, model_member, sample_jpe
     assert "truncated" not in result
 
 
+AWS_ENV = {"AWS_ACCESS_KEY": "k", "AWS_SECRET_ACCESS_KEY": "s", "AWS_REGION": "us-east-1"}
+
+
+def _anthropic_fetch(content, stop_reason, sample_jpeg):
+    import parsers.awsanthropic as mod
+
+    mock_client = MagicMock()
+    mock_client.converse.return_value = {
+        "stopReason": stop_reason,
+        "output": {"message": {"content": content}},
+    }
+
+    with patch.dict(os.environ, AWS_ENV):
+        mod._client = mock_client
+        return mod.AWSAnthropic().fetch(sample_jpeg, model=mod.AnthropicModel.CLAUDE_5_5_SONNET)
+
+
+def test_anthropic_reasoning_block_before_text(sample_jpeg):
+    """Reasoning models put a reasoningContent block ahead of the text block."""
+    result = _anthropic_fetch(
+        [
+            {"SDK_UNKNOWN_MEMBER": {"name": "reasoningContent"}},
+            {"text": "A silkscreen portrait."},
+        ],
+        "end_turn",
+        sample_jpeg,
+    )
+
+    assert result["body"] == "A silkscreen portrait."
+    assert result["status"] == 200
+    assert "description" not in result
+
+
+def test_anthropic_no_text_block(sample_jpeg):
+    """A response truncated mid-reasoning carries no text block at all."""
+    result = _anthropic_fetch(
+        [{"SDK_UNKNOWN_MEMBER": {"name": "reasoningContent"}}],
+        "max_tokens",
+        sample_jpeg,
+    )
+
+    assert result["body"] is None
+    assert result["truncated"] is True
+    assert result["status"] == 200
+    assert "description" in result
+
+
 # ── Google Gemini ─────────────────────────────────────────────────────────────
 
 def _gemini_ok_response(finish_reason="STOP", text="A painting."):

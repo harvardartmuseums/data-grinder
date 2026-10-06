@@ -66,7 +66,14 @@ class AnthropicModel(Enum):
 	CLAUDE_4_5_SONNET = (
 		"claude-4-5-sonnet",
 		"global.anthropic.claude-sonnet-4-5-20250929-v1:0",
-		{"maxTokens": 2048, "temperature": 0.5},
+		{"maxTokens": 4048, "temperature": 0.5},
+		None,
+		3800000
+	)
+	CLAUDE_5_5_SONNET = (
+		"claude-5-5-sonnet",
+		"global.anthropic.claude-sonnet-5-5",
+		{"maxTokens": 2048},
 		None,
 		3800000
 	)
@@ -186,6 +193,16 @@ class AWSAnthropic(object):
 		finally:
 			img.close()
 
+	def _extract_text(self, content):
+		"""Join the text blocks of a Converse response, in order.
+
+		Models that reason return a reasoningContent block ahead of the text block
+		(boto3 1.35 surfaces it as SDK_UNKNOWN_MEMBER), so the text is not always
+		content[0]. Returns None when the response carries no text block at all.
+		"""
+		text = "\n\n".join(block["text"] for block in content if "text" in block)
+		return text or None
+
 	def fetch(self, photo_file, model: AnthropicModel = AnthropicModel.CLAUDE_3_HAIKU, prompt=None, connect_timeout=10, read_timeout=60):
 		response = ""
 		client = self.get_client(connect_timeout, read_timeout)
@@ -231,13 +248,17 @@ class AWSAnthropic(object):
 					"filtered": True
 				}
 
+			body = self._extract_text(awsresponse["output"]["message"]["content"])
+
 			result = {
-				"body": awsresponse["output"]["message"]["content"][0]["text"],
+				"body": body,
 				"model": model.model_id,
 				"provider": model.provider,
 				"status": 200,
 				"full": awsresponse
 			}
+			if body is None:
+				result["description"] = "response contained no text content block"
 			if stop_reason == "max_tokens":
 				result["truncated"] = True
 			return result
