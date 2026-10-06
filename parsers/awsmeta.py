@@ -21,13 +21,13 @@ class MetaModel(Enum):
 		"llama-4-maverick-17b",
 		"us.meta.llama4-maverick-17b-instruct-v1:0",
 		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
-		None
+		"2027-03-30"
 	)
 	LLAMA_4_SCOUT_17B = (
 		"llama-4-scout-17b",
 		"us.meta.llama4-scout-17b-instruct-v1:0",
 		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
-		None
+		"2027-03-30"
 	)
 
 	def __init__(self, name: str, model_id: str, inference_config: dict, eol_date: str):
