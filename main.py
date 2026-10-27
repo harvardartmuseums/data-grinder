@@ -32,7 +32,8 @@ from parsers import (
 	salesforce,
 	awsqwen,
 	awsmoonshot,
-	awswriter
+	awswriter,
+	awsnvidia
 )
 
 log.configure()
@@ -102,6 +103,8 @@ GENERIC_MODELS = [
 	(awsmoonshot.MoonshotModel.KIMI_K_3, awsmoonshot.AWSMoonshot, "1110"),
 	# Writer on AWS Bedrock
 	(awswriter.WriterModel.PALMYRA_VISION_7B, awswriter.AWSWriter, "1110"),
+	# NVIDIA on AWS Bedrock
+	(awsnvidia.NvidiaModel.NEMOTRON_NANO_12B_V2, awsnvidia.AWSNvidia, "1110"),
 	# Salesforce BLIP on Clarifai
 	(salesforce.SalesForceModel.BLIP,           salesforce.SalesForce, "full"),
 	(salesforce.SalesForceModel.BLIP_2,         salesforce.SalesForce, "full"),
@@ -135,7 +138,8 @@ def list_services():
 				awsqwen.QwenModel.list_models() + \
 				salesforce.SalesForceModel.list_models() + \
 				awsmoonshot.MoonshotModel.list_models() + \
-				awswriter.WriterModel.list_models(),	
+				awswriter.WriterModel.list_models() + \
+				awsnvidia.NvidiaModel.list_models(),	
 			"other": [
 				{"name":"hash", "model_id":"", "eol_date": None}, 
 				{"name":"color", "model_id":"", "eol_date": None}
