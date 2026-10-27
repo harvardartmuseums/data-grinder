@@ -174,6 +174,38 @@ def test_anthropic_no_passthrough_by_default(sample_jpeg):
     assert mod.AnthropicModel.CLAUDE_4_5_SONNET.additional_request_fields is None
 
 
+def test_moonshot_reasoning_block_before_text(sample_jpeg):
+    """Kimi K3 reasons and cannot be told not to, so text is never content[0]."""
+    import parsers.awsmoonshot as mod
+
+    mock_client = MagicMock()
+    mock_client.converse.return_value = {
+        "stopReason": "end_turn",
+        "output": {"message": {"content": [
+            {"SDK_UNKNOWN_MEMBER": {"name": "reasoningContent"}},
+            {"text": "A flat graphic."},
+        ]}},
+    }
+
+    with patch.dict(os.environ, AWS_ENV):
+        mod._client = mock_client
+        result = mod.AWSMoonshot().fetch(sample_jpeg, model=mod.MoonshotModel.KIMI_K_3)
+
+    assert result["body"] == "A flat graphic."
+    assert result["status"] == 200
+
+
+def test_moonshot_k3_uses_inference_profile(sample_jpeg):
+    """K3 has no on-demand throughput - the ID must name an inference profile."""
+    import parsers.awsmoonshot as mod
+
+    model_id = mod.MoonshotModel.KIMI_K_3.model_id
+    assert model_id.split(".")[0] in ("us", "eu", "apac", "global"), model_id
+    # K3 rejects both sampling fields outright
+    assert "temperature" not in mod.MoonshotModel.KIMI_K_3.inference_config
+    assert "topP" not in mod.MoonshotModel.KIMI_K_3.inference_config
+
+
 def test_anthropic_no_text_block(sample_jpeg):
     """A response truncated mid-reasoning carries no text block at all."""
     result = _anthropic_fetch(

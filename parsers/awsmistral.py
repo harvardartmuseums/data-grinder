@@ -21,19 +21,19 @@ class MistralModel(Enum):
 		"ministral-3-3b",
 		"mistral.ministral-3-3b-instruct",
 		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
-		None
+		"2027-04-25"
 	)
 	MINISTRAL_3_8B = (
 		"ministral-3-8b",
 		"mistral.ministral-3-8b-instruct",
 		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
-		None
+		"2027-04-25"
 	)
 	MINISTRAL_3_14B = (
 		"ministral-3-14b",
 		"mistral.ministral-3-14b-instruct",
 		{"maxTokens": 2048, "temperature": 0.5, "topP": 0.9},
-		None
+		"2027-04-25"
 	)
 	MISTRAL_LARGE_3_675B = (
 		"mistral-large-3-675b",

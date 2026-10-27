@@ -9,6 +9,12 @@ class MoonshotModel(Enum):
 		"kimi-k2-5",
 		"moonshotai.kimi-k2.5",
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 1.0},
+		"2027-04-25"
+	)
+	KIMI_K_3 = (
+		"kimi-k3",
+		"us.moonshotai.kimi-k3",
+		{"maxTokens": 2000},
 		None
 	)
 
@@ -68,6 +74,16 @@ class AWSMoonshot(object):
 								config=Config(connect_timeout=connect_timeout, read_timeout=read_timeout))
 		return _client
 
+	def _extract_text(self, content):
+		"""Join the text blocks of a Converse response, in order.
+
+		Models that reason return a reasoningContent block ahead of the text block
+		(boto3 1.35 surfaces it as SDK_UNKNOWN_MEMBER), so the text is not always
+		content[0]. Returns None when the response carries no text block at all.
+		"""
+		text = "\n\n".join(block["text"] for block in content if "text" in block)
+		return text or None
+
 	def fetch(self, photo_file, model: MoonshotModel = MoonshotModel.KIMI_K_2_5, prompt=None, connect_timeout=10, read_timeout=60):
 		response = ""
 		client = self.get_client(connect_timeout, read_timeout)
@@ -114,13 +130,17 @@ class AWSMoonshot(object):
 					"filtered": True
 				}
 
+			body = self._extract_text(awsresponse["output"]["message"]["content"])
+
 			result = {
-				"body": awsresponse["output"]["message"]["content"][0]["text"],
+				"body": body,
 				"model": model.model_id,
 				"provider": model.provider,
 				"status": 200,
 				"full": awsresponse
 			}
+			if body is None:
+				result["description"] = "response contained no text content block"
 			if stop_reason == "max_tokens":
 				result["truncated"] = True
 			return result

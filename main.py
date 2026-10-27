@@ -99,6 +99,7 @@ GENERIC_MODELS = [
 	(awsqwen.QwenModel.QWEN_3_VL_235B, awsqwen.AWSQwen, "1110"),
 	# Moonshot on AWS Bedrock 
 	(awsmoonshot.MoonshotModel.KIMI_K_2_5, awsmoonshot.AWSMoonshot, "1110"),
+	(awsmoonshot.MoonshotModel.KIMI_K_3, awsmoonshot.AWSMoonshot, "1110"),
 	# Writer on AWS Bedrock
 	(awswriter.WriterModel.PALMYRA_VISION_7B, awswriter.AWSWriter, "1110"),
 	# Salesforce BLIP on Clarifai
