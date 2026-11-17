@@ -72,6 +72,7 @@ class TestRequestBudget:
         """Models exceeding REQUEST_BUDGET are skipped gracefully."""
         mock_model = MagicMock()
         mock_model.name = "slow-model"
+        mock_model.eol_date = None
 
         patches = self._patch_infra() + [
             patch("main.GENERIC_MODELS", [(mock_model, MagicMock, "full")]),
@@ -93,6 +94,7 @@ class TestRequestBudget:
         """Models that finish before the budget are included in the response."""
         mock_model = MagicMock()
         mock_model.name = "fast-model"
+        mock_model.eol_date = None
 
         patches = self._patch_infra() + [
             patch("main.GENERIC_MODELS", [(mock_model, MagicMock, "full")]),
@@ -115,8 +117,10 @@ class TestRequestBudget:
         """When some models finish and others time out, we get partial results."""
         fast_model = MagicMock()
         fast_model.name = "fast-model"
+        fast_model.eol_date = None
         slow_model = MagicMock()
         slow_model.name = "slow-model"
+        slow_model.eol_date = None
 
         def _mixed_fetch(model, *args, **kwargs):
             if model.name == "slow-model":

@@ -544,7 +544,7 @@ def process_image(URL, services, prompt=None):
 		today = datetime.date.today().isoformat()
 
 		def _is_eol(model):
-			if model.eol_date and model.eol_date < today:
+			if model.eol_date and model.eol_date <= today:
 				logger.warning("model_eol", extra={"model": model.name, "eol_date": model.eol_date})
 				image[model.name] = {"error": f"model {model.name} reached end-of-life on {model.eol_date}"}
 				return True
