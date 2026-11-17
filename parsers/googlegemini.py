@@ -8,44 +8,51 @@ class GoogleGeminiModel(Enum):
 		"gemini-2-0-flash-lite",
 		"gemini-2.0-flash-lite",
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 0.5},
-		"2026-06-01"
+		"2026-06-01",
+		None
 	)
 	FLASH_LITE_2_5 = (
 		"gemini-2-5-flash-lite",
 		"gemini-2.5-flash-lite",
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 0.5},
-		None
+		None,
+		{"thinkingBudget": 0}
 	)
 	FLASH_LITE_3_1 = (
 		"gemini-3-1-flash-lite",
 		"gemini-3.1-flash-lite",
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 0.5},
-		None
-	)	
+		None,
+		{"thinkingLevel": "low"}
+	)
 	FLASH_LITE_3_5 = (
 		"gemini-3-5-flash-lite",
 		"gemini-3.5-flash-lite",
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 0.5},
-		None
-	)	
+		None,
+		{"thinkingLevel": "low"}
+	)
 	FLASH_2_0 = (
 		"gemini-2-0-flash",
 		"gemini-2.0-flash",
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 0.5},
-		"2026-06-01"
+		"2026-06-01",
+		None
 	)
 	FLASH_2_5 = (
 		"gemini-2-5-flash",
 		"gemini-2.5-flash",
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 0.5},
-		"2026-12-01"
+		"2026-12-01",
+		{"thinkingBudget": 0}
 	)
 
-	def __init__(self, name: str, model_id: str, inference_config: dict, eol_date: str):
+	def __init__(self, name: str, model_id: str, inference_config: dict, eol_date: str, thinking_config: dict = None):
 		self._model_id = model_id
 		self._name = name
 		self._inference_config = inference_config
 		self._eol_date = eol_date
+		self._thinking_config = thinking_config
 
 	def list_models():
 		return [
@@ -75,6 +82,21 @@ class GoogleGeminiModel(Enum):
 		return self._eol_date
 
 	@property
+	def thinking_config(self):
+		"""Model-specific generationConfig.thinkingConfig, or None to send nothing.
+
+		Used to hold reasoning at or near its floor so the response is plain text
+		and the token spend stays predictable. The accepted field differs by
+		generation:
+		2.5 models take {"thinkingBudget": 0}, which turns thinking off outright,
+		while 3.x replaced it with {"thinkingLevel": ...} and cannot be disabled —
+		"minimal" is the floor, and it is valid only on Flash-Lite (3.x Flash and
+		3 Pro reject it with a 400 and bottom out at "low"). The 2.0 models do not
+		reason at all and must not carry a thinkingConfig.
+		"""
+		return self._thinking_config
+
+	@property
 	def provider(self):
 		return "Google Gemini"
 
@@ -82,6 +104,23 @@ class GoogleGemini(object):
 
 	def __init__(self):
 		self.api_key = os.getenv("GOOGLE_API_KEY")
+
+	def _extract_text(self, candidate):
+		"""Join the text parts of a candidate, in order.
+
+		Gemini 3 may attach a thoughtSignature to any part and returns thought
+		parts of its own when includeThoughts is on, so the answer is not always
+		parts[0]. Signatures ride along on the part and are ignored here — they
+		only matter for replaying function calls or multi-turn context, neither
+		of which this parser does. Returns None when the response carries no text
+		part at all, which happens when generation is cut off mid-thought.
+		"""
+		parts = candidate.get("content", {}).get("parts", [])
+		text = "".join(
+			part["text"] for part in parts
+			if "text" in part and not part.get("thought")
+		)
+		return text or None
 			  			  
 	def fetch(self, photo_file, model: GoogleGeminiModel = GoogleGeminiModel.FLASH_LITE_2_0, prompt=None, connect_timeout=10, read_timeout=60):
 		# Fetch the image data from the local copy
@@ -111,6 +150,9 @@ class GoogleGemini(object):
 					}
 				]
 			}
+			if model.thinking_config:
+				params["generationConfig"] = {"thinkingConfig": model.thinking_config}
+
 			headers = {
 				'Content-Type': 'application/json'
 			}
@@ -164,7 +206,7 @@ class GoogleGemini(object):
 					"filtered": True
 				}
 
-			body = candidates[0]["content"]["parts"][0]["text"]
+			body = self._extract_text(candidates[0])
 			out = {
 				"body": body,
 				"model": model_id,
@@ -172,6 +214,8 @@ class GoogleGemini(object):
 				"status": 200,
 				"full": result
 			}
+			if body is None:
+				out["description"] = "response contained no text part"
 			if finish_reason == "MAX_TOKENS":
 				out["truncated"] = True
 			return out

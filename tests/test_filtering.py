@@ -248,6 +248,136 @@ def gemini_parser():
         return GoogleGemini(), GoogleGeminiModel.FLASH_2_0
 
 
+def _sent_body(mock_post):
+    """The JSON payload handed to requests.post."""
+    return mock_post.call_args.kwargs["json"]
+
+
+def _gemini_models():
+    with patch.dict(os.environ, {"GOOGLE_API_KEY": "test-key"}):
+        from parsers.googlegemini import GoogleGeminiModel
+        return list(GoogleGeminiModel)
+
+
+@pytest.mark.parametrize("model", _gemini_models(), ids=lambda m: m.name)
+def test_gemini_thinking_config_sent(model, sample_jpeg):
+    """Whatever a model declares is what reaches the wire, and a model that
+    declares nothing sends no generationConfig at all. Derived from the enum so
+    retuning a level is not a test change — the rules below are what's pinned."""
+    with patch.dict(os.environ, {"GOOGLE_API_KEY": "test-key"}):
+        from parsers.googlegemini import GoogleGemini
+        mock_resp = _make_requests_mock(200, _gemini_ok_response())
+        with patch("requests.post", return_value=mock_resp) as mock_post:
+            GoogleGemini().fetch(sample_jpeg, model=model)
+
+    body = _sent_body(mock_post)
+    if model.thinking_config is None:
+        assert "generationConfig" not in body
+    else:
+        assert body["generationConfig"]["thinkingConfig"] == model.thinking_config
+
+
+@pytest.mark.parametrize("model", _gemini_models(), ids=lambda m: m.name)
+def test_gemini_thinking_field_matches_model_generation(model):
+    """2.5 takes thinkingBudget, 3.x takes thinkingLevel, 2.0 does not reason.
+    Using the wrong field for the generation is a 400 from the API."""
+    cfg = model.thinking_config or {}
+    assert not ("thinkingBudget" in cfg and "thinkingLevel" in cfg), "fields are mutually exclusive"
+
+    if model.model_id.startswith("gemini-2.0"):
+        assert model.thinking_config is None
+    elif model.model_id.startswith("gemini-2.5"):
+        assert set(cfg) == {"thinkingBudget"}
+    else:
+        assert set(cfg) == {"thinkingLevel"}
+
+
+@pytest.mark.parametrize("model", _gemini_models(), ids=lambda m: m.name)
+def test_gemini_thinking_level_value_is_supported(model):
+    """"minimal" 400s on 3.x Flash and 3 Pro — only Flash-Lite may use it."""
+    level = (model.thinking_config or {}).get("thinkingLevel")
+    if level is None:
+        return
+    assert level in {"minimal", "low", "medium", "high"}
+    if level == "minimal":
+        assert "flash-lite" in model.model_id
+
+
+def test_gemini_text_part_with_thought_signature(gemini_parser, sample_jpeg):
+    """Gemini 3 attaches a thoughtSignature to the part carrying the answer."""
+    parser, model = gemini_parser
+    body = {
+        "candidates": [{
+            "content": {"parts": [
+                {"text": "A painting.", "thoughtSignature": "Cr4BAdHtim8abc=="}
+            ]},
+            "finishReason": "STOP"
+        }]
+    }
+    with patch("requests.post", return_value=_make_requests_mock(200, body)):
+        result = parser.fetch(sample_jpeg, model=model)
+    assert result["body"] == "A painting."
+    assert result["status"] == 200
+
+
+def test_gemini_thought_part_before_text(gemini_parser, sample_jpeg):
+    """A thought part ahead of the answer must not be mistaken for the answer."""
+    parser, model = gemini_parser
+    body = {
+        "candidates": [{
+            "content": {"parts": [
+                {"text": "First I consider the composition...", "thought": True},
+                {"text": "A painting."}
+            ]},
+            "finishReason": "STOP"
+        }]
+    }
+    with patch("requests.post", return_value=_make_requests_mock(200, body)):
+        result = parser.fetch(sample_jpeg, model=model)
+    assert result["body"] == "A painting."
+
+
+def test_gemini_multiple_text_parts_joined(gemini_parser, sample_jpeg):
+    parser, model = gemini_parser
+    body = {
+        "candidates": [{
+            "content": {"parts": [{"text": "A painting"}, {"text": " of a ship."}]},
+            "finishReason": "STOP"
+        }]
+    }
+    with patch("requests.post", return_value=_make_requests_mock(200, body)):
+        result = parser.fetch(sample_jpeg, model=model)
+    assert result["body"] == "A painting of a ship."
+
+
+def test_gemini_truncated_mid_thought_has_no_text_part(gemini_parser, sample_jpeg):
+    """Cut off while thinking: no text part at all. Must report a 200 with a
+    null body, not a 500 from a KeyError."""
+    parser, model = gemini_parser
+    body = {
+        "candidates": [{
+            "content": {"parts": [{"text": "Considering...", "thought": True}]},
+            "finishReason": "MAX_TOKENS"
+        }]
+    }
+    with patch("requests.post", return_value=_make_requests_mock(200, body)):
+        result = parser.fetch(sample_jpeg, model=model)
+    assert result["status"] == 200
+    assert result["body"] is None
+    assert result["truncated"] is True
+    assert "no text part" in result["description"]
+
+
+def test_gemini_candidate_without_content(gemini_parser, sample_jpeg):
+    """A candidate carrying no content block at all must not raise."""
+    parser, model = gemini_parser
+    body = {"candidates": [{"finishReason": "MAX_TOKENS"}]}
+    with patch("requests.post", return_value=_make_requests_mock(200, body)):
+        result = parser.fetch(sample_jpeg, model=model)
+    assert result["status"] == 200
+    assert result["body"] is None
+
+
 def test_gemini_normal_success(gemini_parser, sample_jpeg):
     parser, model = gemini_parser
     mock_resp = _make_requests_mock(200, _gemini_ok_response())
