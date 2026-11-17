@@ -22,6 +22,12 @@ class GoogleGeminiModel(Enum):
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 0.5},
 		None
 	)	
+	FLASH_LITE_3_5 = (
+		"gemini-3-5-flash-lite",
+		"gemini-3.5-flash-lite",
+		{"maxTokens": 2000, "temperature": 1.0, "topP": 0.5},
+		None
+	)	
 	FLASH_2_0 = (
 		"gemini-2-0-flash",
 		"gemini-2.0-flash",
@@ -32,7 +38,7 @@ class GoogleGeminiModel(Enum):
 		"gemini-2-5-flash",
 		"gemini-2.5-flash",
 		{"maxTokens": 2000, "temperature": 1.0, "topP": 0.5},
-		None
+		"2026-12-01"
 	)
 
 	def __init__(self, name: str, model_id: str, inference_config: dict, eol_date: str):
