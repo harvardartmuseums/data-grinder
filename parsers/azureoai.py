@@ -15,13 +15,13 @@ class OpenAIModel(Enum):
 		"gpt-4o",
 		"gpt-4o-2024-11-20",
 		{"maxTokens": 4096, "temperature": 1.0, "topP": 1.0},
-		None
+		"2027-04-14"
 	)
 	GPT_4_1_MINI = (
 		"gpt-4-1-mini",
 		"gpt-4.1-mini-2025-04-14",
 		{"maxTokens": 4096, "temperature": 1.0, "topP": 1.0},
-		None
+		"2027-04-14"
 	)
 	GPT_5_NANO = (
 		"gpt-5-nano",
